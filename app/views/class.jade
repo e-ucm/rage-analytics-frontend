@@ -1,0 +1,27 @@
+extends page
+block content
+    .container.theme-showcase(ng-controller='ClassCtrl')
+        .row(ng-controller='AppCtrl')
+            .col-md-12
+                h1
+                    a(href="#", editable-text="selectedGame.title" onaftersave="saveGame()") {{ selectedGame.title }}
+        .row
+            .col-md-offset-2.col-md-8(ng-if='isTeacher()')
+                label Class title:
+                    input.form-control(type='text' ng-model='session.classTitle')
+                a.btn.btn-primary(type='button', ng-click='createSession()')
+                    span.glyphicon.glyphicon-plus.right10
+                    | New class
+        .row
+            .col-md-offset-2.col-md-8
+                table.table.table-hover
+                    thead
+                        tr
+                            th
+                            th Created
+                    tbody
+                        tr(ng-repeat='session in sessions')
+                            td
+                                span.glyphicon.glyphicon-stats
+                                a(ng-href="/data?&session={{session._id}}", ng-click='setSelectedSession(session)') name: {{session.title}}
+                            td {{session._id | prettyDateId }}

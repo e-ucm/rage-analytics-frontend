@@ -11,6 +11,7 @@
     "unused": "vars",
     // Global variables
     "globals": {
-        "angular": false
+        "angular": false,
+        "$": false
     }
 }

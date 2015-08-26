@@ -1,0 +1,21 @@
+extends page
+block content
+    .container.theme-showcase(ng-controller='AppCtrl')
+        .col-md-12
+            h1
+                a(href="#", editable-text="selectedGame.title" onaftersave="saveGame()") {{ selectedGame.title }}
+        .container-fluid(ng-show="selectedVersion")
+            .row(ng-show="!eadLoading")
+                .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')
+                    include data/menu
+                .col-xs-9.col-md-10.tab-content
+                    #info.tab-pane.active
+                        include data/information
+                    #realtime.tab-pane
+                        include data/realtime
+                    #students.tab-pane
+                        include data/students
+                    #config.tab-pane
+                        include data/config
+
+

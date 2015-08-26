@@ -2,7 +2,7 @@
 
 var should = require('should');
 var app = {
-    config: require('../config-test'),
+    config: require('../app/config-test'),
     get: function (str) {
         return str;
     }
