@@ -1,0 +1,24 @@
+{
+    "name": "Learning-Frontend",
+    "version": "0.0.1",
+    "dependencies": {
+        "angular": "*",
+        "angular-route": "*",
+        "angular-resource": "*",
+        "angular-mocks": "*",
+        "angular-xeditable": "*",
+        "angular-gridster": "*",
+        "checklist-model": "*",
+        "angular-bootstrap": "*",
+        "ngstorage" : "*",
+        "bootstrap": "*",
+        "jquery": "*",
+        "jquery-dateFormat": "*",
+        "jquery-file-upload": "*",
+        "jquery-query": "https://raw.githubusercontent.com/alrusdi/jquery-plugin-query-object/master/jquery.query-object.js",
+        "underscore": "http://underscorejs.org/underscore.js",
+        "d3": "*",
+        "gauss": "*",
+        "hammerjs": "*"
+    }
+}

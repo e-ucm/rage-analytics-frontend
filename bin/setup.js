@@ -25,11 +25,11 @@ var Mongodb = require('mongodb');
 var Promptly = require('promptly');
 var Handlebars = require('handlebars');
 
-var configTemplatePath = Path.resolve(__dirname, '../config-example.js');
-var configTestPath = Path.resolve(__dirname, '../config-test.js');
-var configPath = Path.resolve(__dirname, '../config.js');
+var configTemplatePath = Path.resolve(__dirname, '../app/config-example.js');
+var configTestPath = Path.resolve(__dirname, '../app/config-test.js');
+var configPath = Path.resolve(__dirname, '../app/config.js');
 
-var configValue = require(Path.resolve(__dirname, '../config-values.js'));
+var configValue = require(Path.resolve(__dirname, '../app/config-values.js'));
 var defaultValues = configValue.defaultValues;
 var testValues = configValue.testValues;
 
