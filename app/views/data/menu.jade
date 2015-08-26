@@ -1,0 +1,18 @@
+ul.nav
+    li.active
+        span.left-menu-item(href="#info", role="tab", data-toggle="tab", ng-click="view = 'info'")
+            span.glyphicon.glyphicon-info-sign.right20
+            | Information
+    li(ng-if='isTeacher()')
+        span.left-menu-item(href="#students", role="tab", data-toggle="tab", ng-click="view = 'students'")
+            span.glyphicon.glyphicon-apple.right20
+            | Students
+    li
+        span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
+            span.glyphicon.glyphicon-dashboard.right20
+            | Real time
+    li(ng-if='isDeveloper()')
+        span.left-menu-item(href="#config", role="tab", data-toggle="tab", ng-click="view = 'config'")
+            span.glyphicon.glyphicon-cog.right20
+            | Configuration
+

@@ -1,0 +1,25 @@
+extends page
+block content
+    .container.theme-showcase(ng-controller='HomeCtrl')
+        .row
+            .col-md-offset-2.col-md-8(ng-if='isDeveloper()')
+                label Game title:
+                    input.form-control(type='text' ng-model='game.gameTitle')
+                a.btn.btn-primary(type='button', ng-click='createGame()')
+                    span.glyphicon.glyphicon-plus.right10
+                    | New game
+        .row
+            .col-md-offset-2.col-md-8
+                table.table.table-hover
+                    thead
+                        tr
+                            th
+                            th Created
+                    tbody
+                        tr(ng-controller='AppCtrl' ng-repeat='game in games')
+                            td
+                                span.glyphicon.glyphicon-stats
+                                a(ng-if='isDeveloper()' ng-href="#", ng-click='setSelectGameAndGo("/data", game)') {{game.title}}
+                                a(ng-if='!isDeveloper()' ng-href="#", ng-click='setSelectGameAndGo("/class", game)') {{game.title}}
+                            td {{game._id | prettyDateId }}
+
