@@ -21,7 +21,7 @@ block content
                             th Created
                     tbody
                         tr(ng-repeat='session in sessions')
-                            td
+                            td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats
-                                a(ng-href="/data?&session={{session._id}}", ng-click='setSelectedSession(session)') name: {{session.title}}
+                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') name: {{session.title}}
                             td {{session._id | prettyDateId }}

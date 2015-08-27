@@ -6,6 +6,7 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.$storage = $localStorage;
             $scope.session = {};
 
+
             function getQueryParam(param) {
                 var result = window.location.search.match(
                     new RegExp("(\\?|&)" + param + "(\\[\\])?=([^&]*)")
@@ -23,6 +24,8 @@ angular.module('classApp', ['ngStorage', 'services'])
             };
 
             getSessions();
+            $scope.gameId = getQueryParam('game');
+            $scope.versionId = getQueryParam('version');
 
             $scope.createSession = function () {
                 $http.post(CONSTANTS.PROXY + '/sessions/' + getQueryParam('game') + '/' + getQueryParam('version') + '/start').success(function (data) {
