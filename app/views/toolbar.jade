@@ -1,24 +1,41 @@
 nav.navbar.navbar-inverse.navbar-top
-   .container
-      .navbar-header
-         button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-         a.btn.navbar-brand(ng-click="href('/')") GF
-      #navbar.navbar-collapse.collapse(ng-controller='ToolbarCtrl')
-         ul.nav.navbar-nav
-            li(ng-if='isUser()')
-               a.btn(ng-click="href('/home')") Home
-            li(ng-if='!isUser()')
-               a.btn(ng-click="href('/signup')") SignUp
-         ul.nav.navbar-nav.navbar-right
-            li(ng-if='isUser()')
-               a.btn(ng-click='logout()')
-                  i.fa.fa-sign-out
-                  |   Logout
-            li(ng-if='!isUser()')
-               a.btn(ng-click="href('/login')")
-                  i.fa.fa-user
-                  |   Login
+    .container
+        .navbar-header
+            button.navbar-toggle.collapsed(type='button' data-toggle='collapse' data-target='#navbar' aria-expanded='false' aria-controls='navbar')
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.btn.navbar-brand(ng-click="href('/')") GF
+        #navbar.navbar-collapse.collapse(ng-controller='ToolbarCtrl')
+            ul.nav.navbar-nav
+                li(ng-if='isUser()' ng-controller='AppCtrl')
+                    a.btn(ng-href='#' ng-click='deselectedGameAndGo("/home")') Home
+                li(ng-if='!isUser()')
+                    a.btn(ng-click="href('/signup')") SignUp
+                li.dropdown
+                    li(ng-if='isUser()')
+                        a#dropdownGames.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                            | Games
+                            span.caret
+                        ul.dropdown-menu(aria-labelledby='dropdownGames' ng-controller='HomeCtrl')
+                            li(ng-controller='AppCtrl' ng-repeat='game in games')
+                                a(ng-if='isDeveloper()' ng-href='/data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='!isDeveloper()' ng-href='/class?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
+                li.dropdown(ng-controller='ClassCtrl')
+                    li
+                        a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                            | Classes
+                            span.caret
+                        ul.dropdown-menu(aria-labelledby='dropdownClasses' ng-controller='ClassCtrl')
+                            li(ng-controller='AppCtrl' ng-repeat='session in sessions')
+                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') name: {{session.title}}
+            ul.nav.navbar-nav.navbar-right
+                li(ng-if='isUser()')
+                    a.btn(ng-click='logout()')
+                        i.fa.fa-sign-out
+                        |   Logout
+                li(ng-if='!isUser()')
+                    a.btn(ng-click="href('/login')")
+                        i.fa.fa-user
+                        |   Login

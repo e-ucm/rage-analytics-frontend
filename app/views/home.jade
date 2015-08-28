@@ -19,7 +19,7 @@ block content
                         tr(ng-controller='AppCtrl' ng-repeat='game in games')
                             td
                                 span.glyphicon.glyphicon-stats
-                                a(ng-if='isDeveloper()' ng-href="#", ng-click='setSelectGameAndGo("/data", game)') {{game.title}}
-                                a(ng-if='!isDeveloper()' ng-href="#", ng-click='setSelectGameAndGo("/class", game)') {{game.title}}
+                                a(ng-if='isDeveloper()' ng-href='/data?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='!isDeveloper()' ng-href='/class?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
                             td {{game._id | prettyDateId }}
 
