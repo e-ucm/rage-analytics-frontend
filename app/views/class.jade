@@ -4,11 +4,11 @@ block content
         .row(ng-controller='AppCtrl')
             .col-md-12
                 h1
-                    a(href="#", editable-text="selectedGame.title" onaftersave="saveGame()") {{ selectedGame.title }}
+                    a(href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
         .row
             .col-md-offset-2.col-md-8(ng-if='isTeacher()')
                 label Class title:
-                    input.form-control(type='text' ng-model='session.classTitle')
+                    input.form-control(type='text' ng-model='class.name')
                 a.btn.btn-primary(type='button', ng-click='createSession()')
                     span.glyphicon.glyphicon-plus.right10
                     | New class
@@ -23,5 +23,5 @@ block content
                         tr(ng-repeat='session in sessions')
                             td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats
-                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') name: {{session.title}}
+                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
                             td {{session._id | prettyDateId }}

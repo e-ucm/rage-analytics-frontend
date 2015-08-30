@@ -29,7 +29,7 @@ nav.navbar.navbar-inverse.navbar-top
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownClasses' ng-controller='ClassCtrl')
                             li(ng-controller='AppCtrl' ng-repeat='session in sessions')
-                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') name: {{session.title}}
+                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') name: {{session.name}}
             ul.nav.navbar-nav.navbar-right
                 li(ng-if='isUser()')
                     a.btn(ng-click='logout()')

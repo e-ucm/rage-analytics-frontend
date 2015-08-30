@@ -5,6 +5,7 @@ angular.module('classApp', ['ngStorage', 'services'])
         function ($scope, $location, $http, $window, $localStorage, Games, Versions, Sessions, Role, CONSTANTS) {
             $scope.$storage = $localStorage;
             $scope.session = {};
+            $scope.class = {};
 
 
             function getQueryParam(param) {
@@ -28,7 +29,7 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.versionId = getQueryParam('version');
 
             $scope.createSession = function () {
-                $http.post(CONSTANTS.PROXY + '/sessions/' + getQueryParam('game') + '/' + getQueryParam('version') + '/start').success(function (data) {
+                $http.post(CONSTANTS.PROXY + '/sessions/' + getQueryParam('game') + '/' + getQueryParam('version') + '/start', {name: $scope.class.name}).success(function (data) {
                     $window.location = '/data';
                 }).error(function (data, status) {
                     console.error('Error on get /sessions/:gameId/:versionId ' + JSON.stringify(data) + ', status: ' + status);
