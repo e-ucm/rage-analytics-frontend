@@ -3,7 +3,10 @@ block content
     .container.theme-showcase(ng-controller='AppCtrl')
         .col-md-12
             h1
-                a(href="#", editable-text="selectedGame.title" onaftersave="saveGame()") {{ selectedGame.title }}
+                a(href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
+        .col-md-12
+            h3
+                a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Class {{ selectedSession.name }}
         .container-fluid(ng-show="selectedVersion")
             .row(ng-show="!eadLoading")
                 .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')

@@ -72,11 +72,11 @@ angular.module('myApp', [
             redirectTo: '/login'
         });
     }
-]).controller('AppCtrl', ['$scope', '$location', '$http', '$localStorage', '$window', 'Games', 'Versions', 'CONSTANTS',
-    function ($scope, $location, $http, $localStorage, $window, Games, Versions, CONSTANTS) {
+]).controller('AppCtrl', ['$scope', '$location', '$http', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'CONSTANTS',
+    function ($scope, $location, $http, $localStorage, $window, Games, Versions, Sessions, CONSTANTS) {
         $scope.$storage = $localStorage;
 
-        $scope.games = Games.query(function() {
+        $scope.games = Games.query(function () {
             var gameId = $location.search().game;
             if (gameId) {
                 for (var i = 0; i < $scope.games.length; i++) {
@@ -86,27 +86,51 @@ angular.module('myApp', [
                 }
             }
             $scope.refreshVersions();
+
         });
 
-        $scope.saveGame = function() {
+        $scope.changeSessionName = function () {
+            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {name: $scope.selectedSession.name}).success(function (data) {
+            }).error(function (data, status) {
+                console.error('Error on put /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.changeTitle = function () {
+            $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
+            }).error(function (data, status) {
+                console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.saveGame = function () {
             if ($scope.selectedGame) {
                 $scope.selectedGame.$save();
             }
         };
 
+        $scope.deleteGame = function (game) {
+            if (game) {
+                $http.delete(CONSTANTS.PROXY + '/games/' + game._id).success(function () {
+                    $scope.games = Games.query();
+                }).error(function (data, status) {
+                    console.error('Error on delete /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+        };
 
-        $scope.saveVersion = function(callback) {
+        $scope.saveVersion = function (callback) {
             if ($scope.selectedVersion) {
                 $scope.selectedVersion.$save(callback);
             }
         };
 
-        $scope.refreshVersions = function(callback) {
+        $scope.refreshVersions = function (callback) {
             if ($scope.selectedGame) {
                 $scope.form.selectedGame = $scope.selectedGame;
                 $scope.versions = Versions.query({
                     gameId: $scope.selectedGame._id
-                }, function() {
+                }, function () {
                     $scope.selectedVersion = null;
                     var versionId = $location.search().version;
                     if (versionId) {
@@ -123,8 +147,29 @@ angular.module('myApp', [
 
                     $scope.form.selectedVersion = $scope.selectedVersion;
 
+                    $scope.refreshSessions();
+
                     if (callback) {
                         callback();
+                    }
+                });
+            }
+        };
+
+        $scope.refreshSessions = function () {
+            if ($scope.selectedGame && $scope.selectedVersion) {
+                $scope.sessions = Sessions.query({
+                    gameId: $scope.selectedGame._id,
+                    versionId: $scope.selectedVersion._id
+                }, function () {
+                    $scope.selectedSession = null;
+                    var sessionId = $location.search().session;
+                    if (sessionId) {
+                        for (var i = 0; i < $scope.sessions.length; i++) {
+                            if ($scope.sessions[i]._id === sessionId) {
+                                $scope.selectedSession = $scope.sessions[i];
+                            }
+                        }
                     }
                 });
             }
@@ -136,31 +181,31 @@ angular.module('myApp', [
             selectedSession: null
         };
 
-        $scope.deselectedGameAndGo = function(href){
+        $scope.deselectedGameAndGo = function (href) {
             $scope.form.selectedGame = null;
             $scope.form.selectedVersion = null;
             $scope.form.selectedSession = null;
             $window.location = href;
         };
 
-        $scope.setSelectedGame = function(game) {
+        $scope.setSelectedGame = function (game) {
             $scope.form.selectedGame = game;
-            if(!game){
+            if (!game) {
                 $scope.form.selectedVersion = null;
                 $scope.form.selectedSession = null;
             }
         };
 
-        $scope.setSelectedVersionAndGo = function(version) {
+        $scope.setSelectedVersionAndGo = function (version) {
             $scope.form.selectedVersion = version;
         };
 
         $scope.setSelectedSession = function (session, url) {
             $scope.form.selectedSession = session;
-            $window.location = url + '?game='+$scope.form.selectedGame._id+'&version='+$scope.form.selectedVersion._id+'&session='+session._id;
+            $window.location = url + '?game=' + $scope.form.selectedGame._id + '&version=' + $scope.form.selectedVersion._id + '&session=' + session._id;
         };
 
-        $scope.$watch('form.selectedGame', function(selected) {
+        $scope.$watch('form.selectedGame', function (selected) {
             if (selected) {
                 $scope.selectedGame = selected;
                 $location.search('game', selected._id);
@@ -168,13 +213,13 @@ angular.module('myApp', [
             }
         });
 
-        $scope.$watch('form.selectedVersion', function(selected) {
+        $scope.$watch('form.selectedVersion', function (selected) {
             var oldURL = $location.absUrl();
             if (selected) {
                 $location.search('version', selected._id);
                 $scope.selectedVersion = selected;
             }
-            if(oldURL !== $location.absUrl()) {
+            if (oldURL !== $location.absUrl()) {
                 $window.location = $location.absUrl();
             }
 
