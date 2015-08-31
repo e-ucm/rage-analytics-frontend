@@ -21,7 +21,7 @@ services.factory('Versions', ['$resource', 'CONSTANTS',
 
 services.factory('Sessions', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/sessions/:gameId/:versionId', {
+        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/sessions', {
             sessionId: '@_id',
             versionId: '@versionId',
             gameId: '@gameId'
