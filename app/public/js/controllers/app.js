@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'toolbarApp', 'services', 'xeditable',
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'services', 'xeditable',
 ]).run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 }).filter('prettyDateId', function () {
@@ -72,9 +72,33 @@ angular.module('myApp', [
             redirectTo: '/login'
         });
     }
-]).controller('AppCtrl', ['$scope', '$location', '$http', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'CONSTANTS',
-    function ($scope, $location, $http, $localStorage, $window, Games, Versions, Sessions, CONSTANTS) {
+]).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'CONSTANTS',
+    function ($scope, $location, $http, $timeout, $localStorage, $window, Games, Versions, Sessions, CONSTANTS) {
         $scope.$storage = $localStorage;
+
+        $scope.isAdmin = function () {
+            return $scope.isUser() &&
+                $scope.$storage.user.roles && $scope.$storage.user.roles.indexOf('admin') !== -1;
+        };
+
+        $scope.isUser = function () {
+            return $scope.$storage && $scope.$storage.user;
+        };
+
+        $scope.href = function (href) {
+            $window.location.href = href;
+        };
+
+        $scope.logout = function () {
+            $http.delete(CONSTANTS.APIPATH + '/logout').success(function () {
+                delete $scope.$storage.user;
+                $timeout(function () {
+                    $scope.href('/login');
+                }, 110);
+            }).error(function (data, status) {
+                console.error('Error on get /logout ' + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
 
         $scope.games = Games.query(function () {
             var gameId = $location.search().game;
@@ -173,6 +197,14 @@ angular.module('myApp', [
                     }
                 });
             }
+        };
+
+        $scope.hasSessions = function () {
+            return ($scope.sessions ? $scope.sessions.length : 0) !== 0;
+        };
+
+        $scope.hasGames = function () {
+            return ($scope.games ? $scope.games.length : 0) !== 0;
         };
 
         $scope.form = {

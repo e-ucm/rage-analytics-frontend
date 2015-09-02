@@ -17,7 +17,7 @@ angular.module('homeApp', ['ngStorage', 'services'])
 
             $scope.createGame = function () {
                 var game = new Games();
-                game.title = $scope.game.gameTitle;
+                game.title = $scope.game.gameTitle ? $scope.game.gameTitle : 'new game';
                 game.$save().then(function (game) {
                     var version = new Versions();
                     version.gameId = game._id;

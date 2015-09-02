@@ -7,29 +7,29 @@ nav.navbar.navbar-inverse.navbar-top
                 span.icon-bar
                 span.icon-bar
             a.btn.navbar-brand(ng-click="href('/')") GF
-        #navbar.navbar-collapse.collapse(ng-controller='ToolbarCtrl')
+        #navbar.navbar-collapse.collapse(ng-controller='AppCtrl')
             ul.nav.navbar-nav
-                li(ng-if='isUser()' ng-controller='AppCtrl')
+                li(ng-if='isUser()')
                     a.btn(ng-href='#' ng-click='deselectedGameAndGo("/home")') Home
                 li(ng-if='!isUser()')
                     a.btn(ng-click="href('/signup')") SignUp
                 li.dropdown
-                    li(ng-if='isUser()')
+                    li(ng-if='isUser()&&hasGames()')
                         a#dropdownGames.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Games
                             span.caret
-                        ul.dropdown-menu(aria-labelledby='dropdownGames' ng-controller='HomeCtrl')
-                            li(ng-controller='AppCtrl' ng-repeat='game in games')
+                        ul.dropdown-menu(aria-labelledby='dropdownGames')
+                            li(ng-repeat='game in games')
                                 a(ng-if='isDeveloper()' ng-href='/data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
                                 a(ng-if='!isDeveloper()' ng-href='/class?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
-                li.dropdown(ng-controller='ClassCtrl')
-                    li
+                li.dropdown
+                    li(ng-if='isUser()&&hasSessions()')
                         a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Classes
                             span.caret
-                        ul.dropdown-menu(aria-labelledby='dropdownClasses' ng-controller='ClassCtrl')
-                            li(ng-controller='AppCtrl' ng-repeat='session in sessions')
-                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') name: {{session.name}}
+                        ul.dropdown-menu(aria-labelledby='dropdownClasses')
+                            li(ng-repeat='session in sessions')
+                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
             ul.nav.navbar-nav.navbar-right
                 li(ng-if='isUser()')
                     a.btn(ng-click='logout()')
