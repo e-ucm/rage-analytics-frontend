@@ -6,10 +6,10 @@ angular.module('homeApp', ['ngStorage', 'services'])
             $scope.$storage = $localStorage;
             $scope.game = {};
             var getGames = function () {
-                $http.get(CONSTANTS.PROXY + '/games').success(function (data) {
+                $http.get(CONSTANTS.PROXY + '/games/my').success(function (data) {
                     $scope.games = data;
                 }).error(function (data, status) {
-                    console.error('Error on get /games ' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 

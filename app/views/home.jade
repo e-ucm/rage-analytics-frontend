@@ -1,8 +1,8 @@
 extends page
 block content
-    .container.theme-showcase(ng-controller='HomeCtrl')
+    .container.theme-showcase(ng-controller='AppCtrl')
         .row
-            .col-md-offset-2.col-md-8(ng-if='isDeveloper()')
+            .col-md-offset-2.col-md-8(ng-controller='HomeCtrl' ng-if='isDeveloper()')
                 label Game title:
                     input.form-control(type='text' ng-model='game.gameTitle')
                 a.btn.btn-primary(type='button', ng-click='createGame()')
@@ -16,7 +16,7 @@ block content
                             th
                             th Created
                             th
-                    tbody(ng-controller='AppCtrl')
+                    tbody
                         tr(ng-repeat='game in games')
                             td
                                 span.glyphicon.glyphicon-stats

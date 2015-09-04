@@ -2,6 +2,10 @@
     h1 Information
     .row.top20
         .col-xs-12
+            | Game link:
+            a(href='{{ selectedGame.link }}') {{ selectedGame.link }}
+        .col-xs-12
             | Tracking code:
             kbd.left10 {{ selectedVersion.trackingCode }}
+
 

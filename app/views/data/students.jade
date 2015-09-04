@@ -1,1 +1,17 @@
 h1 Students
+.container.theme-showcase(ng-controller='AppCtrl')
+    .row
+        .col-md-offset-2.col-md-8
+            label Username:
+                input.form-control(type='text' ng-model='student.name')
+            a.btn.btn-primary(type='button', ng-click='inviteStudent()')
+                | Add student
+.row
+    .col-md-offset-2.col-md-8
+        table.table.table-hover
+            tr(ng-repeat='student in classStudents')
+                td
+                    label {{student}}
+                td
+                    a(ng-click='ejectStudent(student)')
+                        span.glyphicon.glyphicon-remove-sign

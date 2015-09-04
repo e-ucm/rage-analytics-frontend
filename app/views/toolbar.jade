@@ -23,7 +23,7 @@ nav.navbar.navbar-inverse.navbar-top
                                 a(ng-if='isDeveloper()' ng-href='/data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
                                 a(ng-if='!isDeveloper()' ng-href='/class?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
                 li.dropdown
-                    li(ng-if='isUser()&&hasSessions()')
+                    li(ng-if='isUser()&&isTeacher()&&hasSessions()')
                         a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Classes
                             span.caret
