@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'toolbarApp', 'services', 'xeditable',
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'services', 'xeditable',
 ]).run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 }).filter('prettyDateId', function () {
@@ -72,11 +72,45 @@ angular.module('myApp', [
             redirectTo: '/login'
         });
     }
-]).controller('AppCtrl', ['$scope', '$location', '$http', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'CONSTANTS',
-    function ($scope, $location, $http, $localStorage, $window, Games, Versions, Sessions, CONSTANTS) {
+]).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS',
+    function ($scope, $location, $http, $timeout, $localStorage, $window, Games, Versions, Sessions, Role, CONSTANTS) {
         $scope.$storage = $localStorage;
 
-        $scope.games = Games.query(function () {
+        $scope.isAdmin = function () {
+            return $scope.isUser() &&
+                $scope.$storage.user.roles && $scope.$storage.user.roles.indexOf('admin') !== -1;
+        };
+
+        $scope.isUser = function () {
+            return $scope.$storage && $scope.$storage.user;
+        };
+
+        $scope.isTeacher = function () {
+            return Role.isTeacher();
+        };
+
+        $scope.isDeveloper = function () {
+            return Role.isDeveloper();
+        };
+
+        $scope.href = function (href) {
+            $window.location.href = href;
+        };
+
+        $scope.logout = function () {
+            $http.delete(CONSTANTS.APIPATH + '/logout').success(function () {
+                delete $scope.$storage.user;
+                $timeout(function () {
+                    $scope.href('/login');
+                }, 110);
+            }).error(function (data, status) {
+                console.error('Error on get /logout ' + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        var route = $scope.isDeveloper() ? '/my' : '';
+        $http.get(CONSTANTS.PROXY + '/games' + route).success(function (data) {
+            $scope.games = data;
             var gameId = $location.search().game;
             if (gameId) {
                 for (var i = 0; i < $scope.games.length; i++) {
@@ -86,7 +120,8 @@ angular.module('myApp', [
                 }
             }
             $scope.refreshVersions();
-
+        }).error(function (data, status) {
+            console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
         });
 
         $scope.changeSessionName = function () {
@@ -100,6 +135,30 @@ angular.module('myApp', [
             $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
             }).error(function (data, status) {
                 console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.changeGameLink = function () {
+            $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
+            }).error(function (data, status) {
+                console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.classStudents = [];
+        $scope.inviteStudent = function () {
+            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {students: $scope.student.name}).success(function (data) {
+                $scope.classStudents = data.students;
+            }).error(function (data, status) {
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.ejectStudent = function (student) {
+            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove', {students: student}).success(function (data) {
+                $scope.classStudents = data.students;
+            }).error(function (data, status) {
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -158,21 +217,30 @@ angular.module('myApp', [
 
         $scope.refreshSessions = function () {
             if ($scope.selectedGame && $scope.selectedVersion) {
-                $scope.sessions = Sessions.query({
-                    gameId: $scope.selectedGame._id,
-                    versionId: $scope.selectedVersion._id
-                }, function () {
+                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id + '/sessions/my').success(function (data) {
+                    $scope.sessions = data;
                     $scope.selectedSession = null;
                     var sessionId = $location.search().session;
                     if (sessionId) {
                         for (var i = 0; i < $scope.sessions.length; i++) {
                             if ($scope.sessions[i]._id === sessionId) {
                                 $scope.selectedSession = $scope.sessions[i];
+                                $scope.classStudents = $scope.selectedSession.students;
                             }
                         }
                     }
+                }).error(function (data, status) {
+                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
                 });
             }
+        };
+
+        $scope.hasSessions = function () {
+            return ($scope.sessions ? $scope.sessions.length : 0) !== 0;
+        };
+
+        $scope.hasGames = function () {
+            return ($scope.games ? $scope.games.length : 0) !== 0;
         };
 
         $scope.form = {

@@ -17,10 +17,10 @@ angular.module('classApp', ['ngStorage', 'services'])
             }
 
             var getSessions = function () {
-                $http.get(CONSTANTS.PROXY + '/games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions').success(function (data) {
+                $http.get(CONSTANTS.PROXY + '/games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions/my').success(function (data) {
                     $scope.sessions = data;
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
@@ -29,8 +29,9 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.versionId = getQueryParam('version');
 
             $scope.createSession = function () {
-                $http.post(CONSTANTS.PROXY + '/games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions', {name: $scope.class.name}).success(function (session) {
-                    $window.location = '/data'+ '?game=' + getQueryParam('game') + '&version=' + getQueryParam('version') + '&session=' + session._id;
+                var className = $scope.class.name ? $scope.class.name : 'new class';
+                $http.post(CONSTANTS.PROXY + '/games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
+                    $window.location = '/data' + '?game=' + getQueryParam('game') + '&version=' + getQueryParam('version') + '&session=' + session._id;
                 }).error(function (data, status) {
                     console.error('Error on get /games/' + getQueryParam('game') + '/versions/' + getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
                 });
