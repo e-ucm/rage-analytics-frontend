@@ -29,6 +29,20 @@ services.factory('Sessions', ['$resource', 'CONSTANTS',
     }
 ]);
 
+services.factory('SessionsId', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/sessions/:id');
+    }
+]);
+
+services.factory('Results', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/sessions/:id/results/:resultId', {
+            resultId: '@_id'
+        });
+    }
+]);
+
 services.factory('Role', ['$localStorage',
     function ($localStorage) {
         return {
@@ -40,6 +54,22 @@ services.factory('Role', ['$localStorage',
             },
             isStudent: function () {
                 return $localStorage.user && $localStorage.user.roles && $localStorage.user.roles.indexOf('student') !== -1;
+            }
+        };
+    }
+]);
+
+
+services.factory('QueryParams', [
+    function () {
+
+        return {
+            getQueryParam: function (param) {
+                var result = window.location.search.match(
+                    new RegExp("(\\?|&)" + param + "(\\[\\])?=([^&]*)")
+                );
+
+                return result ? result[3] : false;
             }
         };
     }

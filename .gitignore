@@ -32,6 +32,7 @@ node_modules
 
 # Bower
 app/public/bower
+app/public/games
 
 # MongoDB files
 /mongoDB
