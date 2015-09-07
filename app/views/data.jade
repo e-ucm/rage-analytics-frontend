@@ -8,6 +8,9 @@ block content
         .col-md-12
             h3(ng-if='isTeacher()')
                 a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Class {{ selectedSession.name }}
+            div(ng-controller='ClassCtrl' ng-model='selectedSession')
+                button.btn-success(ng-if='sessionState(selectedSession)' ng-click='endSession(selectedSession)') Opened
+                button.btn-warning(ng-if='!sessionState(selectedSession)' ng-click='startSession(selectedSession)') Closed
         .container-fluid(ng-show="selectedVersion")
             .row
                 .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')

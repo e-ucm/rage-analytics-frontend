@@ -31,5 +31,28 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.isTeacher = function () {
                 return Role.isTeacher();
             };
+
+            $scope.startSession = function (session) {
+                $http.post(CONSTANTS.PROXY + '/sessions/' + session._id + '/start').success(function (s) {
+                    $scope.selectedSession = s;
+                    getSessions();
+                }).error(function (data, status) {
+                    console.error('Error on get /games/' + '/sessions/' + session._id + '/start ' + JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.endSession = function (session) {
+                $http.post(CONSTANTS.PROXY + '/sessions/' + session._id + '/end').success(function (s) {
+                    $scope.selectedSession = s;
+                    getSessions();
+                }).error(function (data, status) {
+                    console.error('Error on get /games/' + '/sessions/' + session._id + '/end ' + JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.sessionState = function (session) {
+                return session && session.start && !session.end;
+            };
+
         }
     ]);
