@@ -16,6 +16,7 @@
         "jquery-dateFormat": "*",
         "jquery-file-upload": "*",
         "jquery-query": "https://raw.githubusercontent.com/alrusdi/jquery-plugin-query-object/master/jquery.query-object.js",
+        "jquery-ui": "*",
         "underscore": "http://underscorejs.org/underscore.js",
         "d3": "*",
         "gauss": "*",

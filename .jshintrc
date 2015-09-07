@@ -3,15 +3,20 @@
     // https://github.com/jshint/jshint/blob/master/examples/.jshintrc
 
     "browser": true,
-    "node": true,
-    "mocha": true,
     "eqeqeq": true,
+    "evil": true,
     "globalstrict": true,
+    "mocha": true,
+    "node": true,
     "undef": true,
     "unused": "vars",
     // Global variables
     "globals": {
         "angular": false,
-        "$": false
+        "$": false,
+        "RadialProgress": false,
+        "ColumnProgress": false,
+        "gauss": false,
+        "d3": false
     }
 }
