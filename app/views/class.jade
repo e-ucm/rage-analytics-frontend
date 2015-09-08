@@ -19,13 +19,13 @@ block content
                         tr
                             th
                             th Created
-                            th State
+                            th(ng-if='isTeacher()') State
                     tbody
                         tr(ng-repeat='session in sessions')
                             td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats
                                 a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
                             td {{session._id | prettyDateId }}
-                            td
+                            td(ng-if='isTeacher()')
                                 button.btn-success(ng-if='sessionState(session)' ng-click='endSession(session)') Opened
                                 button.btn-warning(ng-if='!sessionState(session)' ng-click='startSession(session)') Closed
