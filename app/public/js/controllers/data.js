@@ -4,14 +4,14 @@ angular.module('dataApp', ['myApp', 'ngStorage', 'services'])
     .controller('DataCtrl', ['$scope',
         function ($scope) {
 
-            $scope.addWarning = function(){
+            $scope.addWarning = function () {
                 $scope.addToList('warnings', {
                     cond: 'false',
                     message: 'No message'
                 });
             };
 
-            $scope.addAlert = function(){
+            $scope.addAlert = function () {
                 $scope.addToList('alerts', {
                     expression: '0',
                     maxDiff: 0,
@@ -29,13 +29,12 @@ angular.module('dataApp', ['myApp', 'ngStorage', 'services'])
                 }
             };
 
-            $scope.deleteFromList = function(list, object){
+            $scope.deleteFromList = function (list, object) {
                 var index = $scope.selectedVersion[list].indexOf(object);
                 if (index > -1) {
                     $scope.selectedVersion[list].splice(index, 1);
                 }
                 $scope.selectedVersion.$save();
             };
-
         }
     ]);

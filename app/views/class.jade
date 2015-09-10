@@ -27,5 +27,7 @@ block content
                                 a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
                             td {{session._id | prettyDateId }}
                             td(ng-if='isTeacher()')
-                                button.btn-success(ng-if='sessionState(session)' ng-click='endSession(session)') Opened
-                                button.btn-warning(ng-if='!sessionState(session)' ng-click='startSession(session)') Closed
+                                button.btn-success(ng-if='!loading && sessionState(session)' ng-click='endSession(session)') Opened
+                                button.btn-warning(ng-if='!loading && !sessionState(session)' ng-click='startSession(session)') Closed
+                                span.fa.fa-refresh.fa-spin(ng-if='loading')  Loading...
+

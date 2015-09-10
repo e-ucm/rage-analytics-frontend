@@ -11,6 +11,7 @@ block content
             div(ng-if='isTeacher()' ng-controller='ClassCtrl' ng-model='selectedSession')
                 button.btn-success(ng-if='sessionState(selectedSession)' ng-click='endSession(selectedSession)') Opened
                 button.btn-warning(ng-if='!sessionState(selectedSession)' ng-click='startSession(selectedSession)') Closed
+                span.fa.fa-refresh.fa-spin(ng-if='loading')  Loading...
         .container-fluid(ng-show="selectedVersion")
             .row
                 .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')
