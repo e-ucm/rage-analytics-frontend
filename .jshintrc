@@ -12,6 +12,7 @@
     "unused": "vars",
     // Global variables
     "globals": {
+		"ADL": false,
         "angular": false,
         "$": false,
         "RadialProgress": false,

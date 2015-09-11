@@ -1,1 +1,46 @@
-h1 Game Analytics
+style.
+    #graphContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .container.t {
+        width: 500px;
+        height: 300px;
+        overflow: hidden;
+    }
+.container-fluid.top20(ng-controller='AnalyticsCtrl')
+    h1 Game Analytics
+        a(href='#' ng-click='getStatements()')
+            span.glyphicon.glyphicon-refresh
+    table#graphContainer
+        tr
+            td
+                #verbs.container.t
+                    h2#headerVerbs
+                    svg
+            td
+                #actorActivity.container.t
+                    h2#headerActivity
+                    svg
+        tr
+            td
+                #lrsActivityLastYear.container.t
+                    h2#headerLrsYear
+                    svg
+            td
+                #lrsActivityLastWeek.container.t
+                    h2#headerLrsWeek
+                    svg
+        tr
+            td
+                #actorScore.container.t
+                    h2#headerScore
+                    svg
+            td
+                #actorProgress.container.t
+                    h2#headerProgress
+                    svg

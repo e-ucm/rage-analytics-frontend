@@ -8,6 +8,10 @@ block content
         .col-md-12
             h3(ng-if='isTeacher()')
                 a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Class {{ selectedSession.name }}
+            div(ng-if='isTeacher()' ng-controller='ClassCtrl' ng-model='selectedSession')
+                button.btn-success(ng-if='sessionState(selectedSession)' ng-click='endSession(selectedSession)') Opened
+                button.btn-warning(ng-if='!sessionState(selectedSession)' ng-click='startSession(selectedSession)') Closed
+                span.fa.fa-refresh.fa-spin(ng-if='loading')  Loading...
         .container-fluid(ng-show="selectedVersion")
             .row
                 .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')
@@ -20,7 +24,7 @@ block content
                     #students.tab-pane
                         include data/students
                     #game-analytics.tab-pane
-                            include data/game-analytics
+                        include data/game-analytics
                     #config.tab-pane
                         include data/config
 

@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'services', 'xeditable'
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable'
 ]).run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 }).filter('prettyDateId', function () {
@@ -145,21 +145,37 @@ angular.module('myApp', [
             });
         };
 
-        $scope.classStudents = [];
         $scope.inviteStudent = function () {
             $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {students: $scope.student.name}).success(function (data) {
-                $scope.classStudents = data.students;
+                $scope.refreshSessions();
+                $scope.student.name = '';
             }).error(function (data, status) {
                 console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
         $scope.ejectStudent = function (student) {
-            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove', {students: student}).success(function (data) {
-                $scope.classStudents = data.students;
+            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove', {students: student}).success(function () {
+                $scope.refreshSessions();
             }).error(function (data, status) {
                 console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
             });
+        };
+
+        $scope.anonymous = 'btn-default';
+        var checkAnonymous = function () {
+            $scope.checkboxAns = $scope.selectedSession.allowAnonymous ? true : false;
+        };
+
+        $scope.allowAnonymous = function () {
+            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {allowAnonymous: $scope.checkboxAns}).success(function (data) {
+                $scope.selectedSession = data;
+                checkAnonymous();
+            }).error(function (data, status) {
+                checkAnonymous();
+                console.error('Error on put /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+
         };
 
         $scope.saveGame = function () {
@@ -225,7 +241,7 @@ angular.module('myApp', [
                         for (var i = 0; i < $scope.sessions.length; i++) {
                             if ($scope.sessions[i]._id === sessionId) {
                                 $scope.selectedSession = $scope.sessions[i];
-                                $scope.classStudents = $scope.selectedSession.students;
+                                checkAnonymous();
                             }
                         }
                     }
