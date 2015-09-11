@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'services', 'xeditable'
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable'
 ]).run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 }).filter('prettyDateId', function () {

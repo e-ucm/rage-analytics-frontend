@@ -34,7 +34,7 @@ angular.module('classApp', ['ngStorage', 'services'])
             };
 
             $scope.startSession = function (session) {
-                $scope.loading=true;
+                $scope.loading = true;
                 $http.post(CONSTANTS.PROXY + '/sessions/' + session._id + '/event/start').success(function (s) {
                     $scope.loading = false;
                     $scope.selectedSession = s;
@@ -46,7 +46,7 @@ angular.module('classApp', ['ngStorage', 'services'])
             };
 
             $scope.endSession = function (session) {
-                $scope.loading=true;
+                $scope.loading = true;
                 $http.post(CONSTANTS.PROXY + '/sessions/' + session._id + '/event/end').success(function (s) {
                     $scope.loading = false;
                     $scope.selectedSession = s;
