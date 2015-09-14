@@ -1,0 +1,46 @@
+@import url(http://fonts.googleapis.com/css?family=Coming+Soon);
+
+html, body {
+    height:100vh;
+}
+
+.left-menu {
+    padding-left: 0px;
+}
+
+.left-menu ul.nav {
+    background-color: #f8f8f8;
+    border-right: 1px solid #e7e7e7;
+    height: 75vh;
+}
+
+.left-menu ul.nav span.left-menu-item {
+    color: #707070;
+    display: block;
+    padding: 15px 10px;
+}
+
+.left-menu ul.nav span.left-menu-item:hover {
+    background-color: #eee;
+}
+
+.left-menu ul.nav li {
+    cursor: pointer;
+    padding-bottom: 10px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.left-menu ul.nav li.active {
+    font-weight: bold;
+}
+
+.left-menu ul.nav li.active span.left-menu-item {
+    color: #606060;
+}
+
+
