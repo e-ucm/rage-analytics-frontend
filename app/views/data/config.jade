@@ -1,7 +1,7 @@
 h1 Config
 a(href="#", editable-text="selectedGame.link" onaftersave="changeGameLink()") Link: {{ selectedGame.link }}
 
-.row.top10(ng-controller="DataCtrl")
+.row.top10
     .col-sm-12
         h4 Session information
 .row.top10(ng-if="selectedVersion")
@@ -23,31 +23,32 @@ a(href="#", editable-text="selectedGame.link" onaftersave="changeGameLink()") Li
                 span Progress
                 | =
                 a(href="#", editable-text="selectedVersion.progress" onbeforesave="saveVersion()") {{ selectedVersion.progress || 'Not set.' }}
-.row.top10
-    .col-sm-12
-        strong Warnings
-        a.glyphicon.glyphicon-plus(ng-click="addWarning()")
-.row.top10(ng-if="selectedVersion")
-    .col-sm-12
-        ul
-            li(ng-repeat="warning in selectedVersion.warnings")
-                span.right10.left10  Message:
-                a(href="#",editable-text="warning.message" onbeforesave="saveVersion()") {{ warning.message }}
-                span.right10.left10  Condition:
-                a(href="#",editable-text="warning.cond" onbeforesave="saveVersion()") {{ warning.cond }}
-                button.left10.btn.btn-xs.btn-default(ng-click="deleteFromList('warnings', warning)") Delete
-.row.top10
-    .col-sm-12
-        strong Alerts
-        a.glyphicon.glyphicon-plus(ng-click="addAlert()")
-.row.top10(ng-if="selectedVersion")
-    .col-sm-12
-        ul
-            li(ng-repeat="alert in selectedVersion.alerts")
-                span.right10.left10  Message:
-                a(href="#",editable-text="alert.message" onbeforesave="saveVersion()") {{ alert.message }}
-                span.right10.left10 Value:
-                a(href="#",editable-text="alert.value" onbeforesave="saveVersion()") {{ alert.value || 'Not set' }}
-                span.right10.left10  Maximum difference:
-                a(href="#",editable-number="alert.maxDiff" e-step="any" onbeforesave="saveVersion()") {{ alert.maxDiff }}
-                button.left10.btn.btn-xs.btn-default(ng-click="deleteFromList('alerts', alert)") Delete
+.row(ng-controller="DataCtrl")
+    .row.top10
+        .col-sm-12
+            strong Warnings
+            a.glyphicon.glyphicon-plus(ng-click="addWarning()")
+    .row.top10(ng-if="selectedVersion")
+        .col-sm-12
+            ul
+                li(ng-repeat="warning in selectedVersion.warnings")
+                    span.right10.left10  Message:
+                    a(href="#",editable-text="warning.message" onbeforesave="saveVersion()") {{ warning.message }}
+                    span.right10.left10  Condition:
+                    a(href="#",editable-text="warning.cond" onbeforesave="saveVersion()") {{ warning.cond }}
+                    button.left10.btn.btn-xs.btn-default(ng-click="deleteFromList('warnings', warning)") Delete
+    .row.top10
+        .col-sm-12
+            strong Alerts
+            a.glyphicon.glyphicon-plus(ng-click="addAlert()")
+    .row.top10(ng-if="selectedVersion")
+        .col-sm-12
+            ul
+                li(ng-repeat="alert in selectedVersion.alerts")
+                    span.right10.left10  Message:
+                    a(href="#",editable-text="alert.message" onbeforesave="saveVersion()") {{ alert.message }}
+                    span.right10.left10 Value:
+                    a(href="#",editable-text="alert.value" onbeforesave="saveVersion()") {{ alert.value || 'Not set' }}
+                    span.right10.left10  Maximum difference:
+                    a(href="#",editable-number="alert.maxDiff" e-step="any" onbeforesave="saveVersion()") {{ alert.maxDiff }}
+                    button.left10.btn.btn-xs.btn-default(ng-click="deleteFromList('alerts', alert)") Delete

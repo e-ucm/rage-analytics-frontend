@@ -29,5 +29,6 @@ block content
                             td(ng-if='isTeacher()')
                                 button.btn-success(ng-if='!loading && sessionState(session)' ng-click='endSession(session)') Opened
                                 button.btn-warning(ng-if='!loading && !sessionState(session)' ng-click='startSession(session)') Closed
-                                span.fa.fa-refresh.fa-spin(ng-if='loading')  Loading...
+                                button.btn-info(ng-if='loading') Loading
+                                    span.fa.fa-refresh.fa-spin
 
