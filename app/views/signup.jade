@@ -9,24 +9,22 @@ block content
                     .form-group(ng-class="{'has-error':isEmpty(user.username)}")
                         label Pick a Username:
                         input.form-control(type='text', ng-model='user.username')
+                        alert.alert-danger(ng-if='isEmpty(user.username)') The username is empty
                     .form-group(ng-class="{'has-error':isEmpty(user.email)}")
                         label Enter Your Email:
                         input.form-control(type='text', ng-model='user.email')
+                        alert.alert-danger(ng-if='isEmpty(user.email)') The e-mail is empty
                     .form-group(ng-class="{'has-error':!isValidPassword()}")
                         label Create a Password:
                         input.form-control(type='password', ng-model='user.password')
                     .form-group(ng-class="{'has-error':!isValidPassword()}")
                         label Repeat the Password:
                         input.form-control(type='password', ng-model='repeatedPassword')
-                    alert.alert-danger(ng-if='!isValidPassword()') The passwords are different
-                    br
-                    alert.alert-danger(ng-if='isEmpty(user.username)') The username is empty
-                    br
-                    alert.alert-danger(ng-if='isEmpty(user.email)') The e-mail is empty
-                    br
+                        alert.alert-danger(ng-if='!isValidPassword()') The passwords are different
                     .form-group
                         button.btn.btn-primary.btn-signup(ng-class="{" +
-                                "disabled:!isValidPassword() && " +
-                                "isEmpty(user.username) && " +
-                                "isEmpty(user.email)}"
-                            type='submit', ng-click='signup()') Create My Account
+                        "disabled:!isValidPassword() || " +
+                        "isEmpty(user.username) || " +
+                        "isEmpty(user.email)}"
+                        type='submit', ng-click='signup()') Create My Account
+                    alert.alert-danger {{errorResponse}}
