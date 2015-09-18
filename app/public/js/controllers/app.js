@@ -108,7 +108,22 @@ angular.module('myApp', [
             });
         };
 
-        var route = $scope.isDeveloper() ? '/my' : '';
+        $scope.public = 'btn-default';
+        var checkPublic = function () {
+            $scope.checkboxPublic = $scope.selectedGame.public ? true : false;
+        };
+
+        $scope.publicGame = function () {
+            $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {public: $scope.checkboxPublic}).success(function (data) {
+                $scope.selectedGame = data;
+                checkPublic();
+            }).error(function (data, status) {
+                checkPublic();
+                console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        var route = $scope.isDeveloper() ? '/my' : '/public';
         $http.get(CONSTANTS.PROXY + '/games' + route).success(function (data) {
             $scope.games = data;
             var gameId = $location.search().game;
@@ -116,12 +131,13 @@ angular.module('myApp', [
                 for (var i = 0; i < $scope.games.length; i++) {
                     if ($scope.games[i]._id === gameId) {
                         $scope.selectedGame = $scope.games[i];
+                        checkPublic();
                     }
                 }
             }
             $scope.refreshVersions();
         }).error(function (data, status) {
-            console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
+            console.error('Error on get /games' + route + ' ' + JSON.stringify(data) + ', status: ' + status);
         });
 
         $scope.changeSessionName = function () {
@@ -175,7 +191,6 @@ angular.module('myApp', [
                 checkAnonymous();
                 console.error('Error on put /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
             });
-
         };
 
         $scope.saveGame = function () {
