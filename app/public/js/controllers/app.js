@@ -72,7 +72,29 @@ angular.module('myApp', [
             redirectTo: '/login'
         });
     }
-]).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS',
+]).directive('fileReader', function () {
+    return {
+        scope: {
+            fileReader: "="
+        },
+        link: function (scope, element) {
+            $(element).on('change', function (changeEvent) {
+                var files = changeEvent.target.files;
+                if (files.length) {
+                    var r = new FileReader();
+                    r.onload = function (e) {
+                        var contents = e.target.result;
+                        scope.$apply(function () {
+                            scope.fileReader = contents;
+                        });
+                    };
+
+                    r.readAsText(files[0]);
+                }
+            });
+        }
+    };
+}).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS',
     function ($scope, $location, $http, $timeout, $localStorage, $window, Games, Versions, Sessions, Role, CONSTANTS) {
         $scope.$storage = $localStorage;
 
@@ -142,6 +164,25 @@ angular.module('myApp', [
             $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
             }).error(function (data, status) {
                 console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.addCsvClass = function () {
+            var students = [];
+            $scope.fileContent.trim().split(',').forEach(function (student) {
+                if (student) {
+                    /**
+                     *
+                     *  Parse and check the values
+                     *
+                     */
+                    students.push(student);
+                }
+            });
+            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {students: students}).success(function (data) {
+                $scope.refreshSessions();
+            }).error(function (data, status) {
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
             });
         };
 

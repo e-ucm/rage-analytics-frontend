@@ -9,6 +9,11 @@ h1 Students
                     br
     .row
         .col-md-8
+            label Add class from file:
+                input#inputFile.file(type='file' file-reader="fileContent")
+            button.btn.btn-primary(ng-click='addCsvClass()')  Add class
+    .row
+        .col-md-8
             label Username:
                 input.form-control(type='text' ng-model='student.name')
             a.btn.btn-primary(type='button', ng-click='inviteStudent()')
