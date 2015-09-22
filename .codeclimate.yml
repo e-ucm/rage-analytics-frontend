@@ -4,4 +4,5 @@ languages:
   PHP: false
   Python: false
 exclude_paths:
-- "config-values.js"
+  - "/app/config-values.js"
+  - "/app/public/libs/*"
