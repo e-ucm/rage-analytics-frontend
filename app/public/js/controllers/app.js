@@ -107,6 +107,10 @@ angular.module('myApp', [
             return $scope.$storage && $scope.$storage.user;
         };
 
+        $scope.isStudent = function () {
+            return Role.isStudent();
+        };
+
         $scope.isTeacher = function () {
             return Role.isTeacher();
         };
@@ -114,6 +118,8 @@ angular.module('myApp', [
         $scope.isDeveloper = function () {
             return Role.isDeveloper();
         };
+
+        $scope.username = $scope.isUser() ? $scope.$storage.user.username : "";
 
         $scope.href = function (href) {
             $window.location.href = href;
