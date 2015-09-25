@@ -1,5 +1,10 @@
 extends page
 block content
+    style.
+        .role-button {
+            padding: 2%;
+            margin: 2%
+        }
     .container.theme-showcase
         .row-fluid
             .col-sm-6
@@ -21,6 +26,20 @@ block content
                         label Repeat the Password:
                         input.form-control(type='password', ng-model='repeatedPassword')
                         alert.alert-danger(ng-if='!isValidPassword()') The passwords are different
+                    label Select your type account: {{selectedRole}}
+                    .row-fluid
+                        button.btn-default.role-button.col-sm-3(ng-click='selectRole("student")' ng-class="{'active': selectedRole==='student'}")
+                            i.fa.fa-graduation-cap.fa-5x
+                            br
+                            label Student
+                        button.btn-primary.role-button.col-sm-3(ng-click='selectRole("teacher")' ng-class="{'active': selectedRole==='teacher'}")
+                            i.fa.fa-book.fa-5x
+                            br
+                            label Teacher
+                        button.btn-danger.role-button.col-sm-3(ng-click='selectRole("developer")' ng-class="{'active': selectedRole==='developer'}")
+                            i.fa.fa-code.fa-5x
+                            br
+                            label Developer
                     .form-group
                         button.btn.btn-primary.btn-signup(ng-class="{" +
                         "disabled:!isValidPassword() || " +

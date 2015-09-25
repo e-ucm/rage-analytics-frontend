@@ -31,10 +31,21 @@ nav.navbar.navbar-inverse.navbar-top
                             li(ng-repeat='session in sessions')
                                 a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
             ul.nav.navbar-nav.navbar-right
-                li(ng-if='isUser()')
-                    a.btn(ng-click='logout()')
-                        i.fa.fa-sign-out
-                        |   Logout
+                li
+                    span.label.label-danger(ng-if='isDeveloper()') developer role
+                    span.label.label-primary(ng-if='isTeacher()')  teacher role
+                    span.label.label-default(ng-if='isStudent()')  student role
+                li.dropdown
+                    li(ng-if='isUser()')
+                        a#dropdownUser.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='true')
+                            i.fa.fa-user
+                            |  {{username}}
+                            span.caret
+                        ul.dropdown-menu(aria-labelledby='dropdownUser')
+                            li
+                                a.btn(ng-click='logout()')
+                                    i.fa.fa-sign-out
+                                    |   Logout
                 li(ng-if='!isUser()')
                     a.btn(ng-click="href('/login')")
                         i.fa.fa-user
