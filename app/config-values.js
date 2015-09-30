@@ -14,9 +14,8 @@
  *
  * @param projectName - Used in the 'subject' of the emails received (contact form) or sent (password reset).
  * @param companyName -
- * @param mongoHost - Used to build 'mongodbUrl'
- * @param mongoPort - Used to build 'mongodbUrl'
- * @param mongodbUrl - Note that this value mustn't be the same in 'defaultValues' and 'testValues'.
+ * @param a2Host - Used to build 'apiPath'
+ * @param a2Port - Used to build 'apiPath'
  * @param apiPath - Path for the requests.
  * @param port - port to listen to.
  */
@@ -72,9 +71,8 @@ function initFromEnv(conf, prefix, links) {
 exports.defaultValues = {
     projectName: 'Analytics Frontend',
     companyName: 'e-UCM Research Group',
-    mongoHost: 'localhost',
-    mongoPort: '27017',
-    mongodbUrl: 'mongodb://localhost:27017/analytics-backend',
+    a2Host: 'localhost',
+    a2Port: '3000',
     apiPath: 'localhost:3000/api',
     port: 3350
 };
@@ -82,15 +80,14 @@ exports.defaultValues = {
 exports.testValues = {
     projectName: 'Analytics Frontend (Test)',
     companyName: 'e-UCM Research Group (Test)',
-    mongoHost: 'localhost',
-    mongoPort: '27017',
-    mongodbUrl: 'mongodb://localhost:27017/analytics-backend-test', // This must be different than 'exports.defaultValues.mongodbUrl'
+    a2Host: 'localhost',
+    a2Port: '3000',
     apiPath: 'localhost:3000/api',
     port: 3350
 };
 
-var prefix = 'RAGE_ANALYTICS_BACKEND_';
-var links = ['mongo'];
+var prefix = 'RAGE_ANALYTICS_FRONTEND_';
+var links = ['a2'];
 initFromEnv(exports.defaultValues, prefix, links);
 initFromEnv(exports.testValues, prefix, links);
 
@@ -100,5 +97,5 @@ initFromEnv(exports.testValues, prefix, links);
 exports.defaultValues.mongodbUrl = 'mongodb://' + exports.defaultValues.mongoHost + ':' + exports.defaultValues.mongoPort + "/analytics-backend";
 exports.testValues.mongodbUrl = exports.defaultValues.mongodbUrl + '-test';
 
-
-
+exports.defaultValues.apiPath = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + "/api";
+exports.testValues.apiPath = exports.defaultValues.apiPath;

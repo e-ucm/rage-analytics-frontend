@@ -5,6 +5,7 @@
     "author": "e-UCM Research Group",
     "license": "Apache 2.0",
     "scripts": {
+        "docker-start": "npm run fast-setup && npm start",
         "start": "node ./bin/www",
         "lint": "jshint --verbose .",
         "setup": "./bin/setup.js",
@@ -16,8 +17,7 @@
         "async": "^1.3.x",
         "body-parser": "^1.13.x",
         "express": "~4.13.x",
-        "jade": "*",
-        "mongodb": "^2.0.x"
+        "jade": "*"
     },
     "devDependencies": {
         "coveralls": "*",
