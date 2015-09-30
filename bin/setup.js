@@ -21,7 +21,6 @@
 var Fs = require('fs');
 var Path = require('path');
 var Async = require('async');
-var Mongodb = require('mongodb');
 var Promptly = require('promptly');
 var Handlebars = require('handlebars');
 
@@ -65,27 +64,7 @@ if (process.env.NODE_ENV === 'test') {
 
             Promptly.prompt('Company name: (' + promptOptions.default + ')', promptOptions, done);
         }],
-        mongodbUrl: ['companyName', function (done) {
-
-            var promptOptions = {
-                default: defaultValues.mongodbUrl || 'mongodb://localhost:27017/analytics-backend'
-            };
-
-            Promptly.prompt('MongoDB URL: (' + promptOptions.default + ')', promptOptions, done);
-        }],
-        testMongo: ['mongodbUrl', function (done, results) {
-            Mongodb.MongoClient.connect(results.mongodbUrl, {}, function (err, db) {
-
-                if (err) {
-                    console.error('Failed to connect to Mongodb.');
-                    return done(err);
-                }
-
-                db.close();
-            });
-            done(null, true);
-        }],
-        apiPath: ['testMongo', function (done) {
+        apiPath: ['companyName', function (done) {
 
             var promptOptions = {
                 default: defaultValues.apiPath || 'localhost:3000/api'
