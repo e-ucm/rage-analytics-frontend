@@ -1,13 +1,9 @@
 'use strict';
 
-var should = require('should');
-var app = {
-    config: require('../app/config-test'),
-    get: function (str) {
-        return str;
-    }
-};
+var app = require('../app/app');
 
+var should = require('should'),
+    request = require('supertest')(app);
 
 describe('Some tests', function () {
     this.timeout(4000);
@@ -20,9 +16,14 @@ describe('Some tests', function () {
 
     });
 
-    it('1', function (done) {
-        should(done).be.a.Function();
-        should(app).be.an.Object();
-        done();
+    it('should return status 200', function (done) {
+        request.get('/health')
+            .expect(200)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .end(function (err, res) {
+                should.not.exist(err);
+                done();
+            });
     });
 });
