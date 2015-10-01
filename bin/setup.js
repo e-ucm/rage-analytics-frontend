@@ -28,10 +28,12 @@ var configTemplatePath = Path.resolve(__dirname, '../app/config-example.js');
 var configTestPath = Path.resolve(__dirname, '../app/config-test.js');
 var configPath = Path.resolve(__dirname, '../app/config.js');
 
+var environmentVarsPath = Path.resolve(__dirname, '../app/public/js/env-vars.js');
+var environmentVarsTemplatePath = Path.resolve(__dirname, '../app/public/js/env-vars-example.js');
+
 var configValue = require(Path.resolve(__dirname, '../app/config-values.js'));
 var defaultValues = configValue.defaultValues;
 var testValues = configValue.testValues;
-
 
 if (process.env.NODE_ENV === 'test') {
 
@@ -42,6 +44,11 @@ if (process.env.NODE_ENV === 'test') {
     var configTemplate = Handlebars.compile(source);
     Fs.writeFileSync(configPath, configTemplate(defaultValues));
     Fs.writeFileSync(configTestPath, configTemplate(testValues));
+
+    var envSource = Fs.readFileSync(environmentVarsTemplatePath, options);
+    var envTemplate = Handlebars.compile(envSource);
+    Fs.writeFileSync(environmentVarsPath, envTemplate(defaultValues));
+
     console.log('Setup complete.');
     process.exit(0);
 
@@ -78,9 +85,17 @@ if (process.env.NODE_ENV === 'test') {
                 default: defaultValues.port || 3350
             };
 
-            Promptly.prompt('API root path: (' + promptOptions.default + ')', promptOptions, done);
+            Promptly.prompt('API port: (' + promptOptions.default + ')', promptOptions, done);
         }],
-        createConfig: ['port', function (done, results) {
+        appPrefix: ['port', function (done) {
+
+            var promptOptions = {
+                default: defaultValues.appPrefix || 'gleaner'
+            };
+
+            Promptly.prompt('Application prefix: (' + promptOptions.default + ')', promptOptions, done);
+        }],
+        createConfig: ['appPrefix', function (done, results) {
 
             var fsOptions = {
                 encoding: 'utf-8'
@@ -105,8 +120,24 @@ if (process.env.NODE_ENV === 'test') {
                         console.error('Failed to write config.js file.');
                         return done(err);
                     }
-                    Fs.writeFile(configTestPath, configTemplate(testValues), done);
+                    Fs.writeFile(configTestPath, configTemplate(testValues), function (err) {
+                        if (err) {
+                            console.error('Failed to write config-test.js file.');
+                            return done(err);
+                        }
+
+                        var envSource = Fs.readFileSync(environmentVarsTemplatePath, fsOptions);
+                        var envTemplate = Handlebars.compile(envSource);
+                        Fs.writeFile(environmentVarsPath, envTemplate(defaultValues), function (err) {
+                            if (err) {
+                                console.error('Failed to write anv-vars.js file.');
+                                return done(err);
+                            }
+                            done();
+                        });
+                    });
                 });
+
             });
         }]
     }, function (err) {

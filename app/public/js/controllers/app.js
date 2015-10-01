@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable'
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable', 'env-vars'
 ]).run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 }).filter('prettyDateId', function () {
@@ -45,11 +45,7 @@ angular.module('myApp', [
             }
         };
     }
-]).constant('CONSTANTS', {
-    APIPATH: 'http://localhost:3000/api',
-    PREFIX: 'gleaner',
-    PROXY: 'http://localhost:3000/api/proxy/gleaner'
-}).config(['$routeProvider', '$httpProvider', '$locationProvider',
+]).config(['$routeProvider', '$httpProvider', '$locationProvider',
     function ($routeProvider, $httpProvider, $locationProvider) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
         $locationProvider.html5Mode(true);

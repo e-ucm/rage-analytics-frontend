@@ -74,7 +74,8 @@ exports.defaultValues = {
     a2Host: 'localhost',
     a2Port: '3000',
     apiPath: 'localhost:3000/api',
-    port: 3350
+    port: 3350,
+    appPrefix: 'gleaner'
 };
 
 exports.testValues = {
@@ -83,7 +84,8 @@ exports.testValues = {
     a2Host: 'localhost',
     a2Port: '3000',
     apiPath: 'localhost:3000/api',
-    port: 3350
+    port: 3350,
+    appPrefix: 'gleaner'
 };
 
 var prefix = 'RAGE_ANALYTICS_FRONTEND_';
