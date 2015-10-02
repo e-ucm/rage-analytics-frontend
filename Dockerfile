@@ -18,7 +18,9 @@ WORKDIR ${WORK_DIR}
 RUN git clone -b "$REPO_TAG" --single-branch "$REPO_URL" .
 
 # get dependencies sorted out
-RUN npm install
+RUN npm install \
+    && npm install bower \
+    && ./node_modules/bower/bin/bower install
 
 # configure & gen apidoc
 RUN npm run fast-setup
