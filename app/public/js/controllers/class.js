@@ -8,10 +8,12 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.class = {};
 
             var getSessions = function () {
-                $http.get(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' + QueryParams.getQueryParam('version') + '/sessions/my').success(function (data) {
+                $http.get(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
+                    QueryParams.getQueryParam('version') + '/sessions/my').success(function (data) {
                     $scope.sessions = data;
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' + QueryParams.getQueryParam('version') + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
+                        QueryParams.getQueryParam('version') + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
@@ -22,10 +24,13 @@ angular.module('classApp', ['ngStorage', 'services'])
 
             $scope.createSession = function () {
                 var className = $scope.class.name ? $scope.class.name : 'New class';
-                $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' + QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
-                    $window.location = '/data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' + QueryParams.getQueryParam('version') + '&session=' + session._id;
+                $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
+                    QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
+                    $window.location = '/data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                        QueryParams.getQueryParam('version') + '&session=' + session._id;
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' + QueryParams.getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
+                        QueryParams.getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
@@ -40,7 +45,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                     $scope.selectedSession = s;
                     getSessions();
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + '/sessions/' + session._id + '/event/start ' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/' + '/sessions/' + session._id + '/event/start ' +
+                        JSON.stringify(data) + ', status: ' + status);
                     $scope.loading = false;
                 });
             };
@@ -52,7 +58,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                     $scope.selectedSession = s;
                     getSessions();
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + '/sessions/' + session._id + '/event/end ' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/' + '/sessions/' + session._id + '/event/end ' +
+                        JSON.stringify(data) + ', status: ' + status);
                     $scope.loading = false;
                 });
             };
