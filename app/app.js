@@ -7,7 +7,7 @@ var path = require('path'),
 var app = express();
 app.config = require((process.env.NODE_ENV === 'test') ? './config-test' : './config');
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -27,14 +27,14 @@ app.use(function (req, res, next) {
 app.use('/', require('./viewRoutes'));
 app.use('/health', require('./health'));
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-// production error handler
+// Production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

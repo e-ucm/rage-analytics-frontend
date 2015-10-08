@@ -12,7 +12,7 @@ angular.module('gameApp', ['ngStorage', 'services', 'myApp'])
             $scope.deleteGame = function () {
                 if ($scope.selectedGame) {
                     $scope.selectedGame.$remove(function () {
-                        $window.location = "/home";
+                        $window.location = '/home';
                     });
                 }
             };

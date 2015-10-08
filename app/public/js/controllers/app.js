@@ -71,7 +71,7 @@ angular.module('myApp', [
 ]).directive('fileReader', function () {
     return {
         scope: {
-            fileReader: "="
+            fileReader: '='
         },
         link: function (scope, element) {
             $(element).on('change', function (changeEvent) {
@@ -115,7 +115,7 @@ angular.module('myApp', [
             return Role.isDeveloper();
         };
 
-        $scope.username = $scope.isUser() ? $scope.$storage.user.username : "";
+        $scope.username = $scope.isUser() ? $scope.$storage.user.username : '';
 
         $scope.href = function (href) {
             $window.location.href = href;
@@ -143,7 +143,7 @@ angular.module('myApp', [
                 checkPublic();
             }).error(function (data, status) {
                 checkPublic();
-                console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -167,21 +167,21 @@ angular.module('myApp', [
         $scope.changeSessionName = function () {
             $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {name: $scope.selectedSession.name}).success(function (data) {
             }).error(function (data, status) {
-                console.error('Error on put /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on put /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
         $scope.changeTitle = function () {
             $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
             }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
         $scope.changeGameLink = function () {
             $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
             }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -200,7 +200,7 @@ angular.module('myApp', [
             $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {students: students}).success(function (data) {
                 $scope.refreshSessions();
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -209,7 +209,7 @@ angular.module('myApp', [
                 $scope.refreshSessions();
                 $scope.student.name = '';
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -217,7 +217,7 @@ angular.module('myApp', [
             $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove', {students: student}).success(function () {
                 $scope.refreshSessions();
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -232,7 +232,7 @@ angular.module('myApp', [
                 checkAnonymous();
             }).error(function (data, status) {
                 checkAnonymous();
-                console.error('Error on put /sessions/' + $scope.selectedSession._id + " " + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on put /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -251,7 +251,7 @@ angular.module('myApp', [
                         console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
                     });
                 }).error(function (data, status) {
-                    console.error('Error on delete /games/' + $scope.selectedGame._id + " " + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on delete /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
                 });
             }
         };
@@ -295,7 +295,8 @@ angular.module('myApp', [
 
         $scope.refreshSessions = function () {
             if ($scope.selectedGame && $scope.selectedVersion) {
-                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id + '/sessions/my').success(function (data) {
+                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
+                    '/sessions/my').success(function (data) {
                     $scope.sessions = data;
                     $scope.selectedSession = null;
                     var sessionId = $location.search().session;
@@ -308,7 +309,8 @@ angular.module('myApp', [
                         }
                     }
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
+                        '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
                 });
             }
         };

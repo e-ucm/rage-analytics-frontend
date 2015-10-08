@@ -8,8 +8,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
     ])
     .directive('reports', function () {
         return function (scope, element, attrs) {
-            new RadialProgress(angular.element(element).children(".progress-marker")[0], scope.result.progress);
-            new ColumnProgress(angular.element(element).children(".score-marker")[0], scope.result.score);
+            new RadialProgress(angular.element(element).children('.progress-marker')[0], scope.result.progress);
+            new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
     .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams',
@@ -65,7 +65,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                     warnings: []
                 };
                 rawResults.forEach(function (result) {
-                    result.name = evalExpression.call(result, $scope.version.alias, "Unknown");
+                    result.name = evalExpression.call(result, $scope.version.alias, 'Unknown');
 
                     result.score = Math.min(1, evalExpression.call(result, $scope.version.score, 0) / $scope.version.maxScore);
 
@@ -91,7 +91,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                     for (i = 0; $scope.version.alerts && i < $scope.version.alerts.length; i++) {
                         var alert = $scope.version.alerts[i];
                         var level = evalExpression.call(result, alert.value, 0);
-                        if (level - ((result.levels && result.levels[i]) || 0 ) >= alert.maxDiff) {
+                        if (level - ((result.levels && result.levels[i]) || 0) >= alert.maxDiff) {
                             result.alerts.push({
                                 id: i,
                                 level: level
@@ -118,13 +118,13 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 });
 
                 agg.alerts.forEach(function (alert) {
-                    if(alert) {
+                    if (alert) {
                         $scope.agg.alerts.push(alert);
                     }
                 });
 
                 agg.warnings.forEach(function (warning) {
-                    if(warning) {
+                    if (warning) {
                         $scope.agg.warnings.push(warning);
                     }
                 });
@@ -149,13 +149,13 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 };
             }
 
-            var progressUI = new RadialProgress("#progress");
+            var progressUI = new RadialProgress('#progress');
 
             $scope.$watch('agg.progress', function () {
                 progressUI.setProgress($scope.agg.progress || 0);
             });
 
-            var scoreUI = new ColumnProgress("#score");
+            var scoreUI = new ColumnProgress('#score');
 
             $scope.$watch('agg.score', function () {
                 scoreUI.setProgress($scope.agg.score || 0);
@@ -165,8 +165,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 return result.alerts.length * 100 + result.warnings.length - result.score * 10;
             };
 
-            var progressPlayer = new RadialProgress("#progress-player");
-            var scorePlayer = new ColumnProgress("#score-player");
+            var progressPlayer = new RadialProgress('#progress-player');
+            var scorePlayer = new ColumnProgress('#score-player');
 
             $scope.viewPlayer = function (result) {
                 progressPlayer.setProgress(result.progress || 0);
