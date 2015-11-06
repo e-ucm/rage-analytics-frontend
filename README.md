@@ -1,5 +1,5 @@
-# gfrontend
+# Rage Analytics Frontend
 
 [![Build Status](https://travis-ci.org/e-ucm/rage-analytics-frontend.svg?branch=master)](https://travis-ci.org/e-ucm/rage-analytics-frontend) [![Coverage Status](https://coveralls.io/repos/e-ucm/rage-analytics-frontend/badge.svg?branch=master&service=github)](https://coveralls.io/github/e-ucm/rage-analytics-frontend?branch=master) [![Dependency Status](https://david-dm.org/e-ucm/rage-analytics-frontend.svg)](https://david-dm.org/e-ucm/rage-analytics-frontend) [![devDependency Status](https://david-dm.org/e-ucm/rage-analytics-frontend/dev-status.svg)](https://david-dm.org/e-ucm/rage-analytics-frontend#info=devDependencies) [![Code Climate](https://codeclimate.com/github/e-ucm/rage-analytics-frontend/badges/gpa.svg)](https://codeclimate.com/github/e-ucm/rage-analytics-frontend) [![Issue Stats](http://issuestats.com/github/e-ucm/rage-analytics-frontend/badge/pr?style=flat)](http://issuestats.com/github/e-ucm/rage-analytics-frontend) [![Issue Stats](http://issuestats.com/github/e-ucm/rage-analytics-frontend/badge/issue?style=flat)](http://issuestats.com/github/e-ucm/rage-analytics-frontend)
 
-Learning Frontend.
+Rage Analytics Frontend is part of [Rage Analytics](https://github.com/e-ucm/rage-analytics)
