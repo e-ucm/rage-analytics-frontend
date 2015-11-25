@@ -3,7 +3,8 @@
 var envVars = angular.module('env-vars', []);
 
 envVars.constant('CONSTANTS', {
-    APIPATH: '{{apiPath}}',
+    APIPATH: location.protocol + '//' + location.hostname + ':3000/api',
     PREFIX: '{{appPrefix}}',
-    PROXY: '{{apiPath}}/proxy/{{appPrefix}}'
+    PROXY: location.protocol + '//' + location.hostname + ':3000/api/proxy/{{appPrefix}}'
 });
+
