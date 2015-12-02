@@ -28,7 +28,7 @@
  *      'prefix' + 'conf.propertyKey.toUpperCase()'
  *
  * 'links' is an array with values that, when appended '_PORT', can be found in the environment.
- * Is useful for a faster parse of some values such as mongo/redis host/port.
+ * Is useful for a faster parse of some values such as A2 host/port.
  *
  * @param conf
  * @param prefix
@@ -94,10 +94,6 @@ initFromEnv(exports.defaultValues, prefix, links);
 initFromEnv(exports.testValues, prefix, links);
 
 // Some control instructions
-
-// Ensuring that 'mongodbUrl' values are different
-exports.defaultValues.mongodbUrl = 'mongodb://' + exports.defaultValues.mongoHost + ':' + exports.defaultValues.mongoPort + '/analytics-backend';
-exports.testValues.mongodbUrl = exports.defaultValues.mongodbUrl + '-test';
 
 exports.defaultValues.apiPath = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/api';
 exports.testValues.apiPath = exports.defaultValues.apiPath;
