@@ -6,7 +6,7 @@
     "license": "Apache 2.0",
     "scripts": {
         "docker-start": "npm run fast-setup && npm start",
-        "jscs-fix": "./node_modules/jscs/bin/jscs . --fix",
+        "jscs-fix": "jscs . --fix",
         "start": "node ./bin/www",
         "lint": "jshint --verbose . && npm run jscs-fix",
         "setup": "./bin/setup.js",
