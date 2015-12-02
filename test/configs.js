@@ -67,24 +67,29 @@ describe('Config files  validations', function () {
     });
 
     it('should have generated a correct env-vars file', function (done) {
+        global.location = {
+            protocol: 'http:',
+            hostname: 'localhost'
+        };
         global.angular = {
             module: function(moduleName, moduleArgs) {
                 return {
                     constant: function(name, arg) {
                         /**
-                         * APIPATH: '{{apiPath}}',
+                         * APIPATH: 'location.protocol + // + location.hostname + :3000/api',
                          * PREFIX: '{{appPrefix}}',
-                         * PROXY: '{{apiPath}}/proxy/{{appPrefix}}'
+                         * PROXY: 'location.protocol + // + location.hostname + :3000/api/proxy/{{appPrefix}}'
                          */
                         should(name).equal('CONSTANTS');
                         var apiPathKey = 'apiPath';
+                        var apiPathValue = 'http://localhost:3000/api';
                         should(configValues.defaultValues[apiPathKey]).be.a.String();
-                        should(arg.APIPATH).equal('{{' + apiPathKey + '}}');
+                        should(arg.APIPATH).equal(apiPathValue);
 
                         var prefixKey = 'appPrefix';
                         should(configValues.defaultValues[prefixKey]).be.a.String();
                         should(arg.PREFIX).equal('{{' + prefixKey + '}}');
-                        should(arg.PROXY).equal('{{' + apiPathKey + '}}/proxy/{{' + prefixKey + '}}');
+                        should(arg.PROXY).equal(apiPathValue + '/proxy/{{' + prefixKey + '}}');
                     }
                 };
             }
