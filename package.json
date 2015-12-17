@@ -19,7 +19,8 @@
         "async": "^1.3.x",
         "body-parser": "^1.13.x",
         "express": "~4.13.x",
-        "jade": "*"
+        "jade": "*",
+        "morgan": "^1.6.x"
     },
     "devDependencies": {
         "coveralls": "*",
@@ -29,6 +30,7 @@
         "jshint": "*",
         "mocha": "*",
         "promptly": "*",
+        "request": "*",
         "should": "*",
         "supertest": "*"
     }
