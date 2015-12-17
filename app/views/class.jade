@@ -24,7 +24,7 @@ block content
                         tr(ng-repeat='session in sessions')
                             td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats
-                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
+                                a(ng-href="#" ng-click='setSelectedSession(session, "data")') {{session.name}}
                             td {{session._id | prettyDateId }}
                             td(ng-if='isTeacher()')
                                 button.btn-success(ng-if='!loading && sessionState(session)' ng-click='endSession(session)') Opened

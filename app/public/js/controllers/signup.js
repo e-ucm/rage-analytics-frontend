@@ -14,7 +14,7 @@ angular.module('signupApp', ['ngStorage'])
                     $scope.user.prefix = CONSTANTS.PREFIX;
                     $http.post(CONSTANTS.APIPATH + '/signup', $scope.user).success(function () {
                         $scope.errorResponse = '';
-                        $window.location.href = '/login';
+                        $window.location.href = 'login';
                     }).error(function (data, status) {
                         console.error('Error on post /signup: ' + JSON.stringify(data) + ', status: ' + status);
                         $scope.errorResponse = data.message;

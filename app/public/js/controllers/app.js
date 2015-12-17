@@ -17,13 +17,13 @@ angular.module('myApp', [
     return function (list) {
         if (!list || list.length === 0) {
             return 'Empty list';
-        } else {
-            var result = '';
-            list.forEach(function (v) {
-                result += v + ', ';
-            });
-            return result;
         }
+
+        var result = '';
+        list.forEach(function (v) {
+            result += v + ', ';
+        });
+        return result;
     };
 }).filter('object2array', function () {
     return function (input) {
@@ -48,7 +48,7 @@ angular.module('myApp', [
 ]).config(['$routeProvider', '$httpProvider', '$locationProvider',
     function ($routeProvider, $httpProvider, $locationProvider) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
-        $locationProvider.html5Mode(true);
+        $locationProvider.html5Mode({enabled: true, requireBase: false});
         $routeProvider.when('/home', {
             templateUrl: '/home',
             controller: 'HomeCtrl'
@@ -65,7 +65,7 @@ angular.module('myApp', [
             templateUrl: '/signup',
             controller: 'SignupCtrl'
         }).otherwise({
-            redirectTo: '/login'
+            redirectTo: 'login'
         });
     }
 ]).directive('fileReader', function () {
@@ -125,7 +125,7 @@ angular.module('myApp', [
             $http.delete(CONSTANTS.APIPATH + '/logout').success(function () {
                 delete $scope.$storage.user;
                 $timeout(function () {
-                    $scope.href('/login');
+                    $scope.href('login');
                 }, 110);
             }).error(function (data, status) {
                 console.error('Error on get /logout ' + JSON.stringify(data) + ', status: ' + status);

@@ -26,7 +26,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                 var className = $scope.class.name ? $scope.class.name : 'New class';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
-                    $window.location = '/data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                    $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
                         QueryParams.getQueryParam('version') + '&session=' + session._id;
                 }).error(function (data, status) {
                     console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +

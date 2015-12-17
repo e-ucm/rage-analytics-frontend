@@ -7,13 +7,15 @@ nav.navbar.navbar-inverse.navbar-top
                 span.icon-bar
                 span.icon-bar
             img.navbar-brand(src='rageicon.png' alt='Rage' style='float:left')
-            a.btn.navbar-brand(ng-click="href('/')") A.F.
+            a.btn.navbar-brand(ng-click="href('')") A.F.
         #navbar.navbar-collapse.collapse(ng-controller='AppCtrl')
             ul.nav.navbar-nav
+                li
+                    a.btn(href="https://github.com/e-ucm/rage-analytics/wiki/Quickstart" target="_blank") Help
                 li(ng-if='isUser()')
-                    a.btn(ng-href='#' ng-click='deselectedGameAndGo("/home")') Home
+                    a.btn(ng-href='#' ng-click='deselectedGameAndGo("home")') Home
                 li(ng-if='!isUser()')
-                    a.btn(ng-click="href('/signup')") SignUp
+                    a.btn(ng-click="href('signup')") SignUp
                 li.dropdown
                     li(ng-if='isUser()&&hasGames()')
                         a#dropdownGames.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
@@ -21,8 +23,8 @@ nav.navbar.navbar-inverse.navbar-top
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownGames')
                             li(ng-repeat='game in games')
-                                a(ng-if='isDeveloper()' ng-href='/data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
-                                a(ng-if='!isDeveloper()' ng-href='/class?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='isDeveloper()' ng-href='data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='!isDeveloper()' ng-href='class?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
                 li.dropdown
                     li(ng-if='isUser()&&isTeacher()&&hasSessions()')
                         a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
@@ -30,7 +32,7 @@ nav.navbar.navbar-inverse.navbar-top
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownClasses')
                             li(ng-repeat='session in sessions')
-                                a(ng-href="#" ng-click='setSelectedSession(session, "/data")') {{session.name}}
+                                a(ng-href="#" ng-click='setSelectedSession(session, "data")') {{session.name}}
             ul.nav.navbar-nav.navbar-right
                 li
                     span.label.label-danger(ng-if='isDeveloper()') developer role
@@ -48,6 +50,6 @@ nav.navbar.navbar-inverse.navbar-top
                                     i.fa.fa-sign-out
                                     |   Logout
                 li(ng-if='!isUser()')
-                    a.btn(ng-click="href('/login')")
+                    a.btn(ng-click="href('login')")
                         i.fa.fa-user
                         |   Login

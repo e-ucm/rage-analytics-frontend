@@ -2,12 +2,13 @@ extends page
 block content
     .container.theme-showcase(ng-controller='AppCtrl')
         .row
-            .col-md-offset-2.col-md-8(ng-controller='HomeCtrl' ng-if='isDeveloper()')
+            .col-md-offset-2.col-md-10(ng-controller='HomeCtrl' ng-if='isDeveloper()')
                 label Game title:
                     input.form-control(type='text' ng-model='game.gameTitle')
-                a.btn.btn-primary(type='button', ng-click='createGame()')
+                a.btn.btn-primary(align='center' type='button', ng-click='createGame()')
                     span.glyphicon.glyphicon-plus.right10
                     | New game
+                a.col-md-offset-1(href="https://github.com/e-ucm/rage-analytics/wiki/Quickstart#developer-steps" target="_blank") Help
         .row
             .col-md-offset-2.col-md-8
                 table.table.table-hover
@@ -20,8 +21,8 @@ block content
                         tr(ng-repeat='game in games')
                             td
                                 span.glyphicon.glyphicon-stats
-                                a(ng-if='isDeveloper()' ng-href='/data?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
-                                a(ng-if='!isDeveloper()' ng-href='/class?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='isDeveloper()' ng-href='data?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='!isDeveloper()' ng-href='class?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
                             td {{game._id | prettyDateId }}
                             td
                                 a(ng-if='isDeveloper()' ng-click='deleteGame(game)')
