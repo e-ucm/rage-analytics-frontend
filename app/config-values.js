@@ -73,9 +73,16 @@ exports.defaultValues = {
     companyName: 'e-UCM Research Group',
     a2Host: 'localhost',
     a2Port: '3000',
+    a2Prefix: 'afront',
+    a2HomePage: 'http://localhost:3000/',
+    a2ApiPath: 'http://localhost:3000/api/',
+    a2AdminUsername: 'root',
+    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+    a2AdminPassword: process.env.A2_rootPassword || (process.env.A2_ROOTPASSWORD || 'root'),
     apiPath: 'localhost:3000/api',
     port: 3350,
-    appPrefix: 'gleaner'
+    appPrefix: 'gleaner',
+    myHost: process.env.MY_HOST || 'localhost'
 };
 
 exports.testValues = {
@@ -83,9 +90,15 @@ exports.testValues = {
     companyName: 'e-UCM Research Group (Test)',
     a2Host: 'localhost',
     a2Port: '3000',
+    a2Prefix: 'afront',
+    a2HomePage: 'http://localhost:3000/',
+    a2ApiPath: 'http://localhost:3000/api/',
+    a2AdminUsername: 'root',
+    a2AdminPassword: 'root',
     apiPath: 'localhost:3000/api',
     port: 3350,
-    appPrefix: 'gleaner'
+    appPrefix: 'gleaner',
+    myHost: process.env.MY_HOST || 'localhost'
 };
 
 var prefix = 'RAGE_ANALYTICS_FRONTEND_';
