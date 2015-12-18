@@ -23,7 +23,7 @@ angular.module('homeApp', ['ngStorage', 'services'])
                     version.gameId = game._id;
                     version.$save(function () {
                         $scope.gameTitle = '';
-                        $window.location = '/data?game=' + game._id + '&version=' + version._id;
+                        $window.location = 'data?game=' + game._id + '&version=' + version._id;
                     });
 
                 });
