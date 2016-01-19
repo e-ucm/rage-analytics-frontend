@@ -1,8 +1,4 @@
 'use strict';
-// This disables jshint checking for RadialProgress and ColumnProgress only on this file
-// avoiding some useless error alerts
-/*global RadialProgress: true*/
-/*global ColumnProgress: true*/
 
 var colors = (function () {
     var startColor1 = d3.rgb('#f44336');

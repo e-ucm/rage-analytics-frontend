@@ -15,8 +15,8 @@
 		"ADL": false,
         "angular": false,
         "$": false,
-        "RadialProgress": false,
-        "ColumnProgress": false,
+        "RadialProgress": true,
+        "ColumnProgress": true,
         "gauss": false,
         "d3": false
     }
