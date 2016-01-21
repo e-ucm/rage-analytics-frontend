@@ -110,3 +110,11 @@ initFromEnv(exports.testValues, prefix, links);
 
 exports.defaultValues.apiPath = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/api';
 exports.testValues.apiPath = exports.defaultValues.apiPath;
+
+exports.defaultValues.a2HomePage = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/';
+exports.defaultValues.a2ApiPath = exports.defaultValues.a2HomePage + 'api/';
+exports.testValues.a2ApiPath = exports.defaultValues.a2ApiPath;
+exports.testValues.a2HomePage = exports.defaultValues.a2HomePage;
+exports.testValues.a2AdminUsername = exports.defaultValues.a2AdminUsername;
+exports.testValues.a2AdminPassword = exports.defaultValues.a2AdminPassword;
+
