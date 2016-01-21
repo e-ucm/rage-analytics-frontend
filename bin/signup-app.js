@@ -25,7 +25,7 @@ request.post(baseUsersAPI + 'login', {
         if (err) {
             console.error(err);
             if (err.errno && err.errno.indexOf('ECONNREFUSED') > -1) {
-                console.error('Could not connect to MongoDB!');
+                console.error('Could not connect to A2 to login!');
                 return process.exit(-1);
             }
             console.log('Did not register the frontend with A2, continuing anyway!');
@@ -48,7 +48,7 @@ request.post(baseUsersAPI + 'login', {
             if (err) {
                 console.error(err);
                 if (err.errno && err.errno.indexOf('ECONNREFUSED') > -1) {
-                    console.error('Could not connect to MongoDB!');
+                    console.error('Could not connect to A2 to register the frontend application!');
                     return process.exit(-1);
                 }
                 console.log('Did not register the backend with A2, continuing anyway!');
