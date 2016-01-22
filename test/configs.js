@@ -68,8 +68,7 @@ describe('Config files  validations', function () {
 
     it('should have generated a correct env-vars file', function (done) {
         global.location = {
-            protocol: 'http:',
-            hostname: 'localhost'
+            origin: 'http://localhost:3000'
         };
         global.angular = {
             module: function(moduleName, moduleArgs) {
