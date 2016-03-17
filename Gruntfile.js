@@ -25,31 +25,27 @@ module.exports = function (grunt) {
         var counter = 0, fileExtension, commentWrapper;
 
         var header = grunt.file.read('HEADER').split('\n');
-        var headerFirstLine = header[0];
+        var headerFirstLine = header[0].trimRight();
 
         var headerJS = header.map(function (line, index, array) {
             if (index === 0) {
-                return '/*\n' +
-                    ' * ' + line;
+                return ('/*\n * ' + line).trimRight();
             }
             if (index < array.length - 1) {
-                return ' * ' + line;
+                return (' * ' + line).trimRight();
             }
-            return ' * ' + line + '\n' +
-                ' */\n';
+            return (' * ' + line + '\n */\n').trimRight();
 
         }).join('\n');
 
         var headerHTML = header.map(function (line, index, array) {
             if (index === 0) {
-                return '<!--\n' +
-                    '  -- ' + line;
+                return ('<!--\n  -- ' + line).trimRight();
             }
             if (index < array.length - 1) {
-                return '  -- ' + line;
+                return ('  -- ' + line).trimRight();
             }
-            return '  -- ' + line + '\n' +
-                '  -->\n';
+            return ('  -- ' + line + '\n  -->\n').trimRight();
 
         }).join('\n');
 
@@ -90,7 +86,7 @@ module.exports = function (grunt) {
                             commentWrapper = headerJS;
                             break;
                         }
-                        case 'html':
+                        case 'html': /* Fallthrough */
                         case 'jade': {
                             commentWrapper = headerHTML;
                             break;
