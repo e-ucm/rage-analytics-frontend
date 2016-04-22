@@ -49,6 +49,17 @@ module.exports = function (grunt) {
 
         }).join('\n');
 
+        var headerJade = header.map(function (line, index, array) {
+            if (index === 0) {
+                return ('//- \n    ' + line).trimRight();
+            }
+            if (index < array.length - 1) {
+                return ('    ' + line).trimRight();
+            }
+            return ('    ' + line + '\n ');
+
+        }).join('\n');
+
         var dirPatterns = ['app/**', 'test/**', 'bin/**', '.'];
         var extensionPatterns = ['*.js', '*.jade', '*.html'];
         var patterns = [];
@@ -57,6 +68,7 @@ module.exports = function (grunt) {
                 patterns.push(dir + '/' + ext);
             });
         });
+        patterns.push('!app/public/bower/**/*');
 
         // Get file extension regex
         var re = /(?:\.([^.]+))?$/;
@@ -86,9 +98,12 @@ module.exports = function (grunt) {
                             commentWrapper = headerJS;
                             break;
                         }
-                        case 'html': /* Fallthrough */
-                        case 'jade': {
+                        case 'html': {
                             commentWrapper = headerHTML;
+                            break;
+                        }
+                        case 'jade': {
+                            commentWrapper = headerJade;
                             break;
                         }
                         default: {
