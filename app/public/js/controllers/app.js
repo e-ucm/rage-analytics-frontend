@@ -20,7 +20,8 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable', 'env-vars'
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable', 'env-vars',
+    'ngFileUpload'
 ]).run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 }).filter('prettyDateId', function () {
@@ -108,8 +109,9 @@ angular.module('myApp', [
             });
         }
     };
-}).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS',
-    function ($scope, $location, $http, $timeout, $localStorage, $window, Games, Versions, Sessions, Role, CONSTANTS) {
+}).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage',
+    '$window', 'Games', 'Versions', 'Sessions', 'Analysis', 'Role', 'CONSTANTS',
+    function ($scope, $location, $http, $timeout, $localStorage, $window, Games, Versions, Sessions, Analysis, Role, CONSTANTS) {
         $scope.$storage = $localStorage;
 
         $scope.isAdmin = function () {
@@ -203,6 +205,7 @@ angular.module('myApp', [
             });
         };
 
+
         $scope.addCsvClass = function () {
             var students = [];
             $scope.fileContent.trim().split(',').forEach(function (student) {
@@ -219,6 +222,64 @@ angular.module('myApp', [
                 $scope.refreshSessions();
             }).error(function (data, status) {
                 console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        // Upload later on form submit or something similar
+        $scope.submit = function () {
+            if ($scope.file) {
+                if ($scope.analysis && $scope.selectedVersion._id === $scope.analysis._id) {
+                    Analysis.delete({versionId: $scope.selectedVersion._id}, function () {
+                        $scope.analysis = undefined;
+                        $scope.upload($scope.file);
+                    });
+                } else {
+                    $scope.upload($scope.file);
+                }
+            }
+        };
+
+        // Submit a visualization template
+        $scope.submitTemplateVisualization = function () {
+            if ($scope.templateVisualization) {
+
+                // TODO template visualization
+
+            }
+        };
+
+        // Submit a index template
+        $scope.submitIndex = function () {
+            if ($scope.index) {
+
+                // TODO index
+
+            }
+        };
+
+        // Upload on file select or drop
+        $scope.upload = function (file) {
+            var formData = new FormData();
+            formData.append('analysis', file);
+            $http.post(CONSTANTS.PROXY + '/analysis/' + $scope.selectedVersion._id, formData, {
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': undefined,
+                    enctype: 'multipart/form-data'
+                }
+            }).then(function successCallback(response) {
+                // This callback will be called asynchronously
+                // when the response is available
+
+                // Check if the version has an analysis uploaded
+                updateAnalysis();
+            }, function errorCallback(response) {
+                // Called asynchronously if an error occurs
+                // or server returns response with an error status.
+                console.error('Error on post /analysis/' + $scope.selectedVersion._id + ' ' + JSON.stringify(response, null, '  '));
+
+                // Check if the version has an analysis uploaded
+                updateAnalysis();
             });
         };
 
@@ -304,9 +365,20 @@ angular.module('myApp', [
 
                     $scope.refreshSessions();
 
+                    // Check if the version has an analysis uploaded
+                    updateAnalysis();
+
                     if (callback) {
                         callback();
                     }
+                });
+            }
+        };
+
+        var updateAnalysis = function () {
+            if ($scope.selectedVersion) {
+                $scope.analysis = Analysis.get({versionId: $scope.selectedVersion._id}, function (analysis) {
+                    console.log('received analysis', analysis);
                 });
             }
         };
@@ -397,6 +469,5 @@ angular.module('myApp', [
                 $scope.selectedSession = selected;
             }
         });
-
     }
 ]);

@@ -28,6 +28,14 @@ services.factory('Games', ['$resource', 'CONSTANTS',
     }
 ]);
 
+services.factory('Analysis', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/analysis/:versionId', {
+            versionId: '@_id'
+        });
+    }
+]);
+
 services.factory('Versions', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
         return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId', {

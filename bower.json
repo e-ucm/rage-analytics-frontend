@@ -10,6 +10,7 @@
         "angular-gridster": "*",
         "checklist-model": "*",
         "angular-bootstrap": "*",
+        "ng-file-upload": "*",
         "ngstorage" : "*",
         "bootstrap": "*",
         "jquery": "*",

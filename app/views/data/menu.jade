@@ -36,4 +36,8 @@ ul.nav
         span.left-menu-item(href="#config", role="tab", data-toggle="tab", ng-click="view = 'config'")
             span.glyphicon.glyphicon-cog.right20
             | Configuration
+    li(ng-if='isDeveloper()')
+        span.left-menu-item(href="#analysis", role="tab", data-toggle="tab", ng-click="view = 'analysis'")
+            span.glyphicon.glyphicon-cog.right20
+            | Analysis
 
