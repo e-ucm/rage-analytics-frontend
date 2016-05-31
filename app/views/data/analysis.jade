@@ -18,20 +18,39 @@
 h1 Analysis
 .row(ng-controller='AppCtrl')
     .col-md-8
-        label Add an analysis package:
+        label.top30 Add an analysis package:
         label(ng-if="analysis._id") An analysis already exists, it's going to be overridden
         .row
-            .btn.btn-primary(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
+            .btn.btn-primary.top5.right10(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
                     ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
+            button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
+    .col-md-8
+        label.top30 Add index template:
+        .row
+            input.file(type='file' file-reader="index")
+            button.btn.btn-primary.top5(type='submit'  ng-click='submitIndex()') Submit index
+    .col-md-8
+        label.top30 Add visualizations template:
+        .row
+            input.file(type='file' file-reader="templateVisualization")
+            button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
+    .col-md-8
+        table.table.table-hover.top30
+            thead
+                tr
+                    th Template fields
+                    th My fields
+            tbody
+                tr(ng-repeat='field in visualizationFields')
+                    td
+                        label {{field}}
+                    td
+                        .btn-group.pull-left
+                            button.btn.btn-success.dropdown-toggle(data-toggle='dropdown')
+                                | {{getSelectedFieldName(field)}}
+                                span.caret
+                            ul.dropdown-menu
+                                li(ng-repeat='f in dropfields')
+                                    a(ng-click='selectField(field, f)') {{f}}
 
-            button.btn.btn-primary(type='submit', ng-click='submit()') Submit
-    .col-md-8
-        label Add visualizations template:
-        .row
-            input#inputFile.file(type='file' file-reader="templateVisualization")
-            button.btn.btn-primary(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
-    .col-md-8
-        label Add index template:
-        .row
-            input#inputFile.file(type='file' file-reader="index")
-            button.btn.btn-primary(type='submit'  ng-click='submitIndex()') Submit index
+

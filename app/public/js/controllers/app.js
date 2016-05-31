@@ -100,7 +100,10 @@ angular.module('myApp', [
                     r.onload = function (e) {
                         var contents = e.target.result;
                         scope.$apply(function () {
-                            scope.fileReader = contents;
+                            scope.fileReader = {
+                                contents : contents,
+                                name : files[0].name
+                            };
                         });
                     };
 
@@ -208,7 +211,7 @@ angular.module('myApp', [
 
         $scope.addCsvClass = function () {
             var students = [];
-            $scope.fileContent.trim().split(',').forEach(function (student) {
+            $scope.fileContent.contents.trim().split(',').forEach(function (student) {
                 if (student) {
                     /**
                      *
@@ -239,22 +242,76 @@ angular.module('myApp', [
             }
         };
 
+
+        $scope.visualizationTitle = "";
         // Submit a visualization template
         $scope.submitTemplateVisualization = function () {
-            if ($scope.templateVisualization) {
-
-                // TODO template visualization
+            $scope.templateVisualization.contents = JSON.parse($scope.templateVisualization.contents);
+            if ($scope.templateVisualization.contents) {
+                $scope.visualizationTitle = $scope.templateVisualization.contents.title+"_"+$scope.selectedGame._id;
+                $http.post(CONSTANTS.PROXY + '/kibana/templates/visualization/' + $scope.visualizationTitle, $scope.templateVisualization.contents).success(function (data) {
+                    $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.visualizationTitle).success(function (data) {
+                        console.log(data);
+                        $scope.visualizationFields = data;
+                        $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizations:[$scope.visualizationTitle]})
+                            .success(function(data){
+                                console.log('post ' + data);
+                            }).error(function (data, status) {
+                            console.error('Error on post /kibana/visualization/list/' + $scope.$scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                        });
+                    }).error(function (data, status) {
+                        console.error('Error on get /kibana/templates/fields' + $scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+                    });
+                }).error(function (data, status) {
+                    console.error('Error on post /kibana/templates/visualization/' +$scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+                });
 
             }
         };
 
-        // Submit a index template
+        $scope.currentSelectedField = "Select field";
+        $scope.dropfields = [];
+        $scope.indexTitle = "";
+        // Submit an index
         $scope.submitIndex = function () {
-            if ($scope.index) {
-
-                // TODO index
-
+            $scope.index.contents = JSON.parse($scope.index.contents);
+            if ($scope.index.contents) {
+                $scope.indexTitle = $scope.index.contents.title;
+                if($scope.indexTitle) {
+                    $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.$scope.selectedGame._id, $scope.index.contents).success(function (data) {
+                        $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.$scope.selectedGame._id).success(function (data) {
+                            $scope.dropfields = data;
+                            console.log(data);
+                        }).error(function (data, status) {
+                            console.error('Error on get /kibana/templates/fields/' + $scope.$scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                        });
+                    }).error(function (data, status) {
+                        console.error('Error on post /kibana/templates/index/' + $scope.$scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
             }
+
+        };
+
+        $scope.getSelectedFieldName = function (fieldName) {
+            if($scope.currentSelectedField[fieldName]){
+                return $scope.currentSelectedField[fieldName];
+            }
+            return "Select field";
+        };
+        
+        $scope.currentSelectedField = {};
+        $scope.dataWithField = {};
+        $scope.selectField = function (oldField, selectedField) {
+            $scope.dataWithField[oldField] = selectedField;
+            $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + $scope.visualizationTitle, $scope.dataWithField)
+                .success(function(){
+
+                }).error(function (data, status) {
+                console.error('Error on post /kibana/visualization/game/' + $scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+            });
+            $scope.currentSelectedField[oldField] = selectedField;
+
         };
 
         // Upload on file select or drop
