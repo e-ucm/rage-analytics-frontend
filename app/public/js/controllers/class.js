@@ -44,6 +44,25 @@ angular.module('classApp', ['ngStorage', 'services'])
                 var className = $scope.class.name ? $scope.class.name : 'New class';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
+                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.gameId)
+                            .success(function(data){
+                                var vis = data.visualizations[0];
+                                $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/'+ vis + '/' + session._id, {})
+                                    .success(function( data ){
+                                        console.log('data = '+data);
+                                    }).error(function (data, status) {
+                                    console.error('Error on post /kibana/visualization/session/'+ vis + '/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                                });
+
+                                $http.post(CONSTANTS.PROXY + '/kibana/index/:indexTemplate/'+ $scope.gameId +'/' + session._id, {})
+                                    .success(function( data ){
+                                        console.log('data = '+data);
+                                    }).error(function (data, status) {
+                                    console.error('Error on post /kibana/index/:indexTemplate/'+ $scope.gameId +'/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                                });
+                            }).error(function (data, status) {
+                                console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' + JSON.stringify(data) + ', status: ' + status);
+                        });
                     $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
                         QueryParams.getQueryParam('version') + '&session=' + session._id;
                 }).error(function (data, status) {
