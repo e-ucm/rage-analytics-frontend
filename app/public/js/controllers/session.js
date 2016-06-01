@@ -66,8 +66,10 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 }
             };
 
-            $scope.dashboardLink = function(){
-                return $sce.trustAsResourceUrl("http://localhost:5601/app/kibana#/dashboard/dashboard_"+QueryParams.getQueryParam('session')+"?embed=true_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))");
+            $scope.dashboardLink = function() {
+                return $sce.trustAsResourceUrl('http://localhost:5601/app/kibana#/dashboard/dashboard_' +
+                    QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:' +
+                    '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))');
             };
 
             var calculateResults = function (rawResults) {

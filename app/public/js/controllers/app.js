@@ -101,8 +101,8 @@ angular.module('myApp', [
                         var contents = e.target.result;
                         scope.$apply(function () {
                             scope.fileReader = {
-                                contents : contents,
-                                name : files[0].name
+                                contents: contents,
+                                name: files[0].name
                             };
                         });
                     };
@@ -246,8 +246,8 @@ angular.module('myApp', [
             $scope.statementsFile.contents = JSON.parse($scope.statementsFile.contents);
             if ($scope.statementsFile.contents) {
                 $http.post(CONSTANTS.PROXY + '/sessions/test/' + $scope.selectedGame._id, $scope.statementsFile.contents)
-                    .success(function(data){
-                        //Return the index id (data.id)
+                    .success(function(data) {
+                        // Return the index id (data.id)
                     }).error(function (data, status) {
                     console.error('Error on post /sessions/test/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
                 });
@@ -263,55 +263,61 @@ angular.module('myApp', [
 
         $scope.currentSelectedField = {};
         $scope.dataWithField = {};
-        $scope.visualizationTitle = "";
+        $scope.visualizationTitle = '';
 
         // Submit a visualization template
         $scope.submitTemplateVisualization = function () {
             $scope.templateVisualization.contents = JSON.parse($scope.templateVisualization.contents);
             if ($scope.templateVisualization.contents) {
-                $scope.visualizationTitle = $scope.templateVisualization.contents.title+"_"+$scope.selectedGame._id;
+                $scope.visualizationTitle = $scope.templateVisualization.contents.title + '_' + $scope.selectedGame._id;
                 $http.post(CONSTANTS.PROXY + '/kibana/templates/visualization/' + $scope.visualizationTitle, $scope.templateVisualization.contents)
                     .success(function (data) {
                         $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.visualizationTitle).success(function (data) {
                             $scope.visualizationFields = data;
-                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizations:[$scope.visualizationTitle]})
-                                .success(function(data){
-                                    
+                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizations: [$scope.visualizationTitle]})
+                                .success(function(data) {
+
                                 }).error(function (data, status) {
-                                console.error('Error on post /kibana/visualization/list/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                                console.error('Error on post /kibana/visualization/list/' + $scope.selectedGame._id + ' ' +
+                                    JSON.stringify(data) + ', status: ' + status);
                             });
                         }).error(function (data, status) {
-                            console.error('Error on get /kibana/templates/fields' + $scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+                            console.error('Error on get /kibana/templates/fields' + $scope.visualizationTitle + ' ' +
+                                JSON.stringify(data) + ', status: ' + status);
                         });
-    
+
                         $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + $scope.visualizationTitle, $scope.dataWithField)
-                            .success(function(){
-                                
+                            .success(function() {
+
                             }).error(function (data, status) {
-                            console.error('Error on post /kibana/visualization/game/' + $scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+                            console.error('Error on post /kibana/visualization/game/' + $scope.visualizationTitle + ' ' +
+                                JSON.stringify(data) + ', status: ' + status);
                         });
                     }).error(function (data, status) {
-                        console.error('Error on post /kibana/templates/visualization/' +$scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+                        console.error('Error on post /kibana/templates/visualization/' + $scope.visualizationTitle + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
                     });
             }
         };
 
         $scope.dropfields = [];
-        $scope.indexTitle = "";
+        $scope.indexTitle = '';
         // Submit an index
         $scope.submitIndex = function () {
             $scope.index.contents = JSON.parse($scope.index.contents);
             if ($scope.index.contents) {
                 $scope.indexTitle = $scope.index.contents.title;
-                if($scope.indexTitle) {
+                if ($scope.indexTitle) {
                     $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id, $scope.index.contents).success(function (data) {
                         $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.selectedGame._id).success(function (data) {
                             $scope.dropfields = data;
                         }).error(function (data, status) {
-                            console.error('Error on get /kibana/templates/fields/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                            console.error('Error on get /kibana/templates/fields/' + $scope.selectedGame._id + ' ' +
+                                JSON.stringify(data) + ', status: ' + status);
                         });
                     }).error(function (data, status) {
-                        console.error('Error on post /kibana/templates/index/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                        console.error('Error on post /kibana/templates/index/' + $scope.selectedGame._id + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
                     });
                 }
             }
@@ -319,20 +325,21 @@ angular.module('myApp', [
         };
 
         $scope.getSelectedFieldName = function (fieldName) {
-            if($scope.currentSelectedField[fieldName]){
+            if ($scope.currentSelectedField[fieldName]) {
                 return $scope.currentSelectedField[fieldName];
-            } 
-            
-            return "Select field";
+            }
+
+            return 'Select field';
         };
 
         $scope.selectField = function (visualizationField, newField) {
             $scope.dataWithField[visualizationField] = newField;
             $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + $scope.visualizationTitle, $scope.dataWithField)
-                .success(function(){
-                    
+                .success(function() {
+
                 }).error(function (data, status) {
-                console.error('Error on post /kibana/visualization/game/' + $scope.visualizationTitle + ' ' + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /kibana/visualization/game/' + $scope.visualizationTitle + ' ' +
+                    JSON.stringify(data) + ', status: ' + status);
             });
             $scope.currentSelectedField[visualizationField] = newField;
 
@@ -362,7 +369,8 @@ angular.module('myApp', [
             }, function errorCallback(response) {
                 // Called asynchronously if an error occurs
                 // or server returns response with an error status.
-                console.error('Error on post /analysis/' + $scope.selectedVersion._id + ' ' + JSON.stringify(response, null, '  '));
+                console.error('Error on post /analysis/' + $scope.selectedVersion._id + ' ' +
+                    JSON.stringify(response, null, '  '));
 
                 // Check if the version has an analysis uploaded
                 updateAnalysis();
@@ -374,7 +382,8 @@ angular.module('myApp', [
                 $scope.refreshSessions();
                 $scope.student.name = '';
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' +
+                    JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -382,7 +391,8 @@ angular.module('myApp', [
             $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove', {students: student}).success(function () {
                 $scope.refreshSessions();
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' +
+                    JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -397,7 +407,8 @@ angular.module('myApp', [
                 checkAnonymous();
             }).error(function (data, status) {
                 checkAnonymous();
-                console.error('Error on put /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on put /sessions/' + $scope.selectedSession._id + ' ' +
+                    JSON.stringify(data) + ', status: ' + status);
             });
         };
 
@@ -416,7 +427,8 @@ angular.module('myApp', [
                         console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
                     });
                 }).error(function (data, status) {
-                    console.error('Error on delete /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on delete /games/' + $scope.selectedGame._id + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
                 });
             }
         };
