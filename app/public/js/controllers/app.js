@@ -242,6 +242,19 @@ angular.module('myApp', [
             }
         };
 
+        $scope.submitStatementsFile = function () {
+            $scope.statementsFile.contents = JSON.parse($scope.statementsFile.contents);
+            if ($scope.statementsFile.contents) {
+                $http.post(CONSTANTS.PROXY + '/sessions/test/' + $scope.selectedGame._id, $scope.statementsFile.contents)
+                    .success(function(data){
+                        //Return the index id (data.id)
+                    }).error(function (data, status) {
+                    console.error('Error on post /sessions/test/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+
+        };
+
         // ------------------------------ //
         // ------------------------------ //
         /*  CONFIG KIBANA VISUALIZATION   */
