@@ -46,19 +46,20 @@ angular.module('classApp', ['ngStorage', 'services'])
                     QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
                         $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.gameId)
                             .success(function(data){
+
                                 // Add index
-                                $http.post(CONSTANTS.PROXY + '/kibana/index/:indexTemplate/'+ $scope.gameId +'/' + session._id, {})
+                                $http.post(CONSTANTS.PROXY + '/kibana/index/'+ $scope.gameId +'/' + session._id, {})
                                     .success(function( data ){
-                                        console.log('data = '+data);
+
                                     }).error(function (data, status) {
-                                    console.error('Error on post /kibana/index/:indexTemplate/'+ $scope.gameId +'/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                                    console.error('Error on post /kibana/index/'+ $scope.gameId +'/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
                                 });
                                 
                                 // TODO add multiple visualizations
                                 var vis = data.visualizations[0];
                                 $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/'+ vis + '/' + session._id, {})
                                     .success(function( data ){
-                                        console.log('data = '+data);
+
                                     }).error(function (data, status) {
                                     console.error('Error on post /kibana/visualization/session/'+ vis + '/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
                                 });
@@ -69,7 +70,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                                     title: 'dashboard_'+session._id,
                                     hits: 0,
                                     description: "",
-                                    panelsJSON: "[{\"id\":\""+vis+"\",\"type\":\"visualization\",\"panelIndex\":1,\"size_x\":3,\"size_y\":2,\"col\":1,\"row\":1}]",
+                                    panelsJSON: "[{\"id\":\""+vis+"_"+session._id+"\",\"type\":\"visualization\",\"panelIndex\":1,\"size_x\":3,\"size_y\":2,\"col\":1,\"row\":1}]",
                                     optionsJSON: "{\"darkTheme\":false}",
                                     uiStateJSON: "{\"P-3\":{\"vis\":{\"legendOpen\":false}},\"P-2\":{\"vis\":{\"legendOpen\":false}},\"P-1\":{\"vis\":{\"legendOpen\":false}}}",
                                     version: 1,
@@ -80,9 +81,9 @@ angular.module('classApp', ['ngStorage', 'services'])
                                 };
                                 $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + session._id, dashboard)
                                     .success(function( data ){
-                                        console.log('data = '+data);
+
                                     }).error(function (data, status) {
-                                    console.error('Error on post /kibana/visualization/session/'+ vis + '/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                                    console.error('Error on post /kibana/dashboard/session/' + session._id + ' ' + JSON.stringify(data) + ', status: ' + status);
                                 });
                             }).error(function (data, status) {
                                 console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' + JSON.stringify(data) + ', status: ' + status);

@@ -48,7 +48,8 @@ link(rel="stylesheet", href="css/realtime.css")
                     .row(ng-repeat="alert in player.alerts") {{ i }} {{ version.alerts[alert.id].message }}
                 #warnings.tab-pane.col-xs-12
                     .row(ng-repeat="i in player.warnings") {{ version.warnings[i].message }}
-
+    .row(ng-show="!player")
+        iframe(src = "{{dashboardLink()}}" height="600" width="800")
     .row(ng-show="!player")
         ul.nav.nav-tabs(role="tablist")
             li.col-xs-6.active.tab-button
