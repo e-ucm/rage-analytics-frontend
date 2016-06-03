@@ -43,6 +43,8 @@ html, body {
     color: #606060;
 }
 
+.no-border { border: 0; }
+
 .top5 { margin-top:5px; }
 .top7 { margin-top:7px; }
 .top10 { margin-top:10px; }

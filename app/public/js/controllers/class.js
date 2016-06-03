@@ -75,8 +75,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                                     panelsJSON: '[{"id":"' + vis + '_' + session._id + '","type":"visualization","panelIndex":1,' +
                                         '"size_x":3,"size_y":2,"col":1,"row":1}]',
                                     optionsJSON: '{"darkTheme":false}',
-                                    uiStateJSON: '{"P-3":{"vis":{"legendOpen":false}},"P-2":{"vis":{"legendOpen":false}},' +
-                                        '"P-1":{"vis":{"legendOpen":false}}}',
+                                    uiStateJSON: '{"P-1":{"vis":{"legendOpen":false}}}',
                                     version: 1,
                                     timeRestore: false,
                                     kibanaSavedObjectMeta: {

@@ -25,20 +25,23 @@ h1 Analysis
                     ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
             button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
     .col-md-8
-        label.top30 Select a xAPI statements json file:
-        .row
-            input.file(type='file' file-reader="statementsFile")
-            button.btn.btn-primary.top5(type='submit'  ng-click='submitStatementsFile()') Start statements analsysis
-    .col-md-8
         label.top30 Add index template:
         .row
             input.file(type='file' file-reader="index")
             button.btn.btn-primary.top5(type='submit'  ng-click='submitIndex()') Submit index
+        .row
+            label.top30 Example Index
+            textarea.form-control.custom-control(rows='6' ng-model='exampleIndex')
+            button.btn.btn-primary.top15(ng-click='addTemplateIndex()') Add text index
     .col-md-8
         label.top30 Add visualizations template:
         .row
             input.file(type='file' file-reader="templateVisualization")
             button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
+        .row
+            label.top30 Example Visualization
+            textarea.form-control.custom-control(rows='6' ng-model='exampleVisualization')
+            button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Add text visualization
     .col-md-8
         table.table.table-hover.top30
             thead
@@ -57,5 +60,14 @@ h1 Analysis
                             ul.dropdown-menu
                                 li(ng-repeat='f in dropfields')
                                     a(ng-click='selectField(field, f)') {{f}}
+    .col-md-8
+        label.top30 Select a xAPI statements json file:
+        .row
+            input.file(type='file' file-reader="statementsFile")
+            button.btn.btn-primary.top5(type='submit'  ng-click='submitStatementsFile()') Start statements analsysis
+    .col-md-8
+        .row
+            button.btn.btn-warning.top30(ng-click='generateTestVisualization()') Restart visualization test
+            iframe.no-border.top10(src = "{{dashboardLink}}" height="600" width="800")
 
 
