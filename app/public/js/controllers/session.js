@@ -68,7 +68,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.dashboardLink = function() {
                 var url = CONSTANTS.KIBANA+'/app/kibana#/dashboard/dashboard_' +
-                    QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:' +
+                QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:' +
                     '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))';
                 if(url.startsWith('localhost')){
                     url = 'http://'+url;
