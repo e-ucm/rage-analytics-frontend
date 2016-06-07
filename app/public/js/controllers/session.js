@@ -30,8 +30,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce',
-        function ($scope, $location, SessionsId, Results, Versions, QueryParams, $sce) {
+    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS',
+        function ($scope, $location, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS) {
 
             $scope.refreshResults = function () {
                 var rawResults = Results.query({
@@ -67,7 +67,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             };
 
             $scope.dashboardLink = function() {
-                return $sce.trustAsResourceUrl('http://localhost:5601/app/kibana#/dashboard/dashboard_' +
+                return $sce.trustAsResourceUrl(CONSTANTS.KIBANA+'/dashboard/dashboard_' +
                     QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:' +
                     '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))');
             };

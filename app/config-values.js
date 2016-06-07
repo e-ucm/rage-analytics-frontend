@@ -92,6 +92,8 @@ exports.defaultValues = {
     a2Host: 'localhost',
     a2Port: '3000',
     a2Prefix: 'afront',
+    kibanaHost: 'localhost',
+    kibanaPort: '5601',
     a2HomePage: 'http://localhost:3000/',
     a2ApiPath: 'http://localhost:3000/api/',
     a2AdminUsername: 'root',
@@ -100,7 +102,8 @@ exports.defaultValues = {
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
-    myHost: process.env.MY_HOST || 'localhost'
+    myHost: process.env.MY_HOST || 'localhost',
+    kibanaPath: 'http://localhost:5601/app/kibana#'
 };
 
 exports.testValues = {
@@ -109,6 +112,8 @@ exports.testValues = {
     a2Host: 'localhost',
     a2Port: '3000',
     a2Prefix: 'afront',
+    kibanaHost: 'localhost',
+    kibanaPort: '5601',
     a2HomePage: 'http://localhost:3000/',
     a2ApiPath: 'http://localhost:3000/api/',
     a2AdminUsername: 'root',
@@ -116,7 +121,8 @@ exports.testValues = {
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
-    myHost: process.env.MY_HOST || 'localhost'
+    myHost: process.env.MY_HOST || 'localhost',
+    kibanaPath: 'http://localhost:5601/app/kibana#'
 };
 
 var prefix = 'RAGE_ANALYTICS_FRONTEND_';
@@ -133,6 +139,9 @@ exports.defaultValues.a2HomePage = 'http://' + exports.defaultValues.a2Host + ':
 exports.defaultValues.a2ApiPath = exports.defaultValues.a2HomePage + 'api/';
 exports.testValues.a2ApiPath = exports.defaultValues.a2ApiPath;
 exports.testValues.a2HomePage = exports.defaultValues.a2HomePage;
+exports.defaultValues.kibanaPath = 'http://' + exports.defaultValues.kibanaHost + ':' + exports.defaultValues.kibanaPort + '/app/kibana#';
+
 exports.testValues.a2AdminUsername = exports.defaultValues.a2AdminUsername;
 exports.testValues.a2AdminPassword = exports.defaultValues.a2AdminPassword;
+
 

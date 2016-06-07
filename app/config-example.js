@@ -30,3 +30,4 @@ exports.a2 = {
     a2AdminUsername: '{{a2AdminUsername}}',
     a2AdminPassword: '{{a2AdminPassword}}'
 };
+exports.kibanaPath = '{{kibanaPath}}';

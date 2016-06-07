@@ -448,7 +448,7 @@ angular.module('myApp', [
             // Add index
             $http.post(CONSTANTS.PROXY + '/kibana/index/' + $scope.selectedGame._id + '/' + $scope.testIndex, {})
                 .success(function(data) {
-                    console.log('insertando index--->', $scope.selectedGame._id , ' <---> ', $scope.testIndex, '\n', JSON.stringify(data));
+
                 }).error(function (data, status) {
                 console.error('Error on post /kibana/index/' + $scope.selectedGame._id + '/' + $scope.testIndex + ' ' +
                     JSON.stringify(data) + ', status: ' + status);
