@@ -35,6 +35,20 @@ h1 Analysis
             button.btn.btn-primary.top15(ng-click='addTemplateIndex()') Add text index
     .col-md-8
         label.top30 Add visualizations template:
+        .row(style="overflow-y:scroll; height:200px")
+            table.table.table-hover.top30
+                thead
+                    tr
+                        th Visualizations
+                        th Selected
+                tbody(ng-repeat='visualization in visualizationList')
+                    tr
+                        td
+                            label {{visualizationTitleWithoutGameId(visualization)}}
+                        td
+                            label
+                                input(type="checkbox" ng-model='checkboxVisualizations[visualization]' ng-click='selectVisualization(visualization)')
+                                p
         .row
             input.file(type='file' file-reader="templateVisualization")
             button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
@@ -47,7 +61,7 @@ h1 Analysis
             thead
                 tr
                     th Template fields
-                    th My fields
+                    th Values
             tbody
                 tr(ng-repeat='field in visualizationFields')
                     td
