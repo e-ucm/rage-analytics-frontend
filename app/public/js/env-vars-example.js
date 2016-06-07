@@ -24,6 +24,6 @@ envVars.constant('CONSTANTS', {
     APIPATH: location.origin + '/api',
     PREFIX: '{{appPrefix}}',
     PROXY: location.origin + '/api/proxy/{{appPrefix}}',
-    KIBANA: '{{kibanaPath}}'
+    KIBANA: location.origin + '/api/proxy/{{kibanaPrefix}}'
 });
 

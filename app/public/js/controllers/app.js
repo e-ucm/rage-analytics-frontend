@@ -410,12 +410,12 @@ angular.module('myApp', [
         $scope.addTemplateVisualization = function () {
             var visualization = JSON.parse($scope.exampleVisualization);
             if (visualization) {
-                $scope.visualizationTitle = visualization.title;
-                $http.post(CONSTANTS.PROXY + '/kibana/templates/visualization/' + visualization.title, visualization)
+                $scope.visualizationTitle = visualization.title + '_' + $scope.selectedGame._id;
+                $http.post(CONSTANTS.PROXY + '/kibana/templates/visualization/' + $scope.visualizationTitle, visualization)
                     .success(function (data) {
-                        $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + visualization.title).success(function (data) {
+                        $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.visualizationTitle).success(function (data) {
                             $scope.visualizationFields = data;
-                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizations: [visualization.title]})
+                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizations: [$scope.visualizationTitle]})
                                 .success(function(data) {
 
                                 }).error(function (data, status) {
@@ -423,19 +423,19 @@ angular.module('myApp', [
                                     JSON.stringify(data) + ', status: ' + status);
                             });
                         }).error(function (data, status) {
-                            console.error('Error on get /kibana/templates/fields' + visualization.title + ' ' +
+                            console.error('Error on get /kibana/templates/fields' + $scope.visualizationTitle + ' ' +
                                 JSON.stringify(data) + ', status: ' + status);
                         });
 
-                        $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + visualization.title, $scope.dataWithField)
+                        $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + $scope.visualizationTitle, $scope.dataWithField)
                             .success(function() {
 
                             }).error(function (data, status) {
-                            console.error('Error on post /kibana/visualization/game/' + visualization.title + ' ' +
+                            console.error('Error on post /kibana/visualization/game/' + $scope.visualizationTitle + ' ' +
                                 JSON.stringify(data) + ', status: ' + status);
                         });
                     }).error(function (data, status) {
-                    console.error('Error on post /kibana/templates/visualization/' + visualization.title + ' ' +
+                    console.error('Error on post /kibana/templates/visualization/' + $scope.visualizationTitle + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
                 });
             }
@@ -481,9 +481,13 @@ angular.module('myApp', [
             };
             $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + $scope.testIndex, dashboard)
                 .success(function(data) {
-                    $scope.dashboardLink = $sce.trustAsResourceUrl('http://localhost:5601/app/kibana#/dashboard/dashboard_' +
+                    var url = CONSTANTS.KIBANA+'/app/kibana#/dashboard/dashboard_' +
                         $scope.testIndex + '?embed=true_g=(refreshInterval:' +
-                        '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))');
+                        '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))';
+                    if(url.startsWith('localhost')){
+                        url = 'http://'+url;
+                    }
+                    $scope.dashboardLink = $sce.trustAsResourceUrl(url);
                 }).error(function (data, status) {
                 console.error('Error on post /kibana/dashboard/session/' + $scope.testIndex + ' ' +
                     JSON.stringify(data) + ', status: ' + status);
