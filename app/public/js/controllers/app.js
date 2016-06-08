@@ -243,13 +243,14 @@ angular.module('myApp', [
             }
         };
 
-        $scope.testIndex = 'default';
+        $scope.testIndex = '';
+        $scope.testTracesID = '';
         $scope.submitStatementsFile = function () {
             $scope.statementsFile.contents = JSON.parse($scope.statementsFile.contents);
             if ($scope.statementsFile.contents) {
                 $http.post(CONSTANTS.PROXY + '/sessions/test/' + $scope.selectedGame._id, $scope.statementsFile.contents)
                     .success(function(data) {
-                        $scope.testIndex = data.id;
+                        $scope.testTracesID = data.id;
                     }).error(function (data, status) {
                         console.error('Error on post /sessions/test/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
                     });
@@ -729,7 +730,7 @@ angular.module('myApp', [
                         '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
                 });
 
-                $scope.testIndex = 'default' + $scope.selectedGame._id;
+                $scope.testIndex = $scope.testTracesID ? $scope.testTracesID : 'default'+$scope.selectedGame._id;
                 $http.get(CONSTANTS.PROXY + '/kibana/templates/' + $scope.username)
                     .success(function(data) {
                         $scope.visualizationList = data;
