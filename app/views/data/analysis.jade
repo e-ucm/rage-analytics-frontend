@@ -35,6 +35,13 @@ h1 Analysis
             button.btn.btn-primary.top15(ng-click='addTemplateIndex()') Add text index
     .col-md-8
         label.top30 Add visualizations template:
+        .row
+            input.file(type='file' file-reader="templateVisualization")
+            button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
+        .row
+            label.top30 Example Visualization
+            textarea.form-control.custom-control(rows='6' ng-model='exampleVisualization')
+            button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Add text visualization
         .row(style="overflow-y:scroll; height:200px")
             table.table.table-hover.top30
                 thead
@@ -49,13 +56,6 @@ h1 Analysis
                             label
                                 input(type="checkbox" ng-model='checkboxVisualizations[visualization]' ng-click='selectVisualization(visualization)')
                                 p
-        .row
-            input.file(type='file' file-reader="templateVisualization")
-            button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
-        .row
-            label.top30 Example Visualization
-            textarea.form-control.custom-control(rows='6' ng-model='exampleVisualization')
-            button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Add text visualization
     .col-md-8
         table.table.table-hover.top30
             thead
