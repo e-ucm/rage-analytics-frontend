@@ -30,8 +30,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams',
-        function ($scope, $location, SessionsId, Results, Versions, QueryParams) {
+    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS',
+        function ($scope, $location, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS) {
 
             $scope.refreshResults = function () {
                 var rawResults = Results.query({
@@ -66,6 +66,15 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 }
             };
 
+            $scope.dashboardLink = function() {
+                var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
+                QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:' +
+                    '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))';
+                if (url.startsWith('localhost')) {
+                    url = 'http://' + url;
+                }
+                return $sce.trustAsResourceUrl(url);
+            };
 
             var calculateResults = function (rawResults) {
                 var results = [];

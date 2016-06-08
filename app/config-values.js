@@ -95,6 +95,7 @@ exports.defaultValues = {
     a2HomePage: 'http://localhost:3000/',
     a2ApiPath: 'http://localhost:3000/api/',
     a2AdminUsername: 'root',
+    kibanaPrefix: 'kibana',
     // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
     a2AdminPassword: process.env.A2_rootPassword || (process.env.A2_ROOTPASSWORD || 'root'),
     apiPath: 'localhost:3000/api',
@@ -113,6 +114,7 @@ exports.testValues = {
     a2ApiPath: 'http://localhost:3000/api/',
     a2AdminUsername: 'root',
     a2AdminPassword: 'root',
+    kibanaPrefix: 'kibana',
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
@@ -133,6 +135,8 @@ exports.defaultValues.a2HomePage = 'http://' + exports.defaultValues.a2Host + ':
 exports.defaultValues.a2ApiPath = exports.defaultValues.a2HomePage + 'api/';
 exports.testValues.a2ApiPath = exports.defaultValues.a2ApiPath;
 exports.testValues.a2HomePage = exports.defaultValues.a2HomePage;
+
 exports.testValues.a2AdminUsername = exports.defaultValues.a2AdminUsername;
 exports.testValues.a2AdminPassword = exports.defaultValues.a2AdminPassword;
+
 
