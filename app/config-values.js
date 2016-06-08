@@ -101,7 +101,7 @@ exports.defaultValues = {
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
-    myHost: process.env.MY_HOST || 'localhost',
+    myHost: process.env.MY_HOST || 'localhost'
 };
 
 exports.testValues = {
@@ -118,7 +118,7 @@ exports.testValues = {
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
-    myHost: process.env.MY_HOST || 'localhost',
+    myHost: process.env.MY_HOST || 'localhost'
 };
 
 var prefix = 'RAGE_ANALYTICS_FRONTEND_';

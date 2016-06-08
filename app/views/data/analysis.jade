@@ -42,12 +42,26 @@ h1 Analysis
             label.top30 Example Visualization
             textarea.form-control.custom-control(rows='6' ng-model='exampleVisualization')
             button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Add text visualization
+        .row(style="overflow-y:scroll; height:200px")
+            table.table.table-hover.top30
+                thead
+                    tr
+                        th Visualizations
+                        th Selected
+                tbody(ng-repeat='visualization in visualizationList')
+                    tr
+                        td
+                            label {{visualizationTitleWithoutGameId(visualization)}}
+                        td
+                            label
+                                input(type="checkbox" ng-model='checkboxVisualizations[visualization]' ng-click='selectVisualization(visualization)')
+                                p
     .col-md-8
         table.table.table-hover.top30
             thead
                 tr
                     th Template fields
-                    th My fields
+                    th Values
             tbody
                 tr(ng-repeat='field in visualizationFields')
                     td
