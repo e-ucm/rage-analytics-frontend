@@ -1,0 +1,31 @@
+.container-fluid.top20
+    h1 Fields
+    .col-md-16
+        label.top30 Select the fields that your visualization template have to use:
+        table.table.table-hover
+            thead
+                tr
+                    th Template fields
+                    th Values
+            tbody
+                tr(ng-repeat='field in visualizationFields')
+                    td
+                        label {{field}}
+                    td
+                        .btn-group.pull-left
+                            button.btn.btn-success.dropdown-toggle(data-toggle='dropdown')
+                                | {{getSelectedFieldName(field)}}
+                                span.caret
+                            ul.dropdown-menu
+                                li(ng-repeat='f in dropfields')
+                                    a(ng-click='selectField(field, f)') {{f}}
+    .col-md-16
+        .row
+            nav.top30
+            ul.pager
+                li(class="previous")
+                    a(href="#kibanaVisualization" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaVisualization'") Previous
+                        span.glyphicon.glyphicon-arrow-left
+                li(class="next")
+                    a(href="#traces" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'traces'") Next
+                        span.glyphicon.glyphicon-arrow-right
