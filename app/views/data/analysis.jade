@@ -15,73 +15,30 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-h1 Analysis
-.row(ng-controller='AppCtrl')
-    .col-md-8
-        label.top30 Add an analysis package:
-        label(ng-if="analysis._id") An analysis already exists, it's going to be overridden
-        .row
-            .btn.btn-primary.top5.right10(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
-                    ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
-            button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
-    .col-md-8
-        label.top30 Add index template:
-        .row
-            input.file(type='file' file-reader="index")
-            button.btn.btn-primary.top5(type='submit'  ng-click='submitIndex()') Submit index
-        .row
-            label.top30 Example Index
-            textarea.form-control.custom-control(rows='6' ng-model='exampleIndex')
-            button.btn.btn-primary.top15(ng-click='addTemplateIndex()') Add text index
-    .col-md-8
-        label.top30 Add visualizations template:
-        .row
-            input.file(type='file' file-reader="templateVisualization")
-            button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
-        .row
-            label.top30 Example Visualization
-            textarea.form-control.custom-control(rows='6' ng-model='exampleVisualization')
-            button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Add text visualization
-        .row(style="overflow-y:scroll; height:200px")
-            table.table.table-hover.top30
-                thead
-                    tr
-                        th Visualizations
-                        th Selected
-                tbody(ng-repeat='visualization in visualizationList')
-                    tr
-                        td
-                            label {{visualizationTitleWithoutGameId(visualization)}}
-                        td
-                            label
-                                input(type="checkbox" ng-model='checkboxVisualizations[visualization]' ng-click='selectVisualization(visualization)')
-                                p
-    .col-md-8
-        table.table.table-hover.top30
-            thead
-                tr
-                    th Template fields
-                    th Values
-            tbody
-                tr(ng-repeat='field in visualizationFields')
-                    td
-                        label {{field}}
-                    td
-                        .btn-group.pull-left
-                            button.btn.btn-success.dropdown-toggle(data-toggle='dropdown')
-                                | {{getSelectedFieldName(field)}}
-                                span.caret
-                            ul.dropdown-menu
-                                li(ng-repeat='f in dropfields')
-                                    a(ng-click='selectField(field, f)') {{f}}
-    .col-md-8
-        label.top30 Select a xAPI statements json file:
-        .row
-            input.file(type='file' file-reader="statementsFile")
-            button.btn.btn-primary.top5(type='submit'  ng-click='submitStatementsFile()') Start statements analsysis
-    .col-md-8
-        .row
-            button.btn.btn-warning.top30(ng-click='generateTestVisualization()') Restart visualization test
-            iframe.no-border.top10(src = "{{dashboardLink}}" height="600" width="800")
+h1 Configure the Analysis and the Visualizations
+div
+    nav
+    ul.pagination
+        li(ng-class = 'getActiveClass("stormAnalysis")' )
+            a(href="#stormAnalysis" role="tab" data-toggle="tab") 1.- Select the Analysis
+        li(ng-class = 'getActiveClass("kibanaIndex")' )
+            a(href="#kibanaIndex" role="tab" data-toggle="tab") 2.- Select the Index
+        li(ng-class = 'getActiveClass("kibanaVisualization")' )
+            a(href="#kibanaVisualization" role="tab" data-toggle="tab") 3.- Select Visualizations
+        li(ng-class = 'getActiveClass("configureFields")' )
+            a(href="#configureFields" role="tab" data-toggle="tab") 4.- Configure fields
+        li(ng-class = 'getActiveClass("traces")' )
+            a(href="#traces" role="tab" data-toggle="tab") 5.- Check your Config
 
+    .col-xs-9.col-md-10.tab-content
+        #stormAnalysis.tab-pane.active
+            include configuration/stormAnalysis
+        #kibanaIndex.tab-pane
+            include configuration/kibanaIndex
+        #kibanaVisualization.tab-pane
+            include configuration/kibanaVisualization
+        #configureFields.tab-pane
+            include configuration/configureFields
+        #traces.tab-pane
+            include configuration/traces
 

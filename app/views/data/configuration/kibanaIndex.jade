@@ -1,0 +1,24 @@
+.container-fluid.top20
+    h1 Index-Pattern
+    .row
+        .col-md-16
+            label.top30 Add index template:
+            .row
+                input.file(type='file' file-reader="index")
+                button.btn.btn-primary.top5(type='submit'  ng-click='submitIndex()') Submit index
+            .row
+                label.top30 Or use the default index:
+                button.btn.pull-right.top15(ng-click='seeTemplateIndex = !seeTemplateIndex')  {{templateButtonMsg(seeTemplateIndex)}}
+                    span.caret
+            .row(ng-if='seeTemplateIndex')
+                textarea#exampleIndex.form-control.custom-control(rows='6' ng-model='exampleIndex')
+                button.btn.btn-primary.top15(ng-click='addTemplateIndex()') Use default index
+            .row
+                nav.top30
+                ul.pager
+                    li(class="previous")
+                        a(href="#stormAnalysis" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'stormAnalysis'") Previous
+                            span.glyphicon.glyphicon-arrow-left
+                    li(class="next")
+                        a(href="#kibanaVisualization" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaVisualization'") Next
+                            span.glyphicon.glyphicon-arrow-right

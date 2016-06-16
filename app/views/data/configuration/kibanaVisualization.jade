@@ -1,0 +1,40 @@
+.container-fluid.top20
+    h1 Visualizations
+    .col-md-16
+        label.top30 Add new visualizations template:
+        .row
+            input.file(type='file' file-reader="templateVisualization")
+            button.btn.btn-primary.top5(type='submit'  ng-click='submitTemplateVisualization()') Submit visualizations template
+        .row
+            label.top30 Or use the default index:
+            button.btn.pull-right.top15(ng-click='seeTemplateVisualization = !seeTemplateVisualization')  {{templateButtonMsg(seeTemplateVisualization)}}
+                span.caret
+        .row(ng-if='seeTemplateVisualization')
+            label.top30 Example Visualization
+            textarea#exampleVisualization.form-control.custom-control(rows='6' ng-model='exampleVisualization')
+            button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Use default visualization
+        .row(style="overflow-y:scroll; height:200px")
+            label.top30 Select the visualizations that you want use in your dashboard:
+            table.table.table-hover
+                thead
+                    tr
+                        th Visualizations
+                        th Selected
+                tbody(ng-repeat='visualization in visualizationList')
+                    tr
+                        td
+                            label {{visualizationTitleWithoutGameId(visualization)}}
+                        td
+                            label
+                                input(type="checkbox" ng-model='checkboxVisualizations[visualization]' ng-click='selectVisualization(visualization)')
+                                p
+    .col-md-16
+        .row
+            nav.top30
+            ul.pager
+                li(class="previous")
+                    a(href="#kibanaIndex" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaIndex'") Previous
+                        span.glyphicon.glyphicon-arrow-left
+                li(class="next")
+                    a(href="#configureFields" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'configureFields'") Next
+                        span.glyphicon.glyphicon-arrow-right
