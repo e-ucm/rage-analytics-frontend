@@ -8,7 +8,7 @@
                     th Template fields
                     th Values
             tbody
-                tr(ng-repeat='field in visualizationFields')
+                tr(ng-repeat='field in visualizationFields track by $index')
                     td
                         label {{field}}
                     td

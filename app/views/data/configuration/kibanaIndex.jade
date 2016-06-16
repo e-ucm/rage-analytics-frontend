@@ -11,7 +11,7 @@
                 button.btn.pull-right.top15(ng-click='seeTemplateIndex = !seeTemplateIndex')  {{templateButtonMsg(seeTemplateIndex)}}
                     span.caret
             .row(ng-if='seeTemplateIndex')
-                textarea.form-control.custom-control(rows='6' ng-model='exampleIndex')
+                textarea#exampleIndex.form-control.custom-control(rows='6' ng-model='exampleIndex')
                 button.btn.btn-primary.top15(ng-click='addTemplateIndex()') Use default index
             .row
                 nav.top30

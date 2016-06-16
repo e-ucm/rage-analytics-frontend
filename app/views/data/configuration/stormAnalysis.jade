@@ -8,12 +8,15 @@
                 .btn.btn-primary.top5.right10(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
                 ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
                 button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
+            label.top30(text-align= 'right') or Use default analysis:
             .row
-                nav.top30
-                ul.pager
-                    li.previous.disabled
-                        a(href="#") Previous
-                            span.glyphicon.glyphicon-arrow-left(aria-hidden="true")
-                    li.next
-                        a(href="#kibanaIndex" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaIndex'") Next
-                            span.glyphicon.glyphicon-arrow-right
+                button.btn.btn-primary.top5(type='submit', ng-click='deleteAnalysis()') Select default analysis
+    .row.top30
+        nav.top30
+        ul.pager
+            li.previous.disabled
+                a(href="#") Previous
+                    span.glyphicon.glyphicon-arrow-left(aria-hidden="true")
+            li.next
+                a(href="#kibanaIndex" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaIndex'") Next
+                    span.glyphicon.glyphicon-arrow-right

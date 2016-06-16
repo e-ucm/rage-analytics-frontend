@@ -25,20 +25,20 @@ div
             a(href="#kibanaIndex" role="tab" data-toggle="tab") 2.- Select the Index
         li(ng-class = 'getActiveClass("kibanaVisualization")' )
             a(href="#kibanaVisualization" role="tab" data-toggle="tab") 3.- Select Visualizations
-        li(ng-class = 'getActiveClass("visualizationFields")')
-            a(href"#visualizationFields" role="tab" data-toggle="tab") 4.- Configure Visualizations values
+        li(ng-class = 'getActiveClass("configureFields")' )
+            a(href="#configureFields" role="tab" data-toggle="tab") 4.- Configure fields
         li(ng-class = 'getActiveClass("traces")' )
             a(href="#traces" role="tab" data-toggle="tab") 5.- Check your Config
 
-        .col-xs-9.col-md-10.tab-content
-            #stormAnalysis.tab-pane.active
-                include configuration/stormAnalysis
-            #kibanaIndex.tab-pane
-                include configuration/kibanaIndex
-            #kibanaVisualization.tab-pane
-                include configuration/kibanaVisualization
-            #visualizationFields.tab-pane
-                include configuration/visualizationFields
-            #traces.tab-pane
-                include configuration/traces
+    .col-xs-9.col-md-10.tab-content
+        #stormAnalysis.tab-pane.active
+            include configuration/stormAnalysis
+        #kibanaIndex.tab-pane
+            include configuration/kibanaIndex
+        #kibanaVisualization.tab-pane
+            include configuration/kibanaVisualization
+        #configureFields.tab-pane
+            include configuration/configureFields
+        #traces.tab-pane
+            include configuration/traces
 
