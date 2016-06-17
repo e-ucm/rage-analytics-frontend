@@ -302,6 +302,8 @@ angular.module('myApp', [
 
         $scope.visualizationFields = [];
 
+        $scope.selectedIndex = '';
+
         $scope.selectVisualization = function (visualization) {
             if ($scope.checkboxVisualizations[visualization]) {
                 $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizations: [visualization]})
@@ -393,7 +395,6 @@ angular.module('myApp', [
         };
 
         $scope.dropfields = [];
-        $scope.indexTitle = '';
         // Submit an index
         $scope.submitIndex = function () {
             $scope.index.contents = JSON.parse($scope.index.contents);
@@ -403,6 +404,7 @@ angular.module('myApp', [
                     $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id, $scope.index.contents).success(function (data) {
                         $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.selectedGame._id).success(function (data) {
                             $scope.dropfields = data;
+                            $scope.selectedIndex = $scope.indexTitle;
                         }).error(function (data, status) {
                             console.error('Error on get /kibana/templates/fields/' + $scope.selectedGame._id + ' ' +
                                 JSON.stringify(data) + ', status: ' + status);
@@ -446,26 +448,30 @@ angular.module('myApp', [
         };
 
         $scope.exampleIndex = JSON.stringify({
-            title: 'indexExample',
-            timeFieldName: 'time_field',
-            fields: '[{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":false,' +
-                '\"analyzed\":false,\"doc_values\":false},' +
-            '{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"indexed\":false,' +
-                '\"analyzed\":false,\"doc_values\":false},' +
-            '{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":false,' +
-                '\"analyzed\":false,\"doc_values\":false},' +
-            '{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":false,' +
-                '\"analyzed\":false,\"doc_values\":false},' +
-            '{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"indexed\":false,' +
-                '\"analyzed\":false,\"doc_values\":false},' +
-            '{\"name\":\"time_field\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"indexed\":true,' +
-                '\"analyzed\":false,\"doc_values\":true},' +
-            '{\"name\":\"usernick\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":true,' +
-                '\"analyzed\":true,\"doc_values\":false},' +
-            '{\"name\":\"usernick.keyword\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"indexed\":true,' +
-                '\"analyzed\":false,\"doc_values\":true},' +
-            '{\"name\":\"score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"indexed\":true,' +
-                '\"analyzed\":false,\"doc_values\":true}]'
+            title: 'defaultIndex',
+            timeFieldName: 'timestamp',
+            fields: '[' +
+            '{"name":"_index","type":"string","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false},' +
+            '{"name":"value.keyword","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"gameplayId","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":true,"doc_values":false},' +
+            '{"name":"response.keyword","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"gameplayId.keyword","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"event","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":true,"doc_values":false},' +
+            '{"name":"value","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":true,"doc_values":false},' +
+            '{"name":"versionId.keyword","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"timestamp","type":"date","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"event.keyword","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"target.keyword","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"time_value","type":"number","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"target","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":true,"doc_values":false},' +
+            '{"name":"versionId","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":true,"doc_values":false},' +
+            '{"name":"response","type":"string","count":0,"scripted":false,"indexed":true,"analyzed":true,"doc_values":false},' +
+            '{"name":"score_value","type":"number","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"stored","type":"date","count":0,"scripted":false,"indexed":true,"analyzed":false,"doc_values":true},' +
+            '{"name":"_source","type":"_source","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false},' +
+            '{"name":"_id","type":"string","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false},' +
+            '{"name":"_type","type":"string","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false},' +
+            '{"name":"_score","type":"number","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false}]'
         }, null, '      ');
 
         $scope.exampleVisualization = JSON.stringify({
@@ -489,12 +495,13 @@ angular.module('myApp', [
             }, null, '      ');
 
         $scope.addTemplateIndex = function () {
-            var index = JSON.parse(document.getElementById("exampleIndex").value);
+            var index = JSON.parse(document.getElementById('exampleIndex').value);
             if (index) {
                 $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id, index).success(function (data) {
                     $timeout(function () {
                         $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.selectedGame._id).success(function (data) {
                             $scope.dropfields = data;
+                            $scope.selectedIndex = index.title;
                         }).error(function (data, status) {
                             console.error('Error on get /kibana/templates/fields/' + $scope.selectedGame._id + ' ' +
                                 JSON.stringify(data) + ', status: ' + status);
@@ -508,7 +515,7 @@ angular.module('myApp', [
         };
 
         $scope.addTemplateVisualization = function () {
-            var visualization = JSON.parse(document.getElementById("exampleVisualization").value);
+            var visualization = JSON.parse(document.getElementById('exampleVisualization').value);
             if (visualization) {
                 $scope.visualizationTitle = visualization.title + '_' + $scope.selectedGame._id;
                 $http.post(CONSTANTS.PROXY + '/kibana/templates/visualization/' + $scope.visualizationTitle + '/' + $scope.username, visualization)
@@ -782,17 +789,31 @@ angular.module('myApp', [
                         '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
                 });
 
+                $http.get(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id)
+                    .success(function(data) {
+                        $scope.selectedIndex = data._source.title;
+                    }).error(function (data, status) {
+                });
+
                 $scope.testIndex = 'default' + $scope.selectedGame._id;
+                $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
+                    .success(function(data) {
+                        $scope.defaultList = data;
+                    }).error(function (data, status) {
+                        $scope.defaultList = [];
+                    });
+
                 $http.get(CONSTANTS.PROXY + '/kibana/templates/' + $scope.username)
                     .success(function(data) {
                         $scope.visualizationList = data;
                     }).error(function (data, status) {
                         $scope.visualizationList = [];
-                });
+                    });
 
                 $scope.selectedVisualizationList = [];
                 $scope.visualizationFields = [];
                 $scope.dropfields = [];
+
                 $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id)
                     .success(function(data) {
                         $scope.selectedVisualizationList = data;
@@ -811,6 +832,19 @@ angular.module('myApp', [
                                         $scope.visualizationFields.push(field);
                                     }
                                 });
+
+                                $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + $scope.selectedGame._id).success(function (data) {
+                                    $scope.dropfields = data;
+                                    $scope.visualizationFields.forEach(function (fieldName) {
+                                        if (data.indexOf(fieldName) !== -1) {
+                                            $scope.currentSelectedField[fieldName] = fieldName;
+                                        }
+                                    });
+                                }).error(function (data, status) {
+                                    console.error('Error on get /kibana/templates/fields/' + $scope.selectedGame._id + ' ' +
+                                        JSON.stringify(data) + ', status: ' + status);
+                                });
+
                                 $http.get(CONSTANTS.PROXY + '/kibana/visualization/tuples/fields/game/' + $scope.selectedGame._id).success(function (data) {
                                     $scope.currentSelectedField = JSON.parse(JSON.stringify(data).replace('(dot)', '.'));
                                 }).error(function (data, status) {

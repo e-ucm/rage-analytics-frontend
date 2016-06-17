@@ -20,6 +20,14 @@
                     tr
                         th Visualizations
                         th Selected
+                tbody(ng-repeat='defaultVis in defaultList')
+                    tr.info
+                        td
+                            label {{defaultVis}}
+                        td
+                            label
+                                input(type="checkbox" ng-model='checkboxVisualizations[defaultVis]' ng-click='selectVisualization(defaultVis)')
+                                p
                 tbody(ng-repeat='visualization in visualizationList')
                     tr
                         td

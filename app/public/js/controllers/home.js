@@ -40,8 +40,30 @@ angular.module('homeApp', ['ngStorage', 'services'])
                     var version = new Versions();
                     version.gameId = game._id;
                     version.$save(function () {
-                        $scope.gameTitle = '';
-                        $window.location = 'data?game=' + game._id + '&version=' + version._id;
+                        $http.get(CONSTANTS.PROXY + '/kibana/templates/index/defaultIndex')
+                            .success(function(data) {
+                                $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' +  game._id, data._source).success(function (data) {
+                                    $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
+                                        .success(function(data) {
+                                            $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id, {visualizations: data})
+                                                .success(function(data) {
+                                                    $scope.gameTitle = '';
+                                                    $window.location = 'data?game=' + game._id + '&version=' + version._id;
+                                                }).error(function (data, status) {
+                                                console.error('Error on post /kibana/visualization/list/' +  game._id + ' ' +
+                                                    JSON.stringify(data) + ', status: ' + status);
+                                            });
+                                        }).error(function (data, status) {
+                                        $scope.defaultList = [];
+                                    });
+                                }).error(function (data, status) {
+                                    console.error('Error on post /kibana/templates/index/' +  game._id + ' ' +
+                                        JSON.stringify(data) + ', status: ' + status);
+                                });
+                            }).error(function (data, status) {
+                        });
+
+
                     });
 
                 });
