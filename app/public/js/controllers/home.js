@@ -45,6 +45,16 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                 $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' +  game._id, data._source).success(function (data) {
                                     $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
                                         .success(function(data) {
+                                            data.forEach(function (visualizationId) {
+                                                $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + visualizationId, {})
+                                                    .success(function() {
+
+                                                    }).error(function (data, status) {
+                                                    console.error('Error on post /kibana/visualization/game/' + visualizationId + ' ' +
+                                                        JSON.stringify(data) + ', status: ' + status);
+                                                });
+                                            });
+                                            
                                             $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id, {visualizations: data})
                                                 .success(function(data) {
                                                     $scope.gameTitle = '';
