@@ -45,7 +45,7 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                 $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' +  game._id, data._source).success(function (data) {
                                     $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
                                         .success(function(data) {
-                                            $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id, {visualizations: data})
+                                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id, {visualizations: data})
                                                 .success(function(data) {
                                                     $scope.gameTitle = '';
                                                     $window.location = 'data?game=' + game._id + '&version=' + version._id;
