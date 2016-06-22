@@ -23,18 +23,18 @@
                 tbody(ng-repeat='defaultVis in defaultList')
                     tr.info
                         td
-                            label {{defaultVis}}
+                            label {{defaultVis.title}}
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizations[defaultVis]' ng-click='selectVisualization(defaultVis)')
+                                input(type="checkbox" ng-model='checkboxVisualizations[defaultVis.id]' ng-click='selectVisualization(defaultVis.id)')
                                 p
                 tbody(ng-repeat='visualization in visualizationList')
                     tr
                         td
-                            label {{visualizationTitleWithoutGameId(visualization)}}
+                            label {{visualization.title}}
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizations[visualization]' ng-click='selectVisualization(visualization)')
+                                input(type="checkbox" ng-model='checkboxVisualizations[visualization.id]' ng-click='selectVisualization(visualization.id)')
                                 p
     .col-md-16
         .row
