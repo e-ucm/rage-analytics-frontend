@@ -46,13 +46,15 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                     $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
                                         .success(function(data) {
                                             var count = 0;
-                                            data.forEach(function (visualizationId) {
-                                                $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' +  game._id + '/' + visualizationId, {})
+                                            var selectedVisualization = [];
+                                            data.forEach(function (visualization) {
+                                                $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' +  game._id + '/' + visualization.id, {})
                                                     .success(function() {
+                                                        selectedVisualization.push(visualization.id);
                                                         count++;
                                                         if (count >= data.length) {
-                                                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id, {visualizations: data})
-                                                                .success(function(data) {
+                                                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id,
+                                                                {visualizations: selectedVisualization}).success(function(data) {
                                                                     $scope.gameTitle = '';
                                                                     $window.location = 'data?game=' + game._id + '&version=' + version._id;
                                                                 }).error(function (data, status) {
@@ -61,7 +63,7 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                                             });
                                                         }
                                                     }).error(function (data, status) {
-                                                    console.error('Error on post /kibana/visualization/game/' +  game._id + '/' + visualizationId + ' ' +
+                                                    console.error('Error on post /kibana/visualization/game/' +  game._id + '/' + visualization.id + ' ' +
                                                         JSON.stringify(data) + ', status: ' + status);
                                                 });
                                             });

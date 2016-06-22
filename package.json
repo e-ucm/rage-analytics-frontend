@@ -29,7 +29,7 @@
     "grunt-contrib-clean": "^1.0.0",
     "handlebars": "*",
     "istanbul": "*",
-    "jscs": "*",
+    "jscs": "3.0.3",
     "jshint": "*",
     "mocha": "*",
     "promptly": "*",
