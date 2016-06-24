@@ -58,3 +58,8 @@ html, body {
 .right15 { margin-right:15px; }
 .right20 { margin-right:20px; }
 .right30 { margin-right:30px; }
+
+.in-line {
+    display: inline-block;
+    vertical-align: text-top;
+}

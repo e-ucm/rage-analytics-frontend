@@ -1,16 +1,25 @@
 .container-fluid.top20
-    h1 Analysis
     .row
-        .col-md-16
+        h1 Analysis
+            a.pull-right.glyphicon.glyphicon-question-sign(href='https://github.com/e-ucm/rage-analytics/wiki/Analysis#select-the-analysis'
+                target="_blank" title="See documentation on GitHub")
+    .row
+        p {{analysisDescription}}
+        label.label-info.top30(ng-if="!analysis._id") Now you are using the default analysis.
+        label.label-warning.top30(ng-if="analysis._id") You already have an analysis uploaded.
+        button.btn-info(ng-if='loadingAnalysis') Loading
+            span.fa.fa-refresh.fa-spin
+    .col-md-16
+        .row
             label.top30 Add an analysis package:
-            label(ng-if="analysis._id") An analysis already exists, it's going to be overridden
-            .row
-                .btn.btn-primary.top5.right10(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
-                ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
-                button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
+        .row
+            .btn.btn-primary.top5.right10(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
+            ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
+            button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
+        .row
             label.top30(text-align= 'right') or Use default analysis:
-            .row
-                button.btn.btn-primary.top5(type='submit', ng-click='deleteAnalysis()') Select default analysis
+        .row
+            button.btn.btn-primary.top5(type='submit', ng-click='deleteAnalysis()') Select default analysis
     .row.top30
         nav.top30
         ul.pager

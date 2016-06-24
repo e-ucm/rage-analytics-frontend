@@ -15,20 +15,20 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-h1 Configure the Analysis and the Visualizations
+h1 Analytics Setup
 div
     nav
     ul.pagination
         li(ng-class = 'getActiveClass("stormAnalysis")' )
-            a(href="#stormAnalysis" role="tab" data-toggle="tab") 1.- Select the Analysis
+            a(href="#stormAnalysis" role="tab" data-toggle="tab") 1.- Select Analysis
         li(ng-class = 'getActiveClass("kibanaIndex")' )
-            a(href="#kibanaIndex" role="tab" data-toggle="tab") 2.- Select the Index
+            a(href="#kibanaIndex" role="tab" data-toggle="tab") 2.- Select Index
         li(ng-class = 'getActiveClass("kibanaVisualization")' )
             a(href="#kibanaVisualization" role="tab" data-toggle="tab") 3.- Select Visualizations
         li(ng-class = 'getActiveClass("configureFields")' )
-            a(href="#configureFields" role="tab" data-toggle="tab") 4.- Configure fields
+            a(href="#configureFields" role="tab" data-toggle="tab") 4.- Map Fields
         li(ng-class = 'getActiveClass("traces")' )
-            a(href="#traces" role="tab" data-toggle="tab") 5.- Check your Config
+            a(href="#traces" role="tab" data-toggle="tab") 5.- Test Everything
 
     .col-xs-9.col-md-10.tab-content
         #stormAnalysis.tab-pane.active
