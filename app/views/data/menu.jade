@@ -27,17 +27,19 @@ ul.nav
     li(ng-if='isTeacher()')
         span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
             span.glyphicon.glyphicon-dashboard.right20
-            | Real time
+            | Real Time
     li(ng-if='isDeveloper()' ng-controller='AnalyticsCtrl')
         span.left-menu-item(href="#game-analytics", role="tab", data-toggle="tab", ng-click="view = 'game-analytics'; getStatements()")
             span.fa.fa-bar-chart.right20
-            | Game analytics
+            | LRS Analytics
     li(ng-if='isDeveloper()')
         span.left-menu-item(href="#config", role="tab", data-toggle="tab", ng-click="view = 'config'")
             span.glyphicon.glyphicon-cog.right20
-            | Configuration
+            div.in-line Old Analytics
+                br
+                | Setup
     li(ng-if='isDeveloper()')
         span.left-menu-item(href="#analysis", role="tab", data-toggle="tab", ng-click="view = 'analysis'")
             span.glyphicon.glyphicon-cog.right20
-            | Analysis
+            | Analytics Setup
 

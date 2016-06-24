@@ -250,6 +250,7 @@ angular.module('myApp', [
         $scope.testIndex = 'default';
         $scope.statementSubmitted = false;
         $scope.submitStatementsFile = function () {
+            $scope.loadingDashboard = true;
             $scope.statementsFile.contents = JSON.parse($scope.statementsFile.contents);
             if ($scope.statementsFile.contents) {
                 $http.post(CONSTANTS.PROXY + '/sessions/test/' + $scope.selectedGame._id, $scope.statementsFile.contents)
@@ -257,10 +258,12 @@ angular.module('myApp', [
                         $scope.testIndex = data.id;
                         $scope.statementSubmitted = true;
                         $scope.generateTestVisualization();
+                        $scope.loadingDashboard = false;
                     }).error(function (data, status) {
                         $scope.statementSubmitted = true;
                         $scope.generateTestVisualization();
                         console.error('Error on post /sessions/test/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                        $scope.loadingDashboard = false;
                     });
             }
 
@@ -283,7 +286,7 @@ angular.module('myApp', [
                 return 'Hide default JSON';
             }
 
-            return 'Show default JSON';
+            return 'Show JSON';
         }
 ;
         // ------------------------------ //
@@ -291,6 +294,12 @@ angular.module('myApp', [
         /*  CONFIG KIBANA VISUALIZATION   */
         // ------------------------------ //
         // ------------------------------ //
+
+        $scope.kibanaIndexDescription = 'Kibana and Elastic Search use "Index Patterns" to describe the structure of the data ' +
+            'that they display or query. Your analysis should bundle an Index Pattern for you to use here.';
+        $scope.kibanaVisualizationDescription = 'Visualization templates describe families of graphics and plots; a Visualization Template, ' +
+            'when, combined with fields from an Index Pattern, fully describes a visualization, which can then be populated with data.';
+        $scope.analysisDescription = 'An analysis takes data from any source (for example, interaction data from games) and stores it for later visualization.';
 
         $scope.currentSelectedField = {};
         $scope.dataWithField = {};
@@ -671,6 +680,7 @@ angular.module('myApp', [
         // Upload on file select or drop
         $scope.upload = function (file) {
             var formData = new FormData();
+            $scope.loadingAnalysis = true;
             formData.append('analysis', file);
             $http.post(CONSTANTS.PROXY + '/analysis/' + $scope.selectedVersion._id, formData, {
                 transformRequest: angular.identity,
@@ -684,6 +694,7 @@ angular.module('myApp', [
 
                 // Check if the version has an analysis uploaded
                 updateAnalysis();
+                $scope.loadingAnalysis = false;
             }, function errorCallback(response) {
                 // Called asynchronously if an error occurs
                 // or server returns response with an error status.
@@ -692,6 +703,7 @@ angular.module('myApp', [
 
                 // Check if the version has an analysis uploaded
                 updateAnalysis();
+                $scope.loadingAnalysis = false;
             });
         };
 

@@ -1,14 +1,19 @@
 .container-fluid.top20
-    h1 Test Dashboard
+    .row
+        h1 Test Dashboard
+            a.pull-right.glyphicon.glyphicon-question-sign(href='https://github.com/e-ucm/rage-analytics/wiki/Analysis#test-the-configuration'
+                target="_blank" title="See documentation on GitHub")
     .col-md-16
-            label.top30 Select a xAPI statements json file:
+            .row
+                label.top30 Select a xAPI statements json file:
             .row
                 input.file(type='file' file-reader="statementsFile")
                 button.btn.btn-primary.top5(type='submit'  ng-click='submitStatementsFile()') Start statements analsysis
-        .col-md-16
-            .row(ng-if='statementSubmitted')
-                button.btn.btn-warning.top30(ng-click='generateTestVisualization()') Restart visualization test
-                iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}" height="600" width="800")
+                button.btn-info(ng-if='loadingDashboard') Loading
+                    span.fa.fa-refresh.fa-spin
+    .row(ng-if='statementSubmitted')
+        button.btn.btn-warning.top30(ng-click='generateTestVisualization()') Restart visualization test
+        iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}" height="{{selectedVisualizationList.length*250}}" width="100%")
     .col-md-16
         .row
             nav.top30
