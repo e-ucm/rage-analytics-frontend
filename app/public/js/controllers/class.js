@@ -63,8 +63,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                                 // Add dashboard
                                 var numPan = 1;
                                 data.forEach(function (visualizationId) {
-                                    $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + visualizationId + '/' + session._id, {})
-                                        .success(function(result) {
+                                    $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId + '/' + visualizationId + '/' + session._id,
+                                        {}).success(function(result) {
                                             panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
                                                 '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
                                                 '\"size_x\":3,\"size_y\":2,\"col\":1,\"row\":' + numPan + '}');
