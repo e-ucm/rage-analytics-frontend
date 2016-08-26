@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "dependencies": {
         "angular": "*",
+        "angular-cookies": "*",
         "angular-route": "*",
         "angular-resource": "*",
         "angular-mocks": "*",

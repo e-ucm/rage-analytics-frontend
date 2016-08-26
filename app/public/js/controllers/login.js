@@ -18,15 +18,16 @@
 
 'use strict';
 
-angular.module('loginApp', ['ngStorage'])
-    .controller('LoginCtrl', ['$scope', '$http', '$window', '$timeout', '$localStorage', 'CONSTANTS',
-        function ($scope, $http, $window, $timeout, $localStorage, CONSTANTS) {
+angular.module('loginApp', ['ngStorage', 'ngCookies'])
+    .controller('LoginCtrl', ['$scope', '$http', '$window', '$timeout', '$localStorage', '$cookies', 'CONSTANTS',
+        function ($scope, $http, $window, $timeout, $localStorage, $cookies, CONSTANTS) {
             $scope.$storage = $localStorage;
 
             $scope.login = function () {
                 $http.post(CONSTANTS.APIPATH + '/login', $scope.user).success(function (data) {
                     $localStorage.$reset();
                     $scope.$storage.user = data.user;
+                    $cookies.put('rageUserCookie', data.user.token);
 
                     $http.get(CONSTANTS.APIPATH + '/users/' + data.user._id + '/roles').success(function (data) {
                         $scope.$storage.user.roles = data;
