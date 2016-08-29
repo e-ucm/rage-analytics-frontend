@@ -22,8 +22,13 @@
 angular.module('myApp', [
     'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable', 'env-vars',
     'ngFileUpload'
-]).run(function (editableOptions) {
+]).run(function (editableOptions, $localStorage, $cookies) {
     editableOptions.theme = 'bs3';
+    if($localStorage.user) {
+        $cookies.put('rageUserCookie', $localStorage.user.token, {
+            path: '/'
+        });
+    }
 }).filter('prettyDateId', function () {
     return function (_id) {
         return $.format.prettyDate(new Date(parseInt(_id.slice(0, 8), 16) * 1000));
