@@ -27,7 +27,7 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
                 $http.post(CONSTANTS.APIPATH + '/login', $scope.user).success(function (data) {
                     $localStorage.$reset();
                     $scope.$storage.user = data.user;
-                    $cookies.put('rageUserCookie', data.user.token);
+                    $cookies.put('rageUserCookie', data.user.token, {path : '/'});
 
                     $http.get(CONSTANTS.APIPATH + '/users/' + data.user._id + '/roles').success(function (data) {
                         $scope.$storage.user.roles = data;
