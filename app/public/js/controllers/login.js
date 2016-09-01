@@ -39,10 +39,11 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
                         }, 110);
                     }).error(function (data, status) {
                         console.error('Error on get /api/users/:userId/roles: ' + JSON.stringify(data) + ', status: ' + status);
-
+                        $scope.errorResponse = data.message;
                     });
                 }).error(function (data, status) {
                     console.error('Error on post /api/login: ' + JSON.stringify(data) + ', status: ' + status);
+                    $scope.errorResponse = data.message;
                 });
             };
         }]);
