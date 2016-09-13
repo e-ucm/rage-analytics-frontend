@@ -68,8 +68,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.dashboardLink = function() {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:' +
-                    '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))';
+                QueryParams.getQueryParam('session') + "?embed=true_g=(refreshInterval:(display:'5%20seconds'," +
+                    "pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))";
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }

@@ -637,7 +637,7 @@ angular.module('myApp', [
                 $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.selectedGame._id + '/' + visualizationId + '/' + $scope.testIndex, {})
                     .success(function(data) {
                         panels.push('{\"id\":\"' + visualizationId + '_' + $scope.testIndex + '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                            '\"size_x\":3,\"size_y\":2,\"col\":1,\"row\":' + numPan + '}');
+                            '\"size_x\":6,\"size_y\":4,\"col\":'+(1+(numPan-1%2))+',\"row\":' + (numPan+1/2) + '}');
                         uiStates['P-' + numPan] = {vis: {legendOpen: false}};
                         numPan++;
 
@@ -651,7 +651,9 @@ angular.module('myApp', [
                                 optionsJSON: '{"darkTheme":false}',
                                 uiStateJSON: JSON.stringify(uiStates),
                                 version: 1,
-                                timeRestore: false,
+                                timeRestore: true,
+                                timeTo: "now",
+                                timeFrom: "now-1h",
                                 kibanaSavedObjectMeta: {
                                     searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                 }
@@ -659,8 +661,8 @@ angular.module('myApp', [
                             $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + $scope.testIndex, dashboard)
                                 .success(function(data) {
                                     var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                                        $scope.testIndex + '?embed=true_g=(refreshInterval:' +
-                                        '(display:Off,pause:!f,value:0),time:(from:now-5y,mode:quick,to:now))';
+                                        $scope.testIndex + "?embed=true_g=(refreshInterval:(display:'5%20seconds'," +
+                                        "pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))";
                                     if (url.startsWith('localhost')) {
                                         url = 'http://' + url;
                                     }
