@@ -45,7 +45,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
 
-                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.gameId)
+                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch' + $scope.gameId)
                             .success(function(data) {
 
                                 var panels = [];

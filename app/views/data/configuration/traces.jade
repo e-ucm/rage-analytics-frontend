@@ -13,7 +13,8 @@
                     span.fa.fa-refresh.fa-spin
     .row(ng-if='statementSubmitted')
         button.btn.btn-warning.top30(ng-click='generateTestVisualization()') Restart visualization test
-        iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}" height="{{selectedVisualizationList.length*250}}" width="100%")
+        iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}"
+            height="{{selectedVisualizationDevList.length*250+selectedVisualizationTchList.length*250}}" width="100%")
     .col-md-16
         .row
             nav.top30
