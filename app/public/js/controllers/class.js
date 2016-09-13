@@ -67,7 +67,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                                         {}).success(function(result) {
                                             panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
                                                 '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                                '\"size_x\":3,\"size_y\":2,\"col\":1,\"row\":' + numPan + '}');
+                                                '\"size_x\":6,\"size_y\":4,\"col\":'+(1+(numPan-1%2))+',\"row\":' +
+                                                (numPan+1/2) + '}');
                                             uiStates['P-' + numPan] = {vis: {legendOpen: false}};
                                             numPan++;
 
@@ -80,7 +81,9 @@ angular.module('classApp', ['ngStorage', 'services'])
                                                     optionsJSON: '{"darkTheme":false}',
                                                     uiStateJSON: JSON.stringify(uiStates),
                                                     version: 1,
-                                                    timeRestore: false,
+                                                    timeRestore: true,
+                                                    timeTo: "now",
+                                                    timeFrom: "now-1h",
                                                     kibanaSavedObjectMeta: {
                                                         searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                                     }

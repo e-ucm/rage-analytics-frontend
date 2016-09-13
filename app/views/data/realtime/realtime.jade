@@ -49,36 +49,5 @@ link(rel="stylesheet", href="css/realtime.css")
                 #warnings.tab-pane.col-xs-12
                     .row(ng-repeat="i in player.warnings") {{ version.warnings[i].message }}
     .row(ng-show="!player")
-        iframe.no-border(src = "{{dashboardLink()}}" height="600" width="800")
-    .row(ng-show="!player")
-        ul.nav.nav-tabs(role="tablist")
-            li.col-xs-6.active.tab-button
-                a(href="#all" data-toggle="tab") All
-            li.col-xs-6.tab-button
-                a(href="#players" data-toggle="tab") Players ({{ results.length }})
-    .row.tab-content(ng-show="!player")
-        #all.tab-pane.active.col-xs-12
-            .row.titles
-                .col-xs-6 Progress
-                .col-xs-6 Score
-            .row
-                #progress.col-xs-4.col-xs-offset-1
-                #score.col-xs-4.col-xs-offset-2
-            p Warnings
-            ul
-                li(ng-repeat="warning in agg.warnings") {{ warning.count }} - {{ warning.message }}
-            p Alerts
-            ul
-                li(ng-repeat="alert in agg.alerts") {{ alert.count }} - {{ alert.message }}
-        #players.tab-pane.col-xs-12
-            .row.player-result(ng-repeat="result in results | orderBy:alertScore:true" reports)
-                .col-xs-6.no-padding(ng-click="viewPlayer(result)")
-                    svg(viewBox="0 0 200 100")
-                        text(dominant-baseline="middle" x="15" y="20" style="fill: black") {{ result.name }}
-                        circle(cx="25" cy="60" r="5" fill="red")
-                        text(dominant-baseline="middle" x="35" y="60" style="fill: black") {{ result.alerts.length }}
-                        circle(cx="75" cy="60" r="5" fill="orange")
-                        text(dominant-baseline="middle" x="85" y="60" style="fill: black") {{ result.warnings.length }}
-                .col-xs-3.progress-marker.no-padding
-                .col-xs-3.score-marker.no-padding
+        iframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
 include scripts
