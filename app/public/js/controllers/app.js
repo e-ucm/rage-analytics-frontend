@@ -392,8 +392,10 @@ angular.module('myApp', [
                 $http.post(CONSTANTS.PROXY + '/kibana/templates/visualization/author/' + $scope.username,
                     $scope.templateVisualization.contents).success(function (visualizationData) {
                         $timeout(function () {
+                            var visualizationBodyTemplate = $scope.dataWithField;
+                            visualizationBodyTemplate.visualizationTemplate = $scope.templateVisualization.contents;
                             $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' + $scope.selectedGame._id + '/' + visualizationData._id,
-                                $scope.dataWithField).success(function() {
+                                visualizationBodyTemplate).success(function() {
                                     var body = JSON.parse(JSON.stringify($scope.dataWithField).split('.').join('(dot)'));
                                     $http.post(CONSTANTS.PROXY + '/kibana/visualization/tuples/fields/game/' + $scope.selectedGame._id, body)
                                         .success(function (data) {
