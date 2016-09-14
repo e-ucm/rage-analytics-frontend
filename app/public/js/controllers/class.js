@@ -45,7 +45,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
 
-                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch' + $scope.gameId)
+                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
                             .success(function(data) {
 
                                 var panels = [];
@@ -67,8 +67,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                                         {}).success(function(result) {
                                             panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
                                                 '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                                '\"size_x\":6,\"size_y\":4,\"col\":'+(1+(numPan-1%2))+',\"row\":' +
-                                                (numPan+1/2) + '}');
+                                                '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
+                                                (numPan + 1 / 2) + '}');
                                             uiStates['P-' + numPan] = {vis: {legendOpen: false}};
                                             numPan++;
 
@@ -82,8 +82,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                                                     uiStateJSON: JSON.stringify(uiStates),
                                                     version: 1,
                                                     timeRestore: true,
-                                                    timeTo: "now",
-                                                    timeFrom: "now-1h",
+                                                    timeTo: 'now',
+                                                    timeFrom: 'now-1h',
                                                     kibanaSavedObjectMeta: {
                                                         searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                                     }

@@ -20,11 +20,11 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp', 'services', 'xeditable', 'env-vars',
-    'ngFileUpload'
+    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp',
+    'devVisualizatorApp', 'services', 'xeditable', 'env-vars', 'ngFileUpload'
 ]).run(function (editableOptions, $localStorage, $cookies) {
     editableOptions.theme = 'bs3';
-    if($localStorage.user) {
+    if ($localStorage.user) {
         $cookies.put('rageUserCookie', $localStorage.user.token, {
             path: '/'
         });
@@ -328,7 +328,7 @@ angular.module('myApp', [
             var obj = {};
             var nameList = '';
 
-            if(usr === 'dev'){
+            if (usr === 'dev') {
                 listVisualizations = $scope.selectedVisualizationDevList ? $scope.selectedVisualizationDevList : [];
                 checkboxList = $scope.checkboxVisualizationsDev ? $scope.checkboxVisualizationsDev : {};
                 nameList = 'visualizationsDev';
@@ -366,7 +366,7 @@ angular.module('myApp', [
                         JSON.stringify(data) + ', status: ' + status);
                 });
             } else {
-                $http.delete(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id + '/'+ usr +'/' + visualizationId)
+                $http.delete(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id + '/' + usr + '/' + visualizationId)
                     .success(function(data) {
                         $scope.selectedVisualizationDevList = data.visualizationsDev;
                         $scope.selectedVisualizationTchList = data.visualizationsTch;
@@ -412,8 +412,8 @@ angular.module('myApp', [
                                         $scope.visualizationFields.push(f);
                                     }
                                 });
-                                $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, {visualizationsDev: [visualizationData._id]})
-                                    .success(function(data) {
+                                $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id,
+                                    {visualizationsDev: [visualizationData._id]}).success(function(data) {
                                         if ($scope.selectedVisualizationDevList.indexOf(visualizationData._id) === -1) {
                                             $scope.selectedVisualizationDevList.push(visualizationData._id);
                                         }
@@ -677,7 +677,7 @@ angular.module('myApp', [
                 $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.selectedGame._id + '/' + visualizationId + '/' + $scope.testIndex, {})
                     .success(function(data) {
                         panels.push('{\"id\":\"' + visualizationId + '_' + $scope.testIndex + '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                            '\"size_x\":6,\"size_y\":4,\"col\":'+(1+(numPan-1%2))+',\"row\":' + (numPan+1/2) + '}');
+                            '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' + (numPan + 1 / 2) + '}');
                         uiStates['P-' + numPan] = {vis: {legendOpen: false}};
                         numPan++;
 
@@ -692,8 +692,8 @@ angular.module('myApp', [
                                 uiStateJSON: JSON.stringify(uiStates),
                                 version: 1,
                                 timeRestore: true,
-                                timeTo: "now",
-                                timeFrom: "now-1h",
+                                timeTo: 'now',
+                                timeFrom: 'now-1h',
                                 kibanaSavedObjectMeta: {
                                     searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                 }
@@ -701,8 +701,8 @@ angular.module('myApp', [
                             $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + $scope.testIndex, dashboard)
                                 .success(function(data) {
                                     var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                                        $scope.testIndex + "?embed=true_g=(refreshInterval:(display:'5%20seconds'," +
-                                        "pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))";
+                                        $scope.testIndex + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
+                                        'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                                     if (url.startsWith('localhost')) {
                                         url = 'http://' + url;
                                     }
