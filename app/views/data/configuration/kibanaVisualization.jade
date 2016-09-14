@@ -21,6 +21,8 @@
             button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Use default visualization
         .row(style="overflow-y:scroll; height:200px").top30
             label.top30 Select the visualizations that you want use in your dashboard:
+            button.btn-info(ng-if='waitOperation')
+                span.fa.fa-refresh.fa-spin
             table.table.table-hover
                 thead
                     tr
@@ -33,11 +35,11 @@
                             label {{defaultVis.title}}
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizationsTch[defaultVis.id]' ng-click='selectVisualization("tch", defaultVis.id)')
+                                input(type="checkbox" ng-model='checkboxVisualizationsTch[defaultVis.id]' ng-if='!waitOperation'  ng-click='selectVisualization("tch", defaultVis.id)')
                                 p
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizationsDev[defaultVis.id]' ng-click='selectVisualization("dev", defaultVis.id)')
+                                input(type="checkbox" ng-model='checkboxVisualizationsDev[defaultVis.id]' ng-if='!waitOperation' ng-click='selectVisualization("dev", defaultVis.id)')
                                 p
                 tbody(ng-repeat='visualization in visualizationList')
                     tr
@@ -45,11 +47,11 @@
                             label {{visualization.title}}
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizationsTch[visualization.id]' ng-click='selectVisualization("tch", visualization.id)')
+                                input(type="checkbox" ng-model='checkboxVisualizationsTch[visualization.id]' ng-if='!waitOperation' ng-click='selectVisualization("tch", visualization.id)')
                                 p
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizationsDev[visualization.id]' ng-click='selectVisualization("dev", visualization.id)')
+                                input(type="checkbox" ng-model='checkboxVisualizationsDev[visualization.id]' ng-if='!waitOperation' ng-click='selectVisualization("dev", visualization.id)')
                                 p
     .col-md-16
         .row

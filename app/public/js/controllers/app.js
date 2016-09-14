@@ -322,7 +322,10 @@ angular.module('myApp', [
 
         $scope.selectedIndex = '';
 
+        $scope.waitOperation = false;
+        
         $scope.selectVisualization = function (usr, visualizationId) {
+            $scope.waitOperation = true;
             var checkboxList;
             var listVisualizations;
             var obj = {};
@@ -343,6 +346,7 @@ angular.module('myApp', [
                 $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id, obj)
                     .success(function(data) {
                         listVisualizations.push(visualizationId);
+                        $scope.waitOperation = false;
                         var exist;
                         $http.get(CONSTANTS.PROXY + '/kibana/templates/fields/' + visualizationId).success(function (data) {
                             data.forEach(function (field) {
@@ -364,16 +368,19 @@ angular.module('myApp', [
                     }).error(function (data, status) {
                     console.error('Error on post /kibana/visualization/list/' + $scope.selectedGame._id + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
+                    $scope.waitOperation = false;
                 });
             } else {
                 $http.delete(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id + '/' + usr + '/' + visualizationId)
                     .success(function(data) {
                         $scope.selectedVisualizationDevList = data.visualizationsDev;
                         $scope.selectedVisualizationTchList = data.visualizationsTch;
+                        $scope.waitOperation = false;
                         // TODO remove fields
                     }).error(function (data, status) {
                     console.error('Error on post /kibana/visualization/list/' + $scope.selectedGame._id + '/' + visualizationId + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
+                    $scope.waitOperation = false;
                 });
             }
         };
