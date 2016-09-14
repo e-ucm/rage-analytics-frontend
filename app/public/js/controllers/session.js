@@ -66,10 +66,10 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 }
             };
 
-            $scope.dashboardLink = function() {
+            $scope.dashboardLink = function () {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
-                    'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
+                    QueryParams.getQueryParam('session') + "?embed=true_g=(refreshInterval:(display:'5%20seconds'," +
+                    "pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))";
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
@@ -78,39 +78,16 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             var calculateResults = function (rawResults) {
                 var results = [];
-                var agg = {
-                    score: [],
-                    progress: [],
-                    warnings: [],
-                    alerts: []
-                };
-
-                $scope.agg = {
-                    score: 0,
-                    progress: 0,
-                    alerts: [],
-                    warnings: []
-                };
                 rawResults.forEach(function (result) {
                     result.name = evalExpression.call(result, $scope.version.alias, 'Unknown');
 
                     result.score = Math.min(1, evalExpression.call(result, $scope.version.score, 0) / $scope.version.maxScore);
 
-                    var progress = evalExpression.call(result, $scope.version.progress, 0);
-                    result.progress = Math.min(1, progress);
                     result.warnings = [];
                     for (var i = 0; $scope.version.warnings && i < $scope.version.warnings.length; i++) {
                         var warning = $scope.version.warnings[i];
                         if (evalExpression.call(result, warning.cond, false)) {
                             result.warnings.push(i);
-                            var aggWarning = agg.warnings[i] || {
-                                    id: i,
-                                    message: warning.message,
-                                    count: 0
-                                };
-
-                            agg.warnings[i] = aggWarning;
-                            aggWarning.count++;
                         }
                     }
 
@@ -123,81 +100,22 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                                 id: i,
                                 level: level
                             });
-
-                            var aggAlert = agg.alerts[i] || {
-                                    id: i,
-                                    message: alert.message,
-                                    count: 0
-                                };
-
-                            agg.alerts[i] = aggAlert;
-                            aggAlert.count++;
                         }
                     }
-                    results.push(result);
+                    if (result.warnings.length > 0 || result.alerts.length > 0) {
+                        results.push(result);
+                    }
 
                     if ($scope.player && $scope.player._id === result._id) {
                         $scope.player = result;
                     }
 
-                    agg.score.push(result.score);
-                    agg.progress.push(result.progress);
-                });
-
-                agg.alerts.forEach(function (alert) {
-                    if (alert) {
-                        $scope.agg.alerts.push(alert);
-                    }
-                });
-
-                agg.warnings.forEach(function (warning) {
-                    if (warning) {
-                        $scope.agg.warnings.push(warning);
-                    }
-                });
-
-                new gauss.Vector(agg.score).median(function (median) {
-                    $scope.agg.score = median;
-                });
-
-                new gauss.Vector(agg.progress).median(function (median) {
-                    $scope.agg.progress = median;
                 });
 
                 $scope.results = results;
             };
 
-            if (!$scope.agg) {
-                $scope.agg = {
-                    score: 0,
-                    progress: 0,
-                    alerts: [],
-                    warnings: []
-                };
-            }
-
-            var progressUI = new RadialProgress('#progress');
-
-            $scope.$watch('agg.progress', function () {
-                progressUI.setProgress($scope.agg.progress || 0);
-            });
-
-            var scoreUI = new ColumnProgress('#score');
-
-            $scope.$watch('agg.score', function () {
-                scoreUI.setProgress($scope.agg.score || 0);
-            });
-
-            $scope.alertScore = function (result) {
-                return result.alerts.length * 100 + result.warnings.length - result.score * 10;
-            };
-
-            var progressPlayer = new RadialProgress('#progress-player');
-            var scorePlayer = new ColumnProgress('#score-player');
-
             $scope.viewPlayer = function (result) {
-                progressPlayer.setProgress(result.progress || 0);
-                scorePlayer.setProgress(result.score || 0);
                 $scope.player = result;
             };
 

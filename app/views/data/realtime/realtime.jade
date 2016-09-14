@@ -17,22 +17,15 @@
  
 link(rel="stylesheet", href="css/realtime.css")
 .container-fluid.height100(ng-controller="SessionCtrl" role="tabpanel" style="position:relative")
+    h1(ng-if="results.length > 0") Alerts & Warnings
     .row(ng-show="player")
-        .accept(ng-click="updateLevels(player)")
-            svg(viewBox="0 0 100 100")
-                circle(cx="50" cy="50" r="50" fill="#4caf50")
-                path(d="M 25,50 42,65 75,35" style="fill:none;stroke:#ffffff;stroke-width:6")
         .col-xs-12
             .row
-                .col-xs-8 {{ player.name }}
+                .col-xs-8
                 .col-xs-4.text-right(ng-click="player = null" style="min-height: 1cm; color: #777")
                     span.glyphicon.glyphicon-remove
             .row.titles
-                .col-xs-6 Progress
-                .col-xs-6 Score
-            .row
-                #progress-player.col-xs-4.col-xs-offset-1
-                #score-player.col-xs-4.col-xs-offset-2
+                h3.col-xs-12 {{ player.name }}
             .row
                 ul.nav.nav-tabs(role="tablist")
                     li.col-xs-6.active.tab-button
@@ -45,9 +38,30 @@ link(rel="stylesheet", href="css/realtime.css")
                             | Warnings ({{ player.warnings.length }})
             .row.tab-content.height100
                 #alerts.tab-pane.active.col-xs-12
-                    .row(ng-repeat="alert in player.alerts") {{ i }} {{ version.alerts[alert.id].message }}
+                    .row(ng-repeat="alert in player.alerts")
+                        h4 {{ i }} - {{ version.alerts[alert.id].message }}
+                    a.pull-right(ng-if="player.alerts.length > 0" ng-click='updateLevels(player)')
+                        span.glyphicon.glyphicon-ok
+                            |  Remove alerts
                 #warnings.tab-pane.col-xs-12
-                    .row(ng-repeat="i in player.warnings") {{ version.warnings[i].message }}
-    .row(ng-show="!player")
-        iframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
+                    .row(ng-repeat="i in player.warnings")
+                        h4 {{ i }} - {{ version.warnings[i].message }}
+    .row.tab-content(ng-show="!player")
+        table.table.table-hover.warning-alert-table(ng-if="results.length > 0" )
+            thead
+                tr
+                    th User
+                    th
+                        span.glyphicon.glyphicon-remove-sign.right10(style="color:red")
+                        | Alerts
+                    th
+                        span.glyphicon.glyphicon-exclamation-sign.right10(style="color:orange")
+                        | Warnings
+            tbody
+                tr(ng-repeat="result in results | orderBy:alertScore:true" ng-click="viewPlayer(result)")
+                    td {{ result.name }}
+                    td {{ result.alerts.length }}
+                    td {{ result.warnings.length }}
+    h1 Visualizations
+    iframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
 include scripts

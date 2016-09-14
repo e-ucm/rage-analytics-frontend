@@ -33,19 +33,7 @@ a(href="#", editable-text="selectedGame.link" onaftersave="changeGameLink()") Li
             li
                 span Alias
                 | =
-                a(href="#", editable-text="selectedVersion.alias" onbeforesave="saveVersion()") {{ selectedVersion.alias || 'Not set.' }}
-            li
-                span Score
-                | =
-                a(href="#", editable-text="selectedVersion.score" onbeforesave="saveVersion()") {{ selectedVersion.score || 'Not set.' }}
-            li
-                span Max Score
-                | =
-                a(href="#", editable-number="selectedVersion.maxScore" e-step="any" onbeforesave="saveVersion()") {{ selectedVersion.maxScore || 'Not set.' }}
-            li
-                span Progress
-                | =
-                a(href="#", editable-text="selectedVersion.progress" onbeforesave="saveVersion()") {{ selectedVersion.progress || 'Not set.' }}
+                a(href="#", editable-text="selectedVersion.alias" onbeforesave="saveVersion()") {{ selectedVersion.alias || 'this.name' }}
 .row(ng-controller="DataCtrl")
     .row.top10
         .col-sm-12
