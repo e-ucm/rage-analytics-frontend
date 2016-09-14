@@ -24,8 +24,8 @@ angular.module('dataApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.addWarning = function () {
                 $scope.addToList('warnings', {
-                    cond: 'false',
-                    message: 'No message'
+                    query: '{}',
+                    message: 'No message.'
                 });
             };
 
