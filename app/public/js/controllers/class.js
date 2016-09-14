@@ -47,7 +47,6 @@ angular.module('classApp', ['ngStorage', 'services'])
 
                         $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
                             .success(function(data) {
-
                                 var panels = [];
                                 var uiStates = {};
 
@@ -62,9 +61,10 @@ angular.module('classApp', ['ngStorage', 'services'])
 
                                 // Add dashboard
                                 var numPan = 1;
-                                data.forEach(function (visualizationId) {
-                                    $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId + '/' + visualizationId + '/' + session._id,
-                                        {}).success(function(result) {
+                                if (data.length > 0) {
+                                    data.forEach(function (visualizationId) {
+                                        $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId +
+                                            '/' + visualizationId + '/' + session._id, {}).success(function (result) {
                                             panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
                                                 '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
                                                 '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
@@ -89,7 +89,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                                                     }
                                                 };
                                                 $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + session._id, dashboard)
-                                                    .success(function(data) {
+                                                    .success(function (data) {
                                                         $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
                                                             QueryParams.getQueryParam('version') + '&session=' + session._id;
                                                     }).error(function (data, status) {
@@ -101,7 +101,11 @@ angular.module('classApp', ['ngStorage', 'services'])
                                             console.error('Error on post /kibana/visualization/session/' + visualizationId + '/' + session._id + ' ' +
                                                 JSON.stringify(data) + ', status: ' + status);
                                         });
-                                });
+                                    });
+                                } else {
+                                    $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                                        QueryParams.getQueryParam('version') + '&session=' + session._id;
+                                }
                             }).error(function (data, status) {
                                 console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' +
                                     JSON.stringify(data) + ', status: ' + status);

@@ -323,7 +323,7 @@ angular.module('myApp', [
         $scope.selectedIndex = '';
 
         $scope.waitOperation = false;
-        
+
         $scope.selectVisualization = function (usr, visualizationId) {
             $scope.waitOperation = true;
             var checkboxList;
