@@ -47,14 +47,21 @@ link(rel="stylesheet", href="css/realtime.css")
                     .row(ng-repeat="i in player.warnings")
                         h4 {{ i }} - {{ version.warnings[i].message }}
     .row.tab-content(ng-show="!player")
-        .row.player-result(ng-repeat="result in results | orderBy:alertScore:true" reports)
-            .col-xs-6.no-padding(ng-click="viewPlayer(result)")
-                svg(viewBox="0 0 200 100")
-                    text(dominant-baseline="middle" x="15" y="20" style="fill: black") {{ result.name }}
-                    circle(cx="25" cy="60" r="5" fill="red")
-                    text(dominant-baseline="middle" x="35" y="60" style="fill: black") {{ result.alerts.length }}
-                    circle(cx="75" cy="60" r="5" fill="orange")
-                    text(dominant-baseline="middle" x="85" y="60" style="fill: black") {{ result.warnings.length }}
+        table.table.table-hover.warning-alert-table(ng-if="results.length > 0" )
+            thead
+                tr
+                    th User
+                    th
+                        span.glyphicon.glyphicon-remove-sign.right10(style="color:red")
+                        | Alerts
+                    th
+                        span.glyphicon.glyphicon-exclamation-sign.right10(style="color:orange")
+                        | Warnings
+            tbody
+                tr(ng-repeat="result in results | orderBy:alertScore:true" ng-click="viewPlayer(result)")
+                    td {{ result.name }}
+                    td {{ result.alerts.length }}
+                    td {{ result.warnings.length }}
     h1 Visualizations
     iframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
 include scripts

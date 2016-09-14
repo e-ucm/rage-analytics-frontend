@@ -63,3 +63,18 @@ html, body {
     display: inline-block;
     vertical-align: text-top;
 }
+
+.warning-alert-table {
+    cursor: pointer;
+}
+
+.warning-alert-table tr td:nth-child(2){
+        background-color: #ffcfb6; text-align: center;
+}
+.warning-alert-table tr td:nth-child(2):hover{
+    background-color: #ffcfb6; text-align: center;
+}
+
+.warning-alert-table tr td:nth-child(3){
+    background-color: #ffef8f; text-align: center; cursor: pointer;
+}
