@@ -42,4 +42,10 @@ ul.nav
         span.left-menu-item(href="#analysis", role="tab", data-toggle="tab", ng-click="view = 'analysis'")
             span.glyphicon.glyphicon-cog.right20
             | Analytics Setup
+    li(ng-if='isDeveloper()')
+        span.left-menu-item(href="#dev-visualization", role="tab", data-toggle="tab", ng-click="view = 'dev-visualization'")
+            span.glyphicon.glyphicon-dashboard.right20
+            div.in-line Developer
+                br
+                | Visualizations
 

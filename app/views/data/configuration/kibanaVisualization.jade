@@ -25,14 +25,19 @@
                 thead
                     tr
                         th Visualizations
-                        th Selected
+                        th Teacher
+                        th Developer
                 tbody(ng-repeat='defaultVis in defaultList')
                     tr.info
                         td
                             label {{defaultVis.title}}
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizations[defaultVis.id]' ng-click='selectVisualization(defaultVis.id)')
+                                input(type="checkbox" ng-model='checkboxVisualizationsTch[defaultVis.id]' ng-click='selectVisualization("tch", defaultVis.id)')
+                                p
+                        td
+                            label
+                                input(type="checkbox" ng-model='checkboxVisualizationsDev[defaultVis.id]' ng-click='selectVisualization("dev", defaultVis.id)')
                                 p
                 tbody(ng-repeat='visualization in visualizationList')
                     tr
@@ -40,7 +45,11 @@
                             label {{visualization.title}}
                         td
                             label
-                                input(type="checkbox" ng-model='checkboxVisualizations[visualization.id]' ng-click='selectVisualization(visualization.id)')
+                                input(type="checkbox" ng-model='checkboxVisualizationsTch[visualization.id]' ng-click='selectVisualization("tch", visualization.id)')
+                                p
+                        td
+                            label
+                                input(type="checkbox" ng-model='checkboxVisualizationsDev[visualization.id]' ng-click='selectVisualization("dev", visualization.id)')
                                 p
     .col-md-16
         .row

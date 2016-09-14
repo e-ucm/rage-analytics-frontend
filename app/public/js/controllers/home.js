@@ -54,7 +54,7 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                                         count++;
                                                         if (count >= data.length) {
                                                             $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id,
-                                                                {visualizations: selectedVisualization}).success(function(data) {
+                                                                {visualizationsDev: selectedVisualization}).success(function(data) {
                                                                     $scope.gameTitle = '';
                                                                     $window.location = 'data?game=' + game._id + '&version=' + version._id;
                                                                 }).error(function (data, status) {
