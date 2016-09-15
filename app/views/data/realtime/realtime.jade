@@ -22,7 +22,7 @@ link(rel="stylesheet", href="css/realtime.css")
         .col-xs-12
             .row
                 .col-xs-8
-                .col-xs-4.text-right(ng-click="player = null" style="min-height: 1cm; color: #777")
+                .col-xs-4.text-right(ng-click="viewAll()" style="min-height: 1cm; color: #777")
                     span.glyphicon.glyphicon-remove
             .row.titles
                 h3.col-xs-12 {{ player.name }}
@@ -63,5 +63,5 @@ link(rel="stylesheet", href="css/realtime.css")
                     td {{ result.alerts.length }}
                     td {{ result.warnings.length }}
     h1 Visualizations
-    iframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
+    iframe#dashboardIframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
 include scripts

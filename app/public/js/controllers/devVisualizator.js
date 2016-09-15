@@ -70,7 +70,7 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
                                         timeTo: 'now',
                                         timeFrom: 'now-7d',
                                         refreshInterval: {
-                                            display: "10 seconds",
+                                            display: '10 seconds',
                                             pause: false,
                                             section: 1,
                                             value: 10000

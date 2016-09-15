@@ -85,7 +85,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                                                     timeTo: 'now',
                                                     timeFrom: 'now-1h',
                                                     refreshInterval: {
-                                                        display: "5 seconds",
+                                                        display: '5 seconds',
                                                         pause: false,
                                                         section: 1,
                                                         value: 5000

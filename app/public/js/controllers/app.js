@@ -704,7 +704,7 @@ angular.module('myApp', [
                                 timeTo: 'now',
                                 timeFrom: 'now-7d',
                                 refreshInterval: {
-                                    display: "20 seconds",
+                                    display: '20 seconds',
                                     pause: false,
                                     section: 1,
                                     value: 5000

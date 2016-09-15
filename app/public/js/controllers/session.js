@@ -73,15 +73,24 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
+
+                if ($scope.player) {
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
+                        $scope.player.name + '\')))';
+                }
+
+                if (url.startsWith('localhost')) {
+                    url = 'http://' + url;
+                }
+
                 return $sce.trustAsResourceUrl(url);
             };
 
             var calculateResults = function (rawResults) {
                 var results = [];
                 rawResults.forEach(function (result) {
+                    $scope.version.alias = $scope.version.alias ? $scope.version.alias : 'this.name';
                     result.name = evalExpression.call(result, $scope.version.alias, 'Unknown');
-
-                    result.score = Math.min(1, evalExpression.call(result, $scope.version.score, 0) / $scope.version.maxScore);
 
                     result.warnings = [];
                     for (var i = 0; $scope.version.warnings && i < $scope.version.warnings.length; i++) {
@@ -102,9 +111,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                             });
                         }
                     }
-                    if (result.warnings.length > 0 || result.alerts.length > 0) {
-                        results.push(result);
-                    }
+                    results.push(result);
 
                     if ($scope.player && $scope.player._id === result._id) {
                         $scope.player = result;
@@ -115,8 +122,15 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 $scope.results = results;
             };
 
+
+            $scope.viewAll = function () {
+                $scope.player = null;
+                document.getElementById('dashboardIframe').contentWindow.location.reload();
+            };
+
             $scope.viewPlayer = function (result) {
                 $scope.player = result;
+                document.getElementById('dashboardIframe').contentWindow.location.reload();
             };
 
             $scope.updateLevels = function (player) {
