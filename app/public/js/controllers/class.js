@@ -84,6 +84,12 @@ angular.module('classApp', ['ngStorage', 'services'])
                                                     timeRestore: true,
                                                     timeTo: 'now',
                                                     timeFrom: 'now-1h',
+                                                    refreshInterval: {
+                                                        display: "5 seconds",
+                                                        pause: false,
+                                                        section: 1,
+                                                        value: 5000
+                                                    },
                                                     kibanaSavedObjectMeta: {
                                                         searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                                     }
