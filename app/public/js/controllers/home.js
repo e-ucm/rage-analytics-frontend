@@ -46,15 +46,24 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                     $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
                                         .success(function(data) {
                                             var count = 0;
-                                            var selectedVisualization = [];
+                                            var selectedVisualizationTch = [];
+                                            var selectedVisualizationDev = [];
                                             data.forEach(function (visualization) {
                                                 $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' +  game._id + '/' + visualization.id, {})
                                                     .success(function() {
-                                                        selectedVisualization.push(visualization.id);
+                                                        if(visualization.isTeacher){
+                                                            selectedVisualizationTch.push(visualization.id);
+                                                        } 
+                                                        if (visualization.isDeveloper){
+                                                            selectedVisualizationDev.push(visualization.id);
+                                                        }
                                                         count++;
                                                         if (count >= data.length) {
+                                                            var visJSON = {};
+                                                            visJSON.visualizationsDev = selectedVisualizationDev;
+                                                            visJSON.visualizationsTch =  selectedVisualizationTch;
                                                             $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id,
-                                                                {visualizationsDev: selectedVisualization}).success(function(data) {
+                                                                visJSON).success(function(data) {
                                                                     $scope.gameTitle = '';
                                                                     $window.location = 'data?game=' + game._id + '&version=' + version._id;
                                                                 }).error(function (data, status) {
