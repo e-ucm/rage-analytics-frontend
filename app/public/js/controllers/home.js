@@ -51,10 +51,10 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                             data.forEach(function (visualization) {
                                                 $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' +  game._id + '/' + visualization.id, {})
                                                     .success(function() {
-                                                        if(visualization.isTeacher){
+                                                        if (visualization.isTeacher) {
                                                             selectedVisualizationTch.push(visualization.id);
-                                                        } 
-                                                        if (visualization.isDeveloper){
+                                                        }
+                                                        if (visualization.isDeveloper) {
                                                             selectedVisualizationDev.push(visualization.id);
                                                         }
                                                         count++;

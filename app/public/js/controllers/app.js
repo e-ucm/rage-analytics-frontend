@@ -426,32 +426,32 @@ angular.module('myApp', [
                                 var objList = {};
                                 objList.visualizationsDev = [];
                                 objList.visualizationsTch =  [];
-                                if(isDevVis) {
+                                if (isDevVis) {
                                     objList.visualizationsDev.push(visualizationData._id);
                                 }
-                                if(isTchVis){
+                                if (isTchVis) {
                                     objList.visualizationsTch.push(visualizationData._id);
-                                }    
+                                }
                                 $http.put(CONSTANTS.PROXY + '/kibana/visualization/list/' + $scope.selectedGame._id,
                                     objList).success(function(data) {
 
-                                    var newVisualization = {id: visualizationData._id, title: $scope.templateVisualization.contents.title};
-                                    if ($scope.visualizationList.indexOf(newVisualization) === -1) {
-                                        $scope.visualizationList.push(newVisualization);
-                                    }
+                                        var newVisualization = {id: visualizationData._id, title: $scope.templateVisualization.contents.title};
+                                        if ($scope.visualizationList.indexOf(newVisualization) === -1) {
+                                            $scope.visualizationList.push(newVisualization);
+                                        }
 
-                                    if(isDevVis) {
-                                        $scope.checkboxVisualizationsDev[visualizationData._id] = true;
-                                        if ($scope.selectedVisualizationDevList.indexOf(visualizationData._id) === -1) {
-                                            $scope.selectedVisualizationDevList.push(visualizationData._id);
+                                        if (isDevVis) {
+                                            $scope.checkboxVisualizationsDev[visualizationData._id] = true;
+                                            if ($scope.selectedVisualizationDevList.indexOf(visualizationData._id) === -1) {
+                                                $scope.selectedVisualizationDevList.push(visualizationData._id);
+                                            }
                                         }
-                                    }
-                                    if(isTchVis) {
-                                        $scope.checkboxVisualizationsTch[visualizationData._id] = true;
-                                        if ($scope.selectedVisualizationTchList.indexOf(visualizationData._id) === -1) {
-                                            $scope.selectedVisualizationTchList.push(visualizationData._id);
+                                        if (isTchVis) {
+                                            $scope.checkboxVisualizationsTch[visualizationData._id] = true;
+                                            if ($scope.selectedVisualizationTchList.indexOf(visualizationData._id) === -1) {
+                                                $scope.selectedVisualizationTchList.push(visualizationData._id);
+                                            }
                                         }
-                                    }
 
                                     }).error(function (data, status) {
                                     console.error('Error on post /kibana/visualization/list/' + $scope.selectedGame._id + ' ' +
