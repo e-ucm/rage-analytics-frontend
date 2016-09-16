@@ -24,6 +24,10 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
         function ($scope, $location, $http, $window, $localStorage, Games, Versions, Role, CONSTANTS, $sce, QueryParams) {
             $scope.$storage = $localStorage;
 
+            $scope.isDeveloper = function () {
+                return Role.isDeveloper();
+            };
+
             var versionId = QueryParams.getQueryParam('version');
             $scope.gameId = QueryParams.getQueryParam('game');
 
@@ -49,6 +53,7 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
                         // Add dashboard
                         var numPan = 1;
                         data.forEach(function (visualizationId) {
+
                             $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId + '/' + visualizationId + '/' + versionId,
                                 {}).success(function(result) {
                                 panels.push('{\"id\":\"' + visualizationId + '_' + versionId +

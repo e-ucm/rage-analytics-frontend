@@ -30,8 +30,12 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS',
-        function ($scope, $location, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS) {
+    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS', 'Role',
+        function ($scope, $location, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS, Role) {
+
+            $scope.isTeacher = function() {
+                return Role.isTeacher();
+            };
 
             $scope.refreshResults = function () {
                 var rawResults = Results.query({
