@@ -702,7 +702,13 @@ angular.module('myApp', [
                                 version: 1,
                                 timeRestore: true,
                                 timeTo: 'now',
-                                timeFrom: 'now-1h',
+                                timeFrom: 'now-7d',
+                                refreshInterval: {
+                                    display: '20 seconds',
+                                    pause: false,
+                                    section: 1,
+                                    value: 5000
+                                },
                                 kibanaSavedObjectMeta: {
                                     searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                 }
