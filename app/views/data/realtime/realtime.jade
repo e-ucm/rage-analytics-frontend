@@ -63,5 +63,5 @@ link(rel="stylesheet", href="css/realtime.css")
                     td {{ result.alerts.length }}
                     td {{ result.warnings.length }}
     h1 Visualizations
-    iframe#dashboardIframe.no-border(src = "{{dashboardLink()}}" height="800px" width="100%")
+    iframe#dashboardIframe.no-border(src = "{{dashboardLink()}}" scrolling="no" width="100%")
 include scripts

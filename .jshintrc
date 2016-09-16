@@ -18,6 +18,7 @@
         "RadialProgress": true,
         "ColumnProgress": true,
         "gauss": false,
-        "d3": false
+        "d3": false,
+        "jQuery": false
     }
 }

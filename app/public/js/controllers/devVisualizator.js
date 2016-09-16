@@ -26,6 +26,7 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
 
             var versionId = QueryParams.getQueryParam('version');
             $scope.gameId = QueryParams.getQueryParam('game');
+
             $scope.showVisualization = function () {
                 versionId = QueryParams.getQueryParam('version');
                 $scope.gameId = QueryParams.getQueryParam('game');
@@ -105,7 +106,9 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
+                document.getElementById('dashboardIframe').contentWindow.location.reload();
                 return $sce.trustAsResourceUrl(url);
             };
+
         }
     ]);
