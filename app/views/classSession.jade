@@ -1,0 +1,51 @@
+//- 
+    Copyright 2016 e-UCM (http://www.e-ucm.es/)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    This project has received funding from the European Union’s Horizon
+    2020 research and innovation programme under grant agreement No 644187.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 (link is external)
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ 
+extends page
+block content
+    .container.theme-showcase(ng-controller='ClassSessionCtrl')
+        .row(ng-controller='AppCtrl')
+            .col-md-12
+                h1
+                    label Game {{ selectedGame.title }}
+        .row
+            .col-md-offset-2.col-md-8(ng-if='isTeacher()')
+                label Class title:
+                    input.form-control(type='text' ng-model='class.name')
+                a.btn.btn-primary(type='button', ng-click='createSession()')
+                    span.glyphicon.glyphicon-plus.right10
+                    | New class
+        .row
+            .col-md-offset-2.col-md-8
+                table.table.table-hover
+                    thead
+                        tr
+                            th
+                            th Created
+                            th(ng-if='isTeacher()') State
+                    tbody
+                        tr(ng-repeat='session in sessions')
+                            td(ng-controller='AppCtrl')
+                                span.glyphicon.glyphicon-stats
+                                a(ng-href="#" ng-click='setSelectedSession(session, "data")') {{session.name}}
+                            td {{session._id | prettyDateId }}
+                            td(ng-if='isTeacher()')
+                                button.btn-success(ng-if='!loading && sessionState(session)' ng-click='endSession(session)') Opened
+                                button.btn-warning(ng-if='!loading && !sessionState(session)' ng-click='startSession(session)') Closed
+                                button.btn-info(ng-if='loading') Loading
+                                    span.fa.fa-refresh.fa-spin
+
