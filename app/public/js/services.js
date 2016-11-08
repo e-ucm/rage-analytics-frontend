@@ -45,10 +45,21 @@ services.factory('Versions', ['$resource', 'CONSTANTS',
     }
 ]);
 
+services.factory('Classes', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/classes', {
+            classId: '@_id',
+            versionId: '@versionId',
+            gameId: '@gameId'
+        });
+    }
+]);
+
 services.factory('Sessions', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/sessions', {
+        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/classes/:classId/sessions', {
             sessionId: '@_id',
+            classId: '@classId',
             versionId: '@versionId',
             gameId: '@gameId'
         });
