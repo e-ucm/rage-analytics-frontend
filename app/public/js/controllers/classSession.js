@@ -19,7 +19,8 @@
 'use strict';
 
 angular.module('classSessionApp', ['ngStorage', 'services'])
-    .controller('ClassSessionCtrl', ['$scope', '$location', '$http', '$window', '$localStorage', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS', 'QueryParams',
+    .controller('ClassSessionCtrl', ['$scope', '$location', '$http', '$window', '$localStorage', 'Games', 'Versions',
+        'Sessions', 'Role', 'CONSTANTS', 'QueryParams',
         function ($scope, $location, $http, $window, $localStorage, Games, Versions, Sessions, Role, CONSTANTS, QueryParams) {
             $scope.$storage = $localStorage;
             $scope.session = {};
@@ -45,8 +46,8 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
             $scope.createSession = function () {
                 var className = $scope.class.name ? $scope.class.name : 'New class';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/classes/' + QueryParams.getQueryParam('class')
-                    + '/sessions', {name: className}).success(function (session) {
+                    QueryParams.getQueryParam('version') + '/classes/' + QueryParams.getQueryParam('class') +
+                    '/sessions', {name: className}).success(function (session) {
 
                         $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
                             .success(function(data) {

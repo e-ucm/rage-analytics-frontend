@@ -46,11 +46,11 @@ angular.module('classApp', ['ngStorage', 'services'])
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/classes', {name: className}).success(function (classRes) {
 
-                    $window.location = 'classsession' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                        QueryParams.getQueryParam('version') + '&class=' + classRes._id;
+                        $window.location = 'classsession' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                            QueryParams.getQueryParam('version') + '&class=' + classRes._id;
 
 
-                }).error(function (data, status) {
+                    }).error(function (data, status) {
                     console.error('Error on post /games/' + QueryParams.getQueryParam('game') + '/versions/' +
                         QueryParams.getQueryParam('version') + '/classes' + JSON.stringify(data) + ', status: ' + status);
                 });

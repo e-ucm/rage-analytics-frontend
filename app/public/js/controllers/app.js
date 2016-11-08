@@ -1093,10 +1093,9 @@ angular.module('myApp', [
         $scope.setSelectedSession = function (session, url) {
             $scope.form.selectedSession = session;
             console.log('class', $scope.form.selectedClass);
-            $window.location = url + '?game=' + $scope.form.selectedGame._id
-                + '&version=' + $scope.form.selectedVersion._id
-                + '&class=' + $scope.form.selectedClass._id
-                + '&session=' + session._id;
+            $window.location = url + '?game=' + $scope.form.selectedGame._id +
+                '&version=' + $scope.form.selectedVersion._id +
+                '&class=' + $scope.form.selectedClass._id + '&session=' + session._id;
         };
 
         $scope.$watch('form.selectedGame', function (selected) {
