@@ -45,6 +45,10 @@ router.get('/class', function (req, res) {
     res.render('class');
 });
 
+router.get('/classsession', function (req, res) {
+    res.render('classSession');
+});
+
 router.get('/data', function (req, res) {
     res.render('data');
 });

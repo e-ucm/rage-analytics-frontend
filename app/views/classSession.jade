@@ -17,7 +17,7 @@
  
 extends page
 block content
-    .container.theme-showcase(ng-controller='ClassCtrl')
+    .container.theme-showcase(ng-controller='ClassSessionCtrl')
         .row(ng-controller='AppCtrl')
             .col-md-12
                 h1
@@ -26,7 +26,7 @@ block content
             .col-md-offset-2.col-md-8(ng-if='isTeacher()')
                 label Class title:
                     input.form-control(type='text' ng-model='class.name')
-                a.btn.btn-primary(type='button', ng-click='createClass()')
+                a.btn.btn-primary(type='button', ng-click='createSession()')
                     span.glyphicon.glyphicon-plus.right10
                     | New class
         .row
@@ -34,12 +34,18 @@ block content
                 table.table.table-hover
                     thead
                         tr
-                            th Name
+                            th
                             th Created
+                            th(ng-if='isTeacher()') State
                     tbody
-                        tr(ng-repeat='class in classes')
+                        tr(ng-repeat='session in sessions')
                             td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats
-                                a(ng-href="#" ng-click='setSelectedClass(class, "classsession")') {{class.name}}
-                            td {{class._id | prettyDateId }}
+                                a(ng-href="#" ng-click='setSelectedSession(session, "data")') {{session.name}}
+                            td {{session._id | prettyDateId }}
+                            td(ng-if='isTeacher()')
+                                button.btn-success(ng-if='!loading && sessionState(session)' ng-click='endSession(session)') Opened
+                                button.btn-warning(ng-if='!loading && !sessionState(session)' ng-click='startSession(session)') Closed
+                                button.btn-info(ng-if='loading') Loading
+                                    span.fa.fa-refresh.fa-spin
 

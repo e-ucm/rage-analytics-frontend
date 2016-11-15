@@ -1,7 +1,6 @@
 'use strict';
 
 jQuery(function ($) {
-    console.log("hey que tal");
     var lastHeight = 0, curHeight = 0;
     setInterval(function () {
         $('iframe').each(function() {

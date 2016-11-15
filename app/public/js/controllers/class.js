@@ -25,136 +25,39 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.session = {};
             $scope.class = {};
 
-            var getSessions = function () {
+            var getClasses = function () {
                 $http.get(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/sessions/my').success(function (data) {
-                    $scope.sessions = data;
+                    QueryParams.getQueryParam('version') + '/classes/my').success(function (data) {
+                    $scope.classes = data;
+                    console.log('data', data);
                 }).error(function (data, status) {
                     console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                        QueryParams.getQueryParam('version') + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
+                        QueryParams.getQueryParam('version') + '/classes/my' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
-            getSessions();
+            getClasses();
             $scope.gameId = QueryParams.getQueryParam('game');
             $scope.versionId = QueryParams.getQueryParam('version');
             $scope.loading = false;
 
-            $scope.createSession = function () {
+            $scope.createClass = function () {
                 var className = $scope.class.name ? $scope.class.name : 'New class';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/sessions', {name: className}).success(function (session) {
+                    QueryParams.getQueryParam('version') + '/classes', {name: className}).success(function (classRes) {
 
-                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
-                            .success(function(data) {
-                                var panels = [];
-                                var uiStates = {};
+                        $window.location = 'classsession' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                            QueryParams.getQueryParam('version') + '&class=' + classRes._id;
 
-                                // Add index
-                                $http.post(CONSTANTS.PROXY + '/kibana/index/' + $scope.gameId + '/' + session._id, {})
-                                    .success(function(data) {
 
-                                    }).error(function (data, status) {
-                                    console.error('Error on post /kibana/index/' + $scope.gameId + '/' + session._id + ' ' +
-                                        JSON.stringify(data) + ', status: ' + status);
-                                });
-
-                                // Add dashboard
-                                var numPan = 1;
-                                if (data.length > 0) {
-                                    data.forEach(function (visualizationId) {
-                                        $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId +
-                                            '/' + visualizationId + '/' + session._id, {}).success(function (result) {
-                                            panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
-                                                '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                                '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
-                                                (numPan + 1 / 2) + '}');
-                                            uiStates['P-' + numPan] = {vis: {legendOpen: false}};
-                                            numPan++;
-
-                                            if (numPan > data.length) {
-                                                var dashboard = {
-                                                    title: 'dashboard_' + session._id,
-                                                    hits: 0,
-                                                    description: '',
-                                                    panelsJSON: '[' + panels.toString() + ']',
-                                                    optionsJSON: '{"darkTheme":false}',
-                                                    uiStateJSON: JSON.stringify(uiStates),
-                                                    version: 1,
-                                                    timeRestore: true,
-                                                    timeTo: 'now',
-                                                    timeFrom: 'now-1h',
-                                                    refreshInterval: {
-                                                        display: '5 seconds',
-                                                        pause: false,
-                                                        section: 1,
-                                                        value: 5000
-                                                    },
-                                                    kibanaSavedObjectMeta: {
-                                                        searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
-                                                    }
-                                                };
-                                                $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + session._id, dashboard)
-                                                    .success(function (data) {
-                                                        $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                                                            QueryParams.getQueryParam('version') + '&session=' + session._id;
-                                                    }).error(function (data, status) {
-                                                    console.error('Error on post /kibana/dashboard/session/' + session._id + ' ' +
-                                                        JSON.stringify(data) + ', status: ' + status);
-                                                });
-                                            }
-                                        }).error(function (data, status) {
-                                            console.error('Error on post /kibana/visualization/session/' + visualizationId + '/' + session._id + ' ' +
-                                                JSON.stringify(data) + ', status: ' + status);
-                                        });
-                                    });
-                                } else {
-                                    $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                                        QueryParams.getQueryParam('version') + '&session=' + session._id;
-                                }
-                            }).error(function (data, status) {
-                                console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' +
-                                    JSON.stringify(data) + ', status: ' + status);
-                            });
                     }).error(function (data, status) {
-                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                        QueryParams.getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on post /games/' + QueryParams.getQueryParam('game') + '/versions/' +
+                        QueryParams.getQueryParam('version') + '/classes' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
             $scope.isTeacher = function () {
                 return Role.isTeacher();
             };
-
-            $scope.startSession = function (session) {
-                $scope.loading = true;
-                $http.post(CONSTANTS.PROXY + '/sessions/' + session._id + '/event/start').success(function (s) {
-                    $scope.loading = false;
-                    $scope.selectedSession = s;
-                    getSessions();
-                }).error(function (data, status) {
-                    console.error('Error on get /games/' + '/sessions/' + session._id + '/event/start ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                    $scope.loading = false;
-                });
-            };
-
-            $scope.endSession = function (session) {
-                $scope.loading = true;
-                $http.post(CONSTANTS.PROXY + '/sessions/' + session._id + '/event/end').success(function (s) {
-                    $scope.loading = false;
-                    $scope.selectedSession = s;
-                    getSessions();
-                }).error(function (data, status) {
-                    console.error('Error on get /games/' + '/sessions/' + session._id + '/event/end ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                    $scope.loading = false;
-                });
-            };
-
-            $scope.sessionState = function (session) {
-                return session && session.start && !session.end;
-            };
-
         }
     ]);
