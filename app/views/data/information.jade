@@ -24,5 +24,25 @@
         .col-xs-12
             | Tracking code:
             kbd.left10 {{ selectedVersion.trackingCode }}
+    .row.top20
+        .col-sm-12
+            h4 Developers
+        .container.theme-showcase
+            .row(ng-if='isAuthor()')
+                .col-md-8
+                    label(data-toggle="tooltip" title="Hooray!") Username:
+                        span.glyphicon.glyphicon-info-sign(data-toggle="tooltip" title="Add a developer's username to see this game")
+                        input.form-control(type='text' ng-model='developer.name')
+                    a.btn.btn-primary(type='button', ng-click='inviteDeveloper()')
+                        | Add developer
+            .row
+                .col-md-8
+                    table.table.table-hover
+                        tr(ng-repeat='dev in selectedGame.developers')
+                            td
+                                label {{dev}}
+                            td
+                                a(ng-if='isRemovable(dev)' ng-click='ejectDeveloper(dev)')
+                                    span.glyphicon.glyphicon-remove-sign
 
 

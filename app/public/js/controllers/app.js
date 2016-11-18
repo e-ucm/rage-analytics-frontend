@@ -171,7 +171,7 @@ angular.module('myApp', [
         };
 
         $scope.publicGame = function () {
-            $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {public: $scope.checkboxPublic}).success(function (data) {
+            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {public: $scope.checkboxPublic}).success(function (data) {
                 $scope.selectedGame = data;
                 checkPublic();
             }).error(function (data, status) {
@@ -205,19 +205,18 @@ angular.module('myApp', [
         };
 
         $scope.changeTitle = function () {
-            $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
+            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
             }).error(function (data, status) {
                 console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
 
         $scope.changeGameLink = function () {
-            $http.post(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
+            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
             }).error(function (data, status) {
                 console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
-
 
         $scope.addCsvClass = function () {
             var students = [];
@@ -1136,5 +1135,45 @@ angular.module('myApp', [
                 $scope.selectedSession = selected;
             }
         });
+
+        $scope.inviteDeveloper = function () {
+            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {developers: $scope.developer.name}).success(function (data) {
+                $scope.selectedGame = data;
+            }).error(function (data, status) {
+                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
+                    JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.ejectDeveloper = function (developer) {
+            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/remove', {developers: developer}).success(function (data) {
+                $scope.selectedGame = data;
+            }).error(function (data, status) {
+                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
+                    JSON.stringify(data) + ', status: ' + status);
+            });
+        };
+
+        $scope.isRemovable = function(dev) {
+            var developers = $scope.selectedGame.developers;
+            if (developers && developers.length === 1) {
+                return false;
+            }
+            if ($scope.username === dev) {
+                return false;
+            }
+            return $scope.isAuthor();
+        };
+
+        $scope.isAuthor = function() {
+            var authors = $scope.selectedGame.authors;
+            if (!authors) {
+                return false;
+            }
+            if (authors.indexOf($scope.username) === -1) {
+                return false;
+            }
+            return true;
+        };
     }
 ]);
