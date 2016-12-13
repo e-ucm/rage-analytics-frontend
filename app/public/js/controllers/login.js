@@ -46,4 +46,9 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
                     $scope.errorResponse = data.message;
                 });
             };
+
+            $scope.loginSaml = function () {
+                var location = CONSTANTS.APIPATH + '/login/saml?callback=' + window.location.origin + window.location.pathname + 'byplugin';
+                window.location.href = location;
+            };
         }]);

@@ -20,7 +20,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'signupApp', 'loginApp', 'homeApp', 'classApp', 'classSessionApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp',
+    'ngRoute', 'signupApp', 'loginApp', 'loginPluginApp', 'homeApp', 'classApp', 'classSessionApp', 'gameApp', 'dataApp', 'sessionApp', 'analyticsApp',
     'devVisualizatorApp', 'services', 'xeditable', 'env-vars', 'ngFileUpload'
 ]).run(function (editableOptions, $localStorage, $cookies) {
     editableOptions.theme = 'bs3';

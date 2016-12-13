@@ -53,4 +53,8 @@ router.get('/data', function (req, res) {
     res.render('data');
 });
 
+router.get('/loginbyplugin/', function (req, res) {
+    res.render('loginplugin', {user: JSON.stringify(req.query)});
+});
+
 module.exports = router;
