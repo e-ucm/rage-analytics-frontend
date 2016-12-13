@@ -19,20 +19,20 @@ extends page
 block content
    .container.theme-showcase(ng-controller='LoginCtrl')
       .row-fluid(ng-if='!isUser()')
-         .col-sm-6
+         .col-sm-4
             .page-header
                h1 Sign In
             #login(ng-controller='LoginCtrl')
                .form-group
-                  label Username:
-                  input.form-control(type='text' name='username' ng-model='user.username')
+                  input.form-control(type='text' name='username' placeholder='Username' ng-model='user.username')
                .form-group
-                  label Password:
-                  input.form-control(type='password' name='password' ng-model='user.password')
+                  input.form-control(type='password' name='password' placeholder='Password' ng-model='user.password')
                .form-actions
-                  button.btn.btn-primary.btn-login(type='submit' ng-click='login()') Sign In
+                  button.btn.btn-success.btn-login(type='submit' ng-click='login()') Sign In
                   a.btn.btn-link(href='login/forgot') Forgot your password?
                alert.alert-danger {{errorResponse}}
+               hr
+               input.btn.btn-primary.btn-block(type='button' value='Sign In with SAML' ng-click='loginSaml()')
       .row-fluid(ng-if='isUser()')
          .alert.alert-success(role='alert')
             | You are already logged
