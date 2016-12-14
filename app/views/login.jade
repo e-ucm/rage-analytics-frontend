@@ -32,7 +32,7 @@ block content
                   a.btn.btn-link(href='login/forgot') Forgot your password?
                alert.alert-danger {{errorResponse}}
                hr
-               input.btn.btn-primary.btn-block(type='button' value='Sign In with SAML' ng-click='loginSaml()')
+               input.btn.btn-primary.btn-block(ng-if='hasSaml()' type='button' value='Sign In with {{saml.name}}' ng-click='loginSaml()')
       .row-fluid(ng-if='isUser()')
          .alert.alert-success(role='alert')
             | You are already logged
