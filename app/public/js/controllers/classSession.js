@@ -43,6 +43,34 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
             $scope.classId = QueryParams.getQueryParam('class');
             $scope.loading = false;
 
+            $scope.lti = {};
+            $scope.lti.key = '';
+            $scope.lti.secret = '';
+
+            var myPrefix = $location.$$path.split('/')[3];
+            $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
+                '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
+
+            $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.gameId + '/' + $scope.versionId + '/' + $scope.classId).success(function(data) {
+                $scope.lti.key = data[0]._id;
+                $scope.lti.secret = data[0].secret;
+            });
+
+            $scope.createLtiKey = function () {
+                if ($scope.lti.secret) {
+                    $http.post(CONSTANTS.PROXY + '/lti', {
+                        secret: $scope.lti.secret,
+                        classId: $scope.classId,
+                        versionId: $scope.versionId,
+                        gameId: $scope.gameId
+                    }).success(function (data) {
+                        $scope.lti.key = data._id;
+                    }).error(function (data, status) {
+                        console.error('Error on get /lti' + JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+            };
+
             $scope.createSession = function () {
                 var className = $scope.class.name ? $scope.class.name : 'New class';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +

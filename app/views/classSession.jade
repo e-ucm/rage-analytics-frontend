@@ -23,6 +23,30 @@ block content
                 h1
                     label Game {{ selectedGame.title }}
         .row
+            .col-md-offset-2.col-md-8(ng-if='!lti.key')
+                p Configure class to use lti
+        .row
+            .col-md-offset-2.col-md-4(ng-if='!lti.key')
+                label Type the secret:
+                    input.form-control(type='text' ng-model='lti.secret')
+                a.btn.btn-primary(type='button', ng-click='createLtiKey()')
+                    | Configure Lti
+        .row
+            .col-md-offset-2.col-md-8(ng-if='lti.key')
+                p Introduce the key and secret values in your tool consumer (e.g Moodle)
+        .row
+            .col-md-offset-2.col-md-4(ng-if='lti.key')
+                label KEY:
+                    label.label-success {{ lti.key }}
+        .row
+            .col-md-offset-2.col-md-4(ng-if='lti.key')
+                label Secret:
+                    label.label-success  {{ lti.secret }}
+        .row
+            .col-md-offset-2.col-md-4(ng-if='lti.key')
+                label Launch URL:
+                    label.label-success  {{ lti.launch }}
+        .row
             .col-md-offset-2.col-md-8(ng-if='isTeacher()')
                 label Class title:
                     input.form-control(type='text' ng-model='class.name')
