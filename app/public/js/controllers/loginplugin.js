@@ -22,18 +22,23 @@ angular.module('loginPluginApp', ['ngStorage', 'ngCookies'])
     .controller('LoginPluginCtrl', ['$scope', '$http', '$window', '$timeout', '$localStorage', 'CONSTANTS',
         function ($scope, $http, $window, $timeout, $localStorage, CONSTANTS) {
             $scope.$storage = $localStorage;
-
             $scope.setupUser = function (user) {
                 if (user && user.username && user.email && user.token) {
                     $scope.$storage.user = user;
-                    if (!user.roles) {
-                        $http.get(CONSTANTS.APIPATH + '/users/' + user.id + '/roles').success(function (data) {
-                            $scope.$storage.user.roles = data;
-                            // Timeout needed in order to ensure that the
-                            // $localStorage changes are persisted, more info. at
-                            // https://github.com/gsklee/ngStorage/issues/39
+                    if (user.redirect) {
+                        $http.get(CONSTANTS.PROXY + '/lti/key/' + user.redirect).success(function(data) {
+                            var baseUrl = 'home';
+                            var params = '?';
+                            params += data.gameId ? 'game=' + data.gameId : '';
+                            params += data.versionId ? '&version=' + data.versionId : '';
+                            params += data.classId ? '&class=' + data.classId : '';
+                            if (data.classId) {
+                                baseUrl = 'classsession';
+                            } else if (data.gameId) {
+                                baseUrl = 'class';
+                            }
                             $timeout(function () {
-                                $window.location.href = 'home';
+                                $window.location.href = baseUrl + params;
                             }, 110);
                         });
                     } else {
