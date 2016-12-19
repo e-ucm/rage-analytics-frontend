@@ -48,7 +48,23 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
             };
 
             $scope.loginSaml = function () {
-                var location = CONSTANTS.APIPATH + '/login/saml?callback=' + window.location.origin + window.location.pathname + 'byplugin';
+                var location = CONSTANTS.APIPATH + '/login/' + $scope.saml.pluginId + '?callback=' + encodeURIComponent(
+                        window.location.origin + window.location.pathname + 'byplugin');
                 window.location.href = location;
+            };
+
+            $scope.saml = null;
+            $http.get(CONSTANTS.APIPATH + '/loginplugins').success(function (results) {
+
+                for (var i = 0; i < results.data.length; ++i) {
+                    if (results.data[i].pluginId === 'samlnl') {
+                        $scope.saml = results.data[i];
+                        return;
+                    }
+                }
+            });
+
+            $scope.hasSaml = function() {
+                return $scope.saml !== null;
             };
         }]);
