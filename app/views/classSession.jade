@@ -21,7 +21,7 @@ block content
         .row(ng-controller='AppCtrl')
             .col-md-12
                 h1
-                    label Game {{ selectedGame.title }}
+                    label Game {{ selectedGame.title }} - Class {{ selectedClass.name }}
         .row
             .col-md-offset-2.col-md-8(ng-if='!lti.key')
                 p Configure class to use lti
@@ -48,8 +48,8 @@ block content
                     label.label-success  {{ lti.launch }}
         .row
             .col-md-offset-2.col-md-8(ng-if='isTeacher()')
-                label Class title:
-                    input.form-control(type='text' ng-model='class.name')
+                label Session title:
+                    input.form-control(type='text' ng-model='session.name')
                 a.btn.btn-primary(type='button', ng-click='createSession()')
                     span.glyphicon.glyphicon-plus.right10
                     | New class

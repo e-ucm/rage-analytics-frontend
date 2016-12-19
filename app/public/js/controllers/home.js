@@ -24,6 +24,9 @@ angular.module('homeApp', ['ngStorage', 'services'])
             $scope.$storage = $localStorage;
             $scope.game = {};
             var getGames = function () {
+                if (!$scope.isDeveloper()) {
+                    return;
+                }
                 $http.get(CONSTANTS.PROXY + '/games/my').success(function (data) {
                     $scope.games = data;
                 }).error(function (data, status) {

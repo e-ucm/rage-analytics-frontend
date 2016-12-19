@@ -888,7 +888,7 @@ angular.module('myApp', [
 
                     $scope.form.selectedVersion = $scope.selectedVersion;
 
-                    $scope.refreshSessions();
+                    refreshClasses();
 
                     // Check if the version has an analysis uploaded
                     updateAnalysis();
@@ -896,6 +896,20 @@ angular.module('myApp', [
                     if (callback) {
                         callback();
                     }
+                });
+            }
+        };
+
+        var refreshClasses = function () {
+            var classId = $location.search().class;
+            if ($scope.selectedGame && $scope.selectedVersion && classId) {
+
+                $http.get(CONSTANTS.PROXY + '/classes/' + classId).success(function (data) {
+                    $scope.selectedClass = data;
+                    console.log('refreshed selectedClass', data);
+                    $scope.refreshSessions();
+                }).error(function (data, status) {
+                    console.error('Error on get /classes/' + classId);
                 });
             }
         };
@@ -911,7 +925,7 @@ angular.module('myApp', [
         $scope.refreshSessions = function () {
             if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
                 $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
-                    '/classes/' + $scope.selectedClass._id + 'sessions/my').success(function (data) {
+                    '/classes/' + $scope.selectedClass._id + '/sessions/my').success(function (data) {
                     $scope.sessions = data;
                     $scope.selectedSession = null;
                     var sessionId = $location.search().session;
@@ -1061,13 +1075,15 @@ angular.module('myApp', [
         $scope.form = {
             selectedGame: null,
             selectedVersion: null,
-            selectedSession: null
+            selectedSession: null,
+            selectedClass: null
         };
 
         $scope.deselectedGameAndGo = function (href) {
             $scope.form.selectedGame = null;
             $scope.form.selectedVersion = null;
             $scope.form.selectedSession = null;
+            $scope.form.selectedClass = null;
             $window.location = href;
         };
 
@@ -1078,23 +1094,61 @@ angular.module('myApp', [
                 $scope.form.selectedClass = null;
                 $scope.form.selectedSession = null;
             }
+            console.log('selecting setSelectedGame', game);
         };
 
         $scope.setSelectedVersionAndGo = function (version) {
             $scope.form.selectedVersion = version;
+            console.log('selecting setSelectedVersionAndGo', version);
         };
 
         $scope.setSelectedClass = function (classRes, url) {
             $scope.form.selectedClass = classRes;
             $window.location = url + '?game=' + $scope.form.selectedGame._id + '&version=' + $scope.form.selectedVersion._id + '&class=' + classRes._id;
+            console.log('selecting class', JSON.stringify(classRes, null, '    '), url);
+        };
+
+        var getGameId = function () {
+            var gameId = null;
+            if ($scope.selectedGame) {
+                gameId = $scope.selectedGame._id;
+            } else if ($scope.form.selectedGame) {
+                gameId = $scope.form.selectedGame._id;
+            }
+            return gameId;
+        };
+
+        var getVersionId = function () {
+            var versionId = null;
+            if ($scope.selectedVersion) {
+                versionId = $scope.selectedVersion._id;
+            } else if ($scope.form.selectedVersion) {
+                versionId = $scope.form.selectedVersion._id;
+            }
+            return versionId;
+        };
+
+        var getClassId = function () {
+            var classId = null;
+            if ($scope.selectedClass) {
+                classId = $scope.selectedClass._id;
+            } else if ($scope.form.selectedClass) {
+                classId = $scope.form.selectedClass._id;
+            }
+            return classId;
         };
 
         $scope.setSelectedSession = function (session, url) {
+            var gameId = getGameId();
+            var versionId = getVersionId();
+            var classId = getClassId();
+            var sessionId = session._id;
+
             $scope.form.selectedSession = session;
-            console.log('class', $scope.form.selectedClass);
-            $window.location = url + '?game=' + $scope.form.selectedGame._id +
-                '&version=' + $scope.form.selectedVersion._id +
-                '&class=' + $scope.form.selectedClass._id + '&session=' + session._id;
+            $window.location = url + '?game=' + gameId +
+                '&version=' + versionId +
+                '&class=' + classId + '&session=' + sessionId;
+            console.log('selecting setSelectedSession', session, url);
         };
 
         $scope.$watch('form.selectedGame', function (selected) {
@@ -1118,15 +1172,10 @@ angular.module('myApp', [
         });
 
         $scope.$watch('form.selectedClass', function (selected) {
-            var oldURL = $location.absUrl();
             if (selected) {
                 $location.search('class', selected._id);
                 $scope.selectedClass = selected;
             }
-            if (oldURL !== $location.absUrl()) {
-                $window.location = $location.absUrl();
-            }
-
         });
 
         $scope.$watch('form.selectedSession', function (selected) {
@@ -1154,7 +1203,7 @@ angular.module('myApp', [
             });
         };
 
-        $scope.isRemovable = function(dev) {
+        $scope.isRemovable = function (dev) {
             var developers = $scope.selectedGame.developers;
             if (developers && developers.length === 1) {
                 return false;
@@ -1165,7 +1214,7 @@ angular.module('myApp', [
             return $scope.isAuthor();
         };
 
-        $scope.isAuthor = function() {
+        $scope.isAuthor = function () {
             var authors = $scope.selectedGame.authors;
             if (!authors) {
                 return false;

@@ -24,7 +24,7 @@
         .col-xs-12
             | Tracking code:
             kbd.left10 {{ selectedVersion.trackingCode }}
-    .row.top20
+    .row.top20(ng-if='isDeveloper()')
         .col-sm-12
             h4 Developers
         .container.theme-showcase

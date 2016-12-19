@@ -51,9 +51,11 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
             $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
                 '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
 
-            $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.gameId + '/' + $scope.versionId + '/' + $scope.classId).success(function(data) {
-                $scope.lti.key = data[0]._id;
-                $scope.lti.secret = data[0].secret;
+            $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.gameId + '/' + $scope.versionId + '/' + $scope.classId).success(function (data) {
+                if (data && data.length > 0) {
+                    $scope.lti.key = data[0]._id;
+                    $scope.lti.secret = data[0].secret;
+                }
             });
 
             $scope.createLtiKey = function () {
@@ -72,83 +74,83 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
             };
 
             $scope.createSession = function () {
-                var className = $scope.class.name ? $scope.class.name : 'New class';
+                var className = $scope.session.name ? $scope.session.name : 'New session';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/classes/' + QueryParams.getQueryParam('class') +
                     '/sessions', {name: className}).success(function (session) {
 
-                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
-                            .success(function(data) {
-                                var panels = [];
-                                var uiStates = {};
+                    $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
+                        .success(function (data) {
+                            var panels = [];
+                            var uiStates = {};
 
-                                // Add index
-                                $http.post(CONSTANTS.PROXY + '/kibana/index/' + $scope.gameId + '/' + session._id, {})
-                                    .success(function(data) {
+                            // Add index
+                            $http.post(CONSTANTS.PROXY + '/kibana/index/' + $scope.gameId + '/' + session._id, {})
+                                .success(function (data) {
 
-                                    }).error(function (data, status) {
+                                }).error(function (data, status) {
                                     console.error('Error on post /kibana/index/' + $scope.gameId + '/' + session._id + ' ' +
                                         JSON.stringify(data) + ', status: ' + status);
                                 });
 
-                                // Add dashboard
-                                var numPan = 1;
-                                if (data.length > 0) {
-                                    data.forEach(function (visualizationId) {
-                                        $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId +
-                                            '/' + visualizationId + '/' + session._id, {}).success(function (result) {
-                                            panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
-                                                '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                                '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
-                                                (numPan + 1 / 2) + '}');
-                                            uiStates['P-' + numPan] = {vis: {legendOpen: false}};
-                                            numPan++;
+                            // Add dashboard
+                            var numPan = 1;
+                            if (data.length > 0) {
+                                data.forEach(function (visualizationId) {
+                                    $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId +
+                                        '/' + visualizationId + '/' + session._id, {}).success(function (result) {
+                                        panels.push('{\"id\":\"' + visualizationId + '_' + session._id +
+                                            '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
+                                            '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
+                                            (numPan + 1 / 2) + '}');
+                                        uiStates['P-' + numPan] = {vis: {legendOpen: false}};
+                                        numPan++;
 
-                                            if (numPan > data.length) {
-                                                var dashboard = {
-                                                    title: 'dashboard_' + session._id,
-                                                    hits: 0,
-                                                    description: '',
-                                                    panelsJSON: '[' + panels.toString() + ']',
-                                                    optionsJSON: '{"darkTheme":false}',
-                                                    uiStateJSON: JSON.stringify(uiStates),
-                                                    version: 1,
-                                                    timeRestore: true,
-                                                    timeTo: 'now',
-                                                    timeFrom: 'now-1h',
-                                                    refreshInterval: {
-                                                        display: '5 seconds',
-                                                        pause: false,
-                                                        section: 1,
-                                                        value: 5000
-                                                    },
-                                                    kibanaSavedObjectMeta: {
-                                                        searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
-                                                    }
-                                                };
-                                                $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + session._id, dashboard)
-                                                    .success(function (data) {
-                                                        $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                                                            QueryParams.getQueryParam('version') + '&session=' + session._id;
-                                                    }).error(function (data, status) {
+                                        if (numPan > data.length) {
+                                            var dashboard = {
+                                                title: 'dashboard_' + session._id,
+                                                hits: 0,
+                                                description: '',
+                                                panelsJSON: '[' + panels.toString() + ']',
+                                                optionsJSON: '{"darkTheme":false}',
+                                                uiStateJSON: JSON.stringify(uiStates),
+                                                version: 1,
+                                                timeRestore: true,
+                                                timeTo: 'now',
+                                                timeFrom: 'now-1h',
+                                                refreshInterval: {
+                                                    display: '5 seconds',
+                                                    pause: false,
+                                                    section: 1,
+                                                    value: 5000
+                                                },
+                                                kibanaSavedObjectMeta: {
+                                                    searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
+                                                }
+                                            };
+                                            $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + session._id, dashboard)
+                                                .success(function (data) {
+                                                    $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                                                        QueryParams.getQueryParam('version') + '&session=' + session._id;
+                                                }).error(function (data, status) {
                                                     console.error('Error on post /kibana/dashboard/session/' + session._id + ' ' +
                                                         JSON.stringify(data) + ', status: ' + status);
                                                 });
-                                            }
-                                        }).error(function (data, status) {
-                                            console.error('Error on post /kibana/visualization/session/' + visualizationId + '/' + session._id + ' ' +
-                                                JSON.stringify(data) + ', status: ' + status);
-                                        });
+                                        }
+                                    }).error(function (data, status) {
+                                        console.error('Error on post /kibana/visualization/session/' + visualizationId + '/' + session._id + ' ' +
+                                            JSON.stringify(data) + ', status: ' + status);
                                     });
-                                } else {
-                                    $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                                        QueryParams.getQueryParam('version') + '&session=' + session._id;
-                                }
-                            }).error(function (data, status) {
-                                console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' +
-                                    JSON.stringify(data) + ', status: ' + status);
-                            });
-                    }).error(function (data, status) {
+                                });
+                            } else {
+                                $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                                    QueryParams.getQueryParam('version') + '&session=' + session._id;
+                            }
+                        }).error(function (data, status) {
+                            console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' +
+                                JSON.stringify(data) + ', status: ' + status);
+                        });
+                }).error(function (data, status) {
                     console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
                         QueryParams.getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
                 });
