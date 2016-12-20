@@ -21,10 +21,11 @@ block content
         .col-md-12
             h1
                 a(ng-if='isDeveloper()' href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
-                label(ng-if='!isDeveloper()') Game {{ selectedGame.title }}
+                label(ng-if='!isDeveloper()') Game {{ selectedGame.title }} -
+                a(ng-if='isTeacher()' href="#", editable-text="selectedClass.name" onaftersave="changeName()")  Class {{ selectedClass.name }}
         .col-md-12
             h3(ng-if='isTeacher()')
-                a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Class {{ selectedSession.name }}
+                a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Session {{ selectedSession.name }}
             div(ng-if='isTeacher()' ng-controller='ClassSessionCtrl' ng-model='selectedSession')
                 button.btn-success(ng-if='!loading && sessionState(selectedSession)' ng-click='endSession(selectedSession)') Opened
                 button.btn-warning(ng-if='!loading && !sessionState(selectedSession)' ng-click='startSession(selectedSession)') Closed
