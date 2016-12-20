@@ -79,7 +79,7 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
                     QueryParams.getQueryParam('version') + '/classes/' + QueryParams.getQueryParam('class') +
                     '/sessions', {name: className}).success(function (session) {
 
-                    $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
+                        $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + $scope.gameId)
                         .success(function (data) {
                             var panels = [];
                             var uiStates = {};
@@ -130,8 +130,7 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
                                             };
                                             $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + session._id, dashboard)
                                                 .success(function (data) {
-                                                    $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                                                        QueryParams.getQueryParam('version') + '&session=' + session._id;
+                                                    goToSession(session);
                                                 }).error(function (data, status) {
                                                     console.error('Error on post /kibana/dashboard/session/' + session._id + ' ' +
                                                         JSON.stringify(data) + ', status: ' + status);
@@ -143,17 +142,22 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
                                     });
                                 });
                             } else {
-                                $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                                    QueryParams.getQueryParam('version') + '&session=' + session._id;
+                                goToSession(session);
                             }
                         }).error(function (data, status) {
                             console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' +
                                 JSON.stringify(data) + ', status: ' + status);
                         });
-                }).error(function (data, status) {
+                    }).error(function (data, status) {
                     console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
                         QueryParams.getQueryParam('version') + '/sessions' + JSON.stringify(data) + ', status: ' + status);
                 });
+            };
+
+            var goToSession = function(session) {
+                $window.location = 'data' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
+                    QueryParams.getQueryParam('version') + '&class=' +
+                    QueryParams.getQueryParam('class') + '&session=' + session._id;
             };
 
             $scope.isTeacher = function () {

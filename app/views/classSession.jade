@@ -21,44 +21,20 @@ block content
         .row(ng-controller='AppCtrl')
             .col-md-12
                 h1
-                    label Game {{ selectedGame.title }} - Class {{ selectedClass.name }}
+                    label Game {{ selectedGame.title }} -
+                    a(ng-if='isTeacher()' href="#", editable-text="selectedClass.name" onaftersave="changeName()")  Class {{ selectedClass.name }}
         .row
-            .col-md-offset-2.col-md-8(ng-if='!lti.key')
-                p Configure class to use lti
-        .row
-            .col-md-offset-2.col-md-4(ng-if='!lti.key')
-                label Type the secret:
-                    input.form-control(type='text' ng-model='lti.secret')
-                a.btn.btn-primary(type='button', ng-click='createLtiKey()')
-                    | Configure Lti
-        .row
-            .col-md-offset-2.col-md-8(ng-if='lti.key')
-                p Introduce the key and secret values in your tool consumer (e.g Moodle)
-        .row
-            .col-md-offset-2.col-md-4(ng-if='lti.key')
-                label KEY:
-                    label.label-success {{ lti.key }}
-        .row
-            .col-md-offset-2.col-md-4(ng-if='lti.key')
-                label Secret:
-                    label.label-success  {{ lti.secret }}
-        .row
-            .col-md-offset-2.col-md-4(ng-if='lti.key')
-                label Launch URL:
-                    label.label-success  {{ lti.launch }}
-        .row
-            .col-md-offset-2.col-md-8(ng-if='isTeacher()')
-                label Session title:
-                    input.form-control(type='text' ng-model='session.name')
-                a.btn.btn-primary(type='button', ng-click='createSession()')
-                    span.glyphicon.glyphicon-plus.right10
-                    | New class
-        .row
-            .col-md-offset-2.col-md-8
+            .col-md-8
+                .col-md-8(ng-if='isTeacher()')
+                    label Session title:
+                        input.form-control(type='text' ng-model='session.name')
+                    a.btn.btn-primary(type='button', ng-click='createSession()')
+                        span.glyphicon.glyphicon-plus.right10
+                        | New session
                 table.table.table-hover
                     thead
                         tr
-                            th
+                            th Sessions
                             th Created
                             th(ng-if='isTeacher()') State
                     tbody
@@ -72,4 +48,67 @@ block content
                                 button.btn-warning(ng-if='!loading && !sessionState(session)' ng-click='startSession(session)') Closed
                                 button.btn-info(ng-if='loading') Loading
                                     span.fa.fa-refresh.fa-spin
+            .col-md-4(ng-controller='AppCtrl')
+                .row
+                    .col-md-8
+                        h3
+                            label LTI
+                            a.pull-right.glyphicon.glyphicon-question-sign(href='{{DOCS.LTI}}'
+                            target="_blank" title="See documentation on GitHub")
+                .row
+                    .col-md-8(ng-if='!lti.key')
+                        p Configure class to use lti
+                .row
+                    .col-md-8(ng-if='!lti.key')
+                        label Type the secret:
+                            input.form-control(type='text' ng-model='lti.secret')
+                        a.btn.btn-primary(type='button', ng-click='createLtiKey()')
+                            | Configure Lti
+                .row
+                    .col-md-8(ng-if='lti.key')
+                        p Introduce the key and secret values in your tool consumer (e.g Moodle)
+                .row
+                    .col-md-8(ng-if='lti.key')
+                        label KEY:
+                            kbd.label-success {{ lti.key }}
+                .row
+                    .col-md-8(ng-if='lti.key')
+                        label Secret:
+                            kbd.label-success  {{ lti.secret }}
+                .row
+                    .col-md-10(ng-if='lti.key')
+                        label Launch URL:
+                            kbd.label-success  {{ lti.launch }}
+                .row
+                    .col-md-10
+                        hr
+                        h3
+                            label Class Students
+                        p A session will inherit all the class students when created
+                .row
+                    .col-md-8
+                        label Add students to class from file:
+                            input#inputFile.file(type='file' file-reader="fileContent")
+                        button.btn.btn-primary(ng-click='addCsvClass(true)')  Add class
+                .row
+                    .col-md-8
+                        hr
+                        label Username:
+                            input.form-control(type='text' ng-model='student.name')
+                        a.btn.btn-primary(type='button', ng-click='inviteStudent(true)')
+                            | Add student to class
+                .row
+                    .col-md-8
+                        table.table.table-hover
+                            thead
+                                tr
+                                    th Students
+                                    th Remove
+                            tbody
+                                tr(ng-repeat='student in selectedClass.students')
+                                    td
+                                        label {{student}}
+                                    td
+                                        a(ng-click='ejectStudent(student, true)')
+                                            span.glyphicon.glyphicon-remove-sign
 
