@@ -25,15 +25,15 @@ block content
                 a.btn.btn-primary(align='center' type='button', ng-click='createGame()')
                     span.glyphicon.glyphicon-plus.right10
                     | New game
-                a.col-md-offset-1(href="https://github.com/e-ucm/rage-analytics/wiki/Quickstart#developer-steps" target="_blank") Help
+                a.col-md-offset-1(href="{{DOCS.DEVELOPERSTEPS}}" target="_blank") Help
         .row
             .col-md-offset-2.col-md-8
                 table.table.table-hover
                     thead
                         tr
-                            th
+                            th Games
                             th Created
-                            th
+                            th(ng-if='isDeveloper()') Delete
                     tbody
                         tr(ng-repeat='game in games')
                             td
@@ -41,7 +41,7 @@ block content
                                 a(ng-if='isDeveloper()' ng-href='data?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
                                 a(ng-if='!isDeveloper()' ng-href='class?game={{game._id}}', ng-click='setSelectedGame(game)') {{game.title}}
                             td {{game._id | prettyDateId }}
-                            td
-                                a(ng-if='isDeveloper()' ng-click='deleteGame(game)')
+                            td(ng-if='isDeveloper()')
+                                a(ng-click='deleteGame(game)')
                                     span.glyphicon.glyphicon-remove-sign
 

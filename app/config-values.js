@@ -101,7 +101,17 @@ exports.defaultValues = {
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
-    myHost: process.env.MY_HOST || 'localhost'
+    myHost: process.env.MY_HOST || 'localhost',
+    docs: {
+        lti: 'https://github.com/e-ucm/rage-analytics/wiki/LTI',
+        kibanaIndex: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-the-index',
+        configureFields: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#configure-fields',
+        kibanaVisualizations: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-visualizations',
+        stormAnalysis: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-the-analysis',
+        traces: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#test-the-configuration',
+        developerSteps: 'https://github.com/e-ucm/rage-analytics/wiki/Quickstart#developer-steps',
+        quickstart: 'https://github.com/e-ucm/rage-analytics/wiki/Quickstart'
+    }
 };
 
 exports.testValues = {
@@ -118,7 +128,17 @@ exports.testValues = {
     apiPath: 'localhost:3000/api',
     port: 3350,
     appPrefix: 'gleaner',
-    myHost: process.env.MY_HOST || 'localhost'
+    myHost: process.env.MY_HOST || 'localhost',
+    docs: {
+        lti: 'https://github.com/e-ucm/rage-analytics/wiki/LTI',
+        kibanaIndex: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-the-index',
+        configureFields: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#configure-fields',
+        kibanaVisualizations: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-visualizations',
+        stormAnalysis: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-the-analysis',
+        traces: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#test-the-configuration',
+        developerSteps: 'https://github.com/e-ucm/rage-analytics/wiki/Quickstart#developer-steps',
+        quickstart: 'https://github.com/e-ucm/rage-analytics/wiki/Quickstart'
+    }
 };
 
 var prefix = 'RAGE_ANALYTICS_FRONTEND_';
