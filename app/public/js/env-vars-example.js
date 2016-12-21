@@ -24,6 +24,16 @@ envVars.constant('CONSTANTS', {
     APIPATH: location.origin + '/api',
     PREFIX: '{{appPrefix}}',
     PROXY: location.origin + '/api/proxy/{{appPrefix}}',
-    KIBANA: location.origin + '/api/proxy/{{kibanaPrefix}}'
+    KIBANA: location.origin + '/api/proxy/{{kibanaPrefix}}',
+    DOCS: {
+        LTI: '{{docs.lti}}',
+        KIBANAINDEX: '{{docs.kibanaIndex}}',
+        CONFIGUREFIELDS: '{{docs.configureFields}}',
+        KIBANAVISUALIZATIONS: '{{docs.kibanaVisualizations}}',
+        STORMANALYSIS: '{{docs.stormAnalysis}}',
+        TRACES: '{{docs.traces}}',
+        DEVELOPERSTEPS: '{{docs.developerSteps}}',
+        QUICKSTART: '{{docs.quickstart}}'
+    }
 });
 

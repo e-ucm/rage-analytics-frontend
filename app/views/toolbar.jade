@@ -28,7 +28,7 @@ nav.navbar.navbar-inverse.navbar-top
         #navbar.navbar-collapse.collapse(ng-controller='AppCtrl')
             ul.nav.navbar-nav
                 li
-                    a.btn(href="https://github.com/e-ucm/rage-analytics/wiki/Quickstart" target="_blank") Help
+                    a.btn(href="{{DOCS.QUICKSTART}}" target="_blank") Help
                 li(ng-if='isUser()')
                     a.btn(ng-href='#' ng-click='deselectedGameAndGo("home")') Home
                 li(ng-if='!isUser()')

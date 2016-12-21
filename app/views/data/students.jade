@@ -25,22 +25,35 @@ h1 Students
                     | Allow anonymous users
                     br
     .row
-        .col-md-8
+        .col-md-6
+            hr
             label Add class from file:
                 input#inputFile.file(type='file' file-reader="fileContent")
             button.btn.btn-primary(ng-click='addCsvClass()')  Add class
+            hr
     .row
-        .col-md-8
+        .col-md-4
             label Username:
                 input.form-control(type='text' ng-model='student.name')
             a.btn.btn-primary(type='button', ng-click='inviteStudent()')
                 | Add student
+        .col-md-4
+            .row
+                .col-md-2
+                    a.pull-right.glyphicon.glyphicon-plus(ng-click='updateSessionToClass()' title="Add missing students from class")
+                .col-md-2
+                    a.pull-right.glyphicon.glyphicon-adjust(ng-click='resetSessionToClass()' title="Reset students to class students")
     .row
-        .col-md-8
+        .col-md-6
             table.table.table-hover
-                tr(ng-repeat='student in selectedSession.students')
-                    td
-                        label {{student}}
-                    td
-                        a(ng-click='ejectStudent(student)')
-                            span.glyphicon.glyphicon-remove-sign
+                thead
+                    tr
+                        th Students
+                        th Remove
+                tbody
+                    tr(ng-repeat='student in selectedSession.students')
+                        td
+                            label {{student}}
+                        td
+                            a(ng-click='ejectStudent(student)')
+                                span.glyphicon.glyphicon-remove-sign

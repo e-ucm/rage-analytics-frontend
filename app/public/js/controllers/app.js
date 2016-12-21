@@ -126,6 +126,7 @@ angular.module('myApp', [
     function ($scope, $location, $http, $timeout, $localStorage,
               $window, Games, Versions, Sessions, Analysis, Role, CONSTANTS, $sce) {
         $scope.$storage = $localStorage;
+        $scope.DOCS = CONSTANTS.DOCS;
 
         $scope.isAdmin = function () {
             return $scope.isUser() &&
@@ -207,8 +208,16 @@ angular.module('myApp', [
         $scope.changeTitle = function () {
             $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
             }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on put /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
+        };
+
+        $scope.changeName = function () {
+            $http.put(CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id,
+                {name: $scope.selectedClass.name}).success(function (data) {
+                }).error(function (data, status) {
+                    console.error('Error on put /classes/' + $scope.selectedClass._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                });
         };
 
         $scope.changeGameLink = function () {
@@ -218,7 +227,7 @@ angular.module('myApp', [
             });
         };
 
-        $scope.addCsvClass = function () {
+        $scope.addCsvClass = function (toClass) {
             var students = [];
             $scope.fileContent.contents.trim().split(',').forEach(function (student) {
                 if (student) {
@@ -230,10 +239,20 @@ angular.module('myApp', [
                     students.push(student);
                 }
             });
-            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {students: students}).success(function (data) {
-                $scope.refreshSessions();
+            var route = '';
+            if (toClass) {
+                route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
+            } else {
+                route = CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id;
+            }
+            $http.put(route, {students: students}).success(function (data) {
+                if (toClass) {
+                    refreshClasses();
+                } else {
+                    $scope.refreshSessions();
+                }
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                console.error('Error on put', route, status);
             });
         };
 
@@ -804,21 +823,107 @@ angular.module('myApp', [
             });
         };
 
-        $scope.inviteStudent = function () {
-            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id, {students: $scope.student.name}).success(function (data) {
-                $scope.refreshSessions();
+        $scope.inviteStudent = function (toClass) {
+            var route = '';
+            if (toClass) {
+                route = CONSTANTS.PROXY + '/classes/' + getClassId();
+            } else {
+                route = CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id;
+            }
+            $http.put(route, {students: $scope.student.name}).success(function (data) {
+                if (toClass) {
+                    refreshClasses();
+                } else {
+                    $scope.refreshSessions();
+                }
                 $scope.student.name = '';
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' +
+                console.error('Error on put' + route + ' ' +
                     JSON.stringify(data) + ', status: ' + status);
             });
         };
 
-        $scope.ejectStudent = function (student) {
-            $http.put(CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove', {students: student}).success(function () {
-                $scope.refreshSessions();
+        $scope.updateSessionToClass = function () {
+            var classStudents = $scope.selectedClass.students;
+            var sessionStudents = $scope.selectedSession.students;
+
+            var addStudents = [];
+            classStudents.forEach(function (student) {
+                if (sessionStudents.indexOf(student) === -1) {
+                    addStudents.push(student);
+                }
+            });
+
+            if (addStudents.length > 0) {
+                var route = CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id;
+                $http.put(route, {students: addStudents}).success(function (data) {
+                    $scope.selectedSession = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+        };
+
+        var removeStudentsFromClass = function (classStudents, sessionStudents) {
+            var removeStudents = [];
+
+            sessionStudents.forEach(function (student) {
+                if (classStudents.indexOf(student) === -1) {
+                    removeStudents.push(student);
+                }
+            });
+            if (removeStudents.length > 0) {
+                var route = CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove';
+                $http.put(route, {students: removeStudents}).success(function (data) {
+                    $scope.selectedSession = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+        };
+
+        $scope.resetSessionToClass = function () {
+            var classStudents = $scope.selectedClass.students;
+            var sessionStudents = $scope.selectedSession.students;
+
+            var addStudents = [];
+            classStudents.forEach(function (student) {
+                if (sessionStudents.indexOf(student) === -1) {
+                    addStudents.push(student);
+                }
+            });
+
+            if (addStudents.length > 0) {
+                var route = CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id;
+                $http.put(route, {students: addStudents}).success(function (data) {
+                    $scope.selectedSession = data;
+                    removeStudentsFromClass(classStudents, sessionStudents);
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            } else {
+                removeStudentsFromClass(classStudents, sessionStudents);
+            }
+        };
+
+        $scope.ejectStudent = function (student, fromClass) {
+            var route = '';
+            if (fromClass) {
+                route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id + '/remove';
+            } else {
+                route = CONSTANTS.PROXY + '/sessions/' + $scope.selectedSession._id + '/remove';
+            }
+            $http.put(route, {students: student}).success(function () {
+                if (fromClass) {
+                    refreshClasses();
+                } else {
+                    $scope.refreshSessions();
+                }
             }).error(function (data, status) {
-                console.error('Error on post /sessions/' + $scope.selectedSession._id + ' ' +
+                console.error('Error on put' + route + ' ' +
                     JSON.stringify(data) + ', status: ' + status);
             });
         };
@@ -872,7 +977,6 @@ angular.module('myApp', [
                 $scope.versions = Versions.query({
                     gameId: $scope.selectedGame._id
                 }, function () {
-                    $scope.selectedVersion = null;
                     var versionId = $location.search().version;
                     if (versionId) {
                         for (var i = 0; i < $scope.versions.length; i++) {
@@ -880,15 +984,17 @@ angular.module('myApp', [
                                 $scope.selectedVersion = $scope.versions[i];
                             }
                         }
+                    } else {
+                        $scope.selectedVersion = null;
                     }
 
-                    if (!$scope.selectedVersion) {
+                    if (!$scope.selectedVersion && $scope.versions.length > 0) {
                         $scope.selectedVersion = $scope.versions[0];
                     }
 
                     $scope.form.selectedVersion = $scope.selectedVersion;
 
-                    $scope.refreshSessions();
+                    refreshClasses();
 
                     // Check if the version has an analysis uploaded
                     updateAnalysis();
@@ -900,10 +1006,22 @@ angular.module('myApp', [
             }
         };
 
+        var refreshClasses = function () {
+            var classId = $location.search().class;
+            if ($scope.selectedGame && $scope.selectedVersion && classId) {
+
+                $http.get(CONSTANTS.PROXY + '/classes/' + classId).success(function (data) {
+                    $scope.selectedClass = data;
+                    $scope.refreshSessions();
+                }).error(function (data, status) {
+                    console.error('Error on get /classes/' + classId);
+                });
+            }
+        };
+
         var updateAnalysis = function () {
             if ($scope.selectedVersion) {
                 $scope.analysis = Analysis.get({versionId: $scope.selectedVersion._id}, function (analysis) {
-                    console.log('received analysis', analysis);
                 });
             }
         };
@@ -911,9 +1029,9 @@ angular.module('myApp', [
         $scope.refreshSessions = function () {
             if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
                 $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
-                    '/classes/' + $scope.selectedClass._id + 'sessions/my').success(function (data) {
+                    '/classes/' + $scope.selectedClass._id + '/sessions/my').success(function (data) {
                     $scope.sessions = data;
-                    $scope.selectedSession = null;
+
                     var sessionId = $location.search().session;
                     if (sessionId) {
                         for (var i = 0; i < $scope.sessions.length; i++) {
@@ -922,6 +1040,8 @@ angular.module('myApp', [
                                 checkAnonymous();
                             }
                         }
+                    } else {
+                        $scope.selectedSession = null;
                     }
                 }).error(function (data, status) {
                     console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
@@ -1061,13 +1181,15 @@ angular.module('myApp', [
         $scope.form = {
             selectedGame: null,
             selectedVersion: null,
-            selectedSession: null
+            selectedSession: null,
+            selectedClass: null
         };
 
         $scope.deselectedGameAndGo = function (href) {
             $scope.form.selectedGame = null;
             $scope.form.selectedVersion = null;
             $scope.form.selectedSession = null;
+            $scope.form.selectedClass = null;
             $window.location = href;
         };
 
@@ -1086,15 +1208,50 @@ angular.module('myApp', [
 
         $scope.setSelectedClass = function (classRes, url) {
             $scope.form.selectedClass = classRes;
-            $window.location = url + '?game=' + $scope.form.selectedGame._id + '&version=' + $scope.form.selectedVersion._id + '&class=' + classRes._id;
+            $window.location = url + '?game=' + $scope.form.selectedGame._id + '&version=' + $scope.form.selectedVersion._id +
+                '&class=' + classRes._id;
+        };
+
+        var getGameId = function () {
+            var gameId = null;
+            if ($scope.selectedGame) {
+                gameId = $scope.selectedGame._id;
+            } else if ($scope.form.selectedGame) {
+                gameId = $scope.form.selectedGame._id;
+            }
+            return gameId;
+        };
+
+        var getVersionId = function () {
+            var versionId = null;
+            if ($scope.selectedVersion) {
+                versionId = $scope.selectedVersion._id;
+            } else if ($scope.form.selectedVersion) {
+                versionId = $scope.form.selectedVersion._id;
+            }
+            return versionId;
+        };
+
+        var getClassId = function () {
+            var classId = null;
+            if ($scope.selectedClass) {
+                classId = $scope.selectedClass._id;
+            } else if ($scope.form.selectedClass) {
+                classId = $scope.form.selectedClass._id;
+            }
+            return classId;
         };
 
         $scope.setSelectedSession = function (session, url) {
+            var gameId = getGameId();
+            var versionId = getVersionId();
+            var classId = getClassId();
+            var sessionId = session._id;
+
             $scope.form.selectedSession = session;
-            console.log('class', $scope.form.selectedClass);
-            $window.location = url + '?game=' + $scope.form.selectedGame._id +
-                '&version=' + $scope.form.selectedVersion._id +
-                '&class=' + $scope.form.selectedClass._id + '&session=' + session._id;
+            $window.location = url + '?game=' + gameId +
+                '&version=' + versionId +
+                '&class=' + classId + '&session=' + sessionId;
         };
 
         $scope.$watch('form.selectedGame', function (selected) {
@@ -1118,15 +1275,10 @@ angular.module('myApp', [
         });
 
         $scope.$watch('form.selectedClass', function (selected) {
-            var oldURL = $location.absUrl();
             if (selected) {
                 $location.search('class', selected._id);
                 $scope.selectedClass = selected;
             }
-            if (oldURL !== $location.absUrl()) {
-                $window.location = $location.absUrl();
-            }
-
         });
 
         $scope.$watch('form.selectedSession', function (selected) {
@@ -1154,7 +1306,7 @@ angular.module('myApp', [
             });
         };
 
-        $scope.isRemovable = function(dev) {
+        $scope.isRemovable = function (dev) {
             var developers = $scope.selectedGame.developers;
             if (developers && developers.length === 1) {
                 return false;
@@ -1165,7 +1317,7 @@ angular.module('myApp', [
             return $scope.isAuthor();
         };
 
-        $scope.isAuthor = function() {
+        $scope.isAuthor = function () {
             var authors = $scope.selectedGame.authors;
             if (!authors) {
                 return false;
