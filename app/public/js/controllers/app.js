@@ -1029,7 +1029,7 @@ angular.module('myApp', [
             }
         };
 
-        $scope.getTempleateVisualizations = function() {
+        $scope.getTempleateVisualizations = function () {
             if ($scope.selectedGame && $scope.selectedVersion) {
 
                 $http.get(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id)
@@ -1296,13 +1296,19 @@ angular.module('myApp', [
             }
         });
 
+        $scope.developer = {
+            name: ''
+        };
+
         $scope.inviteDeveloper = function () {
-            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {developers: $scope.developer.name}).success(function (data) {
-                $scope.selectedGame = data;
-            }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
-                    JSON.stringify(data) + ', status: ' + status);
-            });
+            if ($scope.developer.name) {
+                $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {developers: $scope.developer.name}).success(function (data) {
+                    $scope.selectedGame = data;
+                }).error(function (data, status) {
+                    console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            }
         };
 
         $scope.ejectDeveloper = function (developer) {
