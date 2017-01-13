@@ -999,6 +999,9 @@ angular.module('myApp', [
                     // Check if the version has an analysis uploaded
                     updateAnalysis();
 
+
+                    $scope.getTempleateVisualizations();
+
                     if (callback) {
                         callback();
                     }
@@ -1026,27 +1029,8 @@ angular.module('myApp', [
             }
         };
 
-        $scope.refreshSessions = function () {
-            if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
-                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
-                    '/classes/' + $scope.selectedClass._id + '/sessions/my').success(function (data) {
-                    $scope.sessions = data;
-
-                    var sessionId = $location.search().session;
-                    if (sessionId) {
-                        for (var i = 0; i < $scope.sessions.length; i++) {
-                            if ($scope.sessions[i]._id === sessionId) {
-                                $scope.selectedSession = $scope.sessions[i];
-                                checkAnonymous();
-                            }
-                        }
-                    } else {
-                        $scope.selectedSession = null;
-                    }
-                }).error(function (data, status) {
-                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
-                        '/classes/' + $scope.selectedClass._id + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
-                });
+        $scope.getTempleateVisualizations = function() {
+            if ($scope.selectedGame && $scope.selectedVersion) {
 
                 $http.get(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id)
                     .success(function (data) {
@@ -1167,6 +1151,30 @@ angular.module('myApp', [
                         console.error('Error on get /kibana/visualization/list/' + $scope.selectedGame._id + ' ' +
                             JSON.stringify(data) + ', status: ' + status);
                     });
+            }
+        };
+
+        $scope.refreshSessions = function () {
+            if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
+                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
+                    '/classes/' + $scope.selectedClass._id + '/sessions/my').success(function (data) {
+                    $scope.sessions = data;
+
+                    var sessionId = $location.search().session;
+                    if (sessionId) {
+                        for (var i = 0; i < $scope.sessions.length; i++) {
+                            if ($scope.sessions[i]._id === sessionId) {
+                                $scope.selectedSession = $scope.sessions[i];
+                                checkAnonymous();
+                            }
+                        }
+                    } else {
+                        $scope.selectedSession = null;
+                    }
+                }).error(function (data, status) {
+                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
+                        '/classes/' + $scope.selectedClass._id + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
+                });
             }
         };
 
@@ -1318,6 +1326,9 @@ angular.module('myApp', [
         };
 
         $scope.isAuthor = function () {
+            if (!$scope.selectedGame) {
+                return false;
+            }
             var authors = $scope.selectedGame.authors;
             if (!authors) {
                 return false;
