@@ -999,6 +999,9 @@ angular.module('myApp', [
                     // Check if the version has an analysis uploaded
                     updateAnalysis();
 
+
+                    $scope.getTempleateVisualizations();
+
                     if (callback) {
                         callback();
                     }
@@ -1026,27 +1029,8 @@ angular.module('myApp', [
             }
         };
 
-        $scope.refreshSessions = function () {
-            if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
-                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
-                    '/classes/' + $scope.selectedClass._id + '/sessions/my').success(function (data) {
-                    $scope.sessions = data;
-
-                    var sessionId = $location.search().session;
-                    if (sessionId) {
-                        for (var i = 0; i < $scope.sessions.length; i++) {
-                            if ($scope.sessions[i]._id === sessionId) {
-                                $scope.selectedSession = $scope.sessions[i];
-                                checkAnonymous();
-                            }
-                        }
-                    } else {
-                        $scope.selectedSession = null;
-                    }
-                }).error(function (data, status) {
-                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
-                        '/classes/' + $scope.selectedClass._id + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
-                });
+        $scope.getTempleateVisualizations = function () {
+            if ($scope.selectedGame && $scope.selectedVersion) {
 
                 $http.get(CONSTANTS.PROXY + '/kibana/templates/index/' + $scope.selectedGame._id)
                     .success(function (data) {
@@ -1170,6 +1154,30 @@ angular.module('myApp', [
             }
         };
 
+        $scope.refreshSessions = function () {
+            if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
+                $http.get(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
+                    '/classes/' + $scope.selectedClass._id + '/sessions/my').success(function (data) {
+                    $scope.sessions = data;
+
+                    var sessionId = $location.search().session;
+                    if (sessionId) {
+                        for (var i = 0; i < $scope.sessions.length; i++) {
+                            if ($scope.sessions[i]._id === sessionId) {
+                                $scope.selectedSession = $scope.sessions[i];
+                                checkAnonymous();
+                            }
+                        }
+                    } else {
+                        $scope.selectedSession = null;
+                    }
+                }).error(function (data, status) {
+                    console.error('Error on get /games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id +
+                        '/classes/' + $scope.selectedClass._id + '/sessions/my' + JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+        };
+
         $scope.hasSessions = function () {
             return ($scope.sessions ? $scope.sessions.length : 0) !== 0;
         };
@@ -1288,13 +1296,19 @@ angular.module('myApp', [
             }
         });
 
+        $scope.developer = {
+            name: ''
+        };
+
         $scope.inviteDeveloper = function () {
-            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {developers: $scope.developer.name}).success(function (data) {
-                $scope.selectedGame = data;
-            }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
-                    JSON.stringify(data) + ', status: ' + status);
-            });
+            if ($scope.developer.name) {
+                $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {developers: $scope.developer.name}).success(function (data) {
+                    $scope.selectedGame = data;
+                }).error(function (data, status) {
+                    console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            }
         };
 
         $scope.ejectDeveloper = function (developer) {
@@ -1318,6 +1332,9 @@ angular.module('myApp', [
         };
 
         $scope.isAuthor = function () {
+            if (!$scope.selectedGame) {
+                return false;
+            }
             var authors = $scope.selectedGame.authors;
             if (!authors) {
                 return false;
