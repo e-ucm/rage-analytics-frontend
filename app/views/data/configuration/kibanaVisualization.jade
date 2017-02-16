@@ -19,37 +19,37 @@
             label.top30 Example Visualization
             textarea#exampleVisualization.form-control.custom-control(rows='6' ng-model='exampleVisualization')
             button.btn.btn-primary.top15(ng-click='addTemplateVisualization()') Use default visualization
-        .row(style="overflow-y:scroll; height:200px").top30
+        .row.top30
             label.top30 Select the visualizations that you want use in your dashboard:
             button.btn-info(ng-if='waitOperation')
                 span.fa.fa-refresh.fa-spin
-            table.table.table-hover
-                thead
-                    tr
-                        th Visualizations
-                        th Teacher
-                        th Developer
-                tbody(ng-repeat='defaultVis in defaultList')
-                    tr.info
-                        td
+        .row.top30
+            table.table.table-striped.hover.fix
+                thead.fix
+                    tr.fix
+                        th.fix.large Visualizations
+                        th.fix.short Teacher
+                        th.fix.short Developer
+                tbody.fix.overflow
+                    tr.fix.info(ng-repeat='defaultVis in defaultList')
+                        td.fix.filterable-cell.large
                             label {{defaultVis.title}}
-                        td
+                        td.fix.filterable-cell.short
                             label
                                 input(type="checkbox" ng-model='checkboxVisualizationsTch[defaultVis.id]' ng-if='!waitOperation'  ng-click='selectVisualization("tch", defaultVis.id)')
                                 p
-                        td
+                        td.fix.filterable-cell.short
                             label
                                 input(type="checkbox" ng-model='checkboxVisualizationsDev[defaultVis.id]' ng-if='!waitOperation' ng-click='selectVisualization("dev", defaultVis.id)')
                                 p
-                tbody(ng-repeat='visualization in visualizationList')
-                    tr
-                        td
+                    tr.fix(ng-repeat='visualization in visualizationList')
+                        td.fix.filterable-cell.large
                             label {{visualization.title}}
-                        td
+                        td.fix.filterable-cell.short
                             label
                                 input(type="checkbox" ng-model='checkboxVisualizationsTch[visualization.id]' ng-if='!waitOperation' ng-click='selectVisualization("tch", visualization.id)')
                                 p
-                        td
+                        td.fix.filterable-cell.short
                             label
                                 input(type="checkbox" ng-model='checkboxVisualizationsDev[visualization.id]' ng-if='!waitOperation' ng-click='selectVisualization("dev", visualization.id)')
                                 p

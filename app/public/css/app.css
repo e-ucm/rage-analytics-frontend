@@ -78,3 +78,44 @@ html, body {
 .warning-alert-table tr td:nth-child(3){
     background-color: #ffef8f; text-align: center; cursor: pointer;
 }
+
+table {
+    width: 100%;
+}
+
+thead.fix, tbody.fix, tr.fix, td.fix, th.fix { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 60px;
+    text-align: left;
+}
+
+thead {
+    /* fallback */
+}
+
+tbody.fix {
+    height: 600px;
+    overflow-y: auto;
+}
+
+tbody td.large, thead th.large {
+    float: left;
+    width: 70%;
+}
+
+tbody td.short, thead th.short {
+    width: 15%;
+    float: left;
+    text-align: center;
+}
+
+
+
