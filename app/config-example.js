@@ -31,3 +31,4 @@ exports.a2 = {
     a2AdminPassword: '{{a2AdminPassword}}'
 };
 exports.kibanaPrefix = '{{kibanaPrefix}}';
+exports.maxSizeRequest= '{{maxSizeRequest}}';

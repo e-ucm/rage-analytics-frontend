@@ -102,6 +102,7 @@ exports.defaultValues = {
     port: 3350,
     appPrefix: 'gleaner',
     myHost: process.env.MY_HOST || 'localhost',
+    maxSizeRequest: '1mb',
     docs: {
         lti: 'https://github.com/e-ucm/rage-analytics/wiki/LTI',
         kibanaIndex: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-the-index',
@@ -129,6 +130,7 @@ exports.testValues = {
     port: 3350,
     appPrefix: 'gleaner',
     myHost: process.env.MY_HOST || 'localhost',
+    maxSizeRequest: '1mb',
     docs: {
         lti: 'https://github.com/e-ucm/rage-analytics/wiki/LTI',
         kibanaIndex: 'https://github.com/e-ucm/rage-analytics/wiki/Analysis-Configuration#select-the-index',
