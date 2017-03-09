@@ -31,11 +31,15 @@ angular.module('myApp', [
     }
 }).filter('prettyDateId', function () {
     return function (_id) {
-        return $.format.prettyDate(new Date(parseInt(_id.slice(0, 8), 16) * 1000));
+        if (_id) {
+            return $.format.prettyDate(new Date(parseInt(_id.slice(0, 8), 16) * 1000));
+        }
     };
 }).filter('prettyDate', function () {
     return function (date) {
-        return $.format.prettyDate(new Date(date));
+        if (date) {
+            return $.format.prettyDate(new Date(date));
+        }
     };
 }).filter('list', function () {
     return function (list) {
@@ -959,7 +963,7 @@ angular.module('myApp', [
                         console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
                     });
                 }).error(function (data, status) {
-                    console.error('Error on delete /games/' + $scope.selectedGame._id + ' ' +
+                    console.error('Error on delete /games/' + game._id + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
                 });
             }
