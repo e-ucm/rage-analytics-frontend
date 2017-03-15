@@ -1,0 +1,7 @@
+h1 TeacherDashboard
+.row
+    div.col-nd-6(ng-repeat-start="devTch in orderedTchList track by $index" class="col-md-6")
+        button.btn-primary.btn-lg(ng-click='pressVisualizationButton($index, "tch")' ng-if='devTch!==undefined') {{devTch.title}}
+        button.btn-primary.btn-lg(ng-click='pressVisualizationButton($index, "tch")' ng-if='devTch===undefined') empty
+    div(ng-repeat-end ng-if="($index+1) % 2 == 0" class="clearfix")
+
