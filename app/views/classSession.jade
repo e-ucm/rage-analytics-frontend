@@ -31,12 +31,14 @@ block content
                     a.btn.btn-primary(type='button', ng-click='createSession()')
                         span.glyphicon.glyphicon-plus.right10
                         | New session
+                p.btn-danger {{sessionOpenedError}}
                 table.table.table-hover
                     thead
                         tr
                             th Sessions
                             th Created
                             th(ng-if='isTeacher()') State
+                            th(ng-if='isTeacher()') Delete
                     tbody
                         tr(ng-repeat='session in sessions')
                             td(ng-controller='AppCtrl')
@@ -48,6 +50,9 @@ block content
                                 button.btn-warning(ng-if='!loading && !sessionState(session)' ng-click='startSession(session)') Closed
                                 button.btn-info(ng-if='loading') Loading
                                     span.fa.fa-refresh.fa-spin
+                            td(ng-if='isTeacher()')
+                                a(ng-click='deleteSession(session)')
+                                    span.glyphicon.glyphicon-remove-sign
             .col-md-4(ng-controller='AppCtrl')
                 .row
                     .col-md-8

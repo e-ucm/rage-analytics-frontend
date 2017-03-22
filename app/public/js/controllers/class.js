@@ -29,7 +29,6 @@ angular.module('classApp', ['ngStorage', 'services'])
                 $http.get(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/classes/my').success(function (data) {
                     $scope.classes = data;
-                    console.log('data', data);
                 }).error(function (data, status) {
                     console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
                         QueryParams.getQueryParam('version') + '/classes/my' + JSON.stringify(data) + ', status: ' + status);
@@ -45,11 +44,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                 var className = $scope.class.name ? $scope.class.name : 'New class';
                 $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
                     QueryParams.getQueryParam('version') + '/classes', {name: className}).success(function (classRes) {
-
                         $window.location = 'classsession' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
                             QueryParams.getQueryParam('version') + '&class=' + classRes._id;
-
-
                     }).error(function (data, status) {
                     console.error('Error on post /games/' + QueryParams.getQueryParam('game') + '/versions/' +
                         QueryParams.getQueryParam('version') + '/classes' + JSON.stringify(data) + ', status: ' + status);
@@ -58,6 +54,17 @@ angular.module('classApp', ['ngStorage', 'services'])
 
             $scope.isTeacher = function () {
                 return Role.isTeacher();
+            };
+
+            $scope.deleteClass = function (classObj) {
+                if (classObj) {
+                    $http.delete(CONSTANTS.PROXY + '/classes/' + classObj._id).success(function () {
+                        getClasses();
+                    }).error(function (data, status) {
+                        console.error('Error on delete /classes/' + classObj._id + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
             };
         }
     ]);

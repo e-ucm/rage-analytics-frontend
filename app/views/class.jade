@@ -36,10 +36,14 @@ block content
                         tr
                             th Name
                             th Created
+                            th(ng-if='isTeacher()') Delete
                     tbody
                         tr(ng-repeat='class in classes')
                             td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats
                                 a(ng-href="#" ng-click='setSelectedClass(class, "classsession")') {{class.name}}
                             td {{class._id | prettyDateId }}
+                            td(ng-if='isTeacher()')
+                                a(ng-click='deleteClass(class)')
+                                    span.glyphicon.glyphicon-remove-sign
 

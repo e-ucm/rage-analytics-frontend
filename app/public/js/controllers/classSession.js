@@ -189,6 +189,20 @@ angular.module('classSessionApp', ['ngStorage', 'services'])
                     $scope.loading = false;
                 });
             };
+            
+            $scope.sessionOpenedError = '';
+            $scope.deleteSession = function (sessionObj) {
+                if (sessionObj) {
+                    $http.delete(CONSTANTS.PROXY + '/sessions/' + sessionObj._id).success(function () {
+                        $scope.sessionOpenedError = '';
+                        getSessions();
+                    }).error(function (data, status) {
+                        $scope.sessionOpenedError = data;
+                        console.error('Error on delete /sessions/' + sessionObj._id + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+            };
 
             $scope.sessionState = function (session) {
                 return session && session.start && !session.end;
