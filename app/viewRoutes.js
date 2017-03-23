@@ -22,31 +22,31 @@ var express = require('express'),
     router = express.Router();
 
 router.get('/', function (req, res) {
-    res.render('login');
+    res.render('login', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/signup', function (req, res) {
-    res.render('signup');
+    res.render('signup', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/login', function (req, res) {
-    res.render('login');
+    res.render('login', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/logout', function (req, res) {
-    res.render('home');
+    res.render('home', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/home', function (req, res) {
-    res.render('home');
+    res.render('home', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/class', function (req, res) {
-    res.render('class');
+    res.render('class', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/classsession', function (req, res) {
-    res.render('classSession');
+    res.render('classSession', {basePath: req.headers['x-forwarded-host']});
 });
 
 router.get('/data', function (req, res) {

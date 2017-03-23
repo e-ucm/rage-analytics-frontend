@@ -68,7 +68,6 @@ angular.module('myApp', [
                 if ($localStorage.user) {
                     config.headers.Authorization = 'Bearer ' + $localStorage.user.token;
                 }
-
                 return config;
             }
         };
@@ -77,28 +76,6 @@ angular.module('myApp', [
     function ($routeProvider, $httpProvider, $locationProvider) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
         $locationProvider.html5Mode({enabled: true, requireBase: false});
-        $routeProvider
-            .when('/home', {
-                templateUrl: '/home',
-                controller: 'HomeCtrl'
-            }).when('/class', {
-                templateUrl: '/class',
-                controller: 'ClassCtrl'
-            }).when('/classsession', {
-                templateUrl: '/classSession',
-                controller: 'ClassSessionCtrl'
-            }).when('/game', {
-                templateUrl: '/game',
-                controller: 'GameCtrl'
-            }).when('/login', {
-                templateUrl: '/login',
-                controller: 'LoginCtrl'
-            }).when('/signup', {
-                templateUrl: '/signup',
-                controller: 'SignupCtrl'
-            }).otherwise({
-                redirectTo: 'login'
-            });
     }
 ]).directive('fileReader', function () {
     return {
