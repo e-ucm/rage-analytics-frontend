@@ -30,10 +30,10 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .controller('SessionCtrl', ['$scope', '$location', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS', 'Role',
-        function ($scope, $location, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS, Role) {
+    .controller('SessionCtrl', ['$scope', '$location', '$http', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS', 'Role',
+        function ($scope, $location, $http, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS, Role) {
 
-            $scope.isTeacher = function() {
+            $scope.isTeacher = function () {
                 return Role.isTeacher();
             };
 
@@ -148,6 +148,14 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 player.$save({id: $scope.session._id}, function () {
                     $scope.player = null;
                     $scope.refreshResults();
+                });
+            };
+
+            $scope.deleteUserData = function (name){
+                $http.delete(CONSTANTS.PROXY + '/sessions/data/' + $scope.session._id + '/' + name).success(function () {
+                    $scope.sessionOpenedError = '';
+                }).error(function (err, status) {
+                    console.err(err);
                 });
             };
         }
