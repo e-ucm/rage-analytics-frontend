@@ -1,4 +1,4 @@
-FROM node
+FROM node:4.2.1
 
 ENV USER_NAME="user" \
     WORK_DIR="/app"
