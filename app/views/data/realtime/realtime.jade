@@ -58,11 +58,15 @@ link(rel="stylesheet", href="css/realtime.css")
                         th
                             span.glyphicon.glyphicon-exclamation-sign.right10(style="color:orange")
                             | Warnings
+                        th Remove data
                 tbody
                     tr(ng-repeat="result in results | orderBy:alertScore:true" ng-click="viewPlayer(result)")
                         td {{ result.name }}
                         td {{ result.alerts.length }}
                         td {{ result.warnings.length }}
+                        td
+                            a(ng-click='deleteUserData(result.name)')
+                                span.glyphicon.glyphicon-remove-sign
         h1 Visualizations
         iframe#dashboardIframe.no-border(src = "{{dashboardLink()}}" scrolling="no" width="100%")
 include scripts
