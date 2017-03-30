@@ -21,40 +21,51 @@
 var express = require('express'),
     router = express.Router();
 
+var getBasePath = function(req){
+    if(req.protocol === 'https'){
+        console.log('>>>>>>>>>I>>  ' ,"https://"+req.headers['x-forwarded-host']);
+        return 'https://'+req.headers['x-forwarded-host'];
+    }
+
+    var proto = req.headers['x-forwarded-proto'];
+    console.log('>>>>>>>>>E>>  ' , proto + '://' + req.headers['x-forwarded-host']);
+    return proto + '://' + req.headers['x-forwarded-host'];
+};
+
 router.get('/', function (req, res) {
-    res.render('login', {basePath: req.headers['x-forwarded-host']});
+    res.render('login', {basePath: getBasePath(req)});
 });
 
 router.get('/signup', function (req, res) {
-    res.render('signup', {basePath: req.headers['x-forwarded-host']});
+    res.render('signup', {basePath: getBasePath(req)});
 });
 
 router.get('/login', function (req, res) {
-    res.render('login', {basePath: req.headers['x-forwarded-host']});
+    res.render('login', {basePath: getBasePath(req)});
 });
 
 router.get('/logout', function (req, res) {
-    res.render('home', {basePath: req.headers['x-forwarded-host']});
+    res.render('home', {basePath: getBasePath(req)});
 });
 
 router.get('/home', function (req, res) {
-    res.render('home', {basePath: req.headers['x-forwarded-host']});
+    res.render('home', {basePath: getBasePath(req)});
 });
 
 router.get('/class', function (req, res) {
-    res.render('class', {basePath: req.headers['x-forwarded-host']});
+    res.render('class', {basePath: getBasePath(req)});
 });
 
 router.get('/classsession', function (req, res) {
-    res.render('classSession', {basePath: req.headers['x-forwarded-host']});
+    res.render('classSession', {basePath: getBasePath(req)});
 });
 
 router.get('/data', function (req, res) {
-    res.render('data');
+    res.render('data', {basePath: getBasePath(req)});
 });
 
 router.get('/loginbyplugin/', function (req, res) {
-    res.render('loginplugin', {user: JSON.stringify(req.query)});
+    res.render('loginplugin', {user: JSON.stringify(req.query), basePath: getBasePath(req)});
 });
 
 module.exports = router;
