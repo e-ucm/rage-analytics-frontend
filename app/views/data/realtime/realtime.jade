@@ -68,5 +68,8 @@ link(rel="stylesheet", href="css/realtime.css")
                             a(ng-click='deleteUserData(result.name)')
                                 span.glyphicon.glyphicon-remove-sign
         h1 Visualizations
-        iframe#dashboardIframe.no-border(src = "{{dashboardLink()}}" scrolling="no" width="100%")
+        iframe#dashboardIframe.no-border(ng-src = "{{iframeDashboardUrl}}" scrolling="no" width="100%")
+    .row(ng-if="isStudent()")
+        h1 Visualizations
+        iframe#dashboardIframe.no-border(ng-src = "{{iframeDashboardUrl}}" scrolling="no" width="100%")
 include scripts

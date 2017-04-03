@@ -70,7 +70,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 }
             };
 
-            $scope.dashboardLink = function () {
+
+            var dashboardLink = function () {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
                     QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
@@ -89,6 +90,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
                 return $sce.trustAsResourceUrl(url);
             };
+            $scope.iframeDashboardUrl = dashboardLink();
 
             var calculateResults = function (rawResults) {
                 var results = [];
@@ -129,13 +131,21 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.viewAll = function () {
                 $scope.player = null;
-                document.getElementById('dashboardIframe').contentWindow.location.reload();
+                $scope.iframeDashboardUrl = dashboardLink();
             };
 
             $scope.viewPlayer = function (result) {
                 $scope.player = result;
-                document.getElementById('dashboardIframe').contentWindow.location.reload();
+                $scope.iframeDashboardUrl = dashboardLink();
             };
+
+            $scope.$watch('iframeDashboardUrl', function (newValue, oldValue) {
+                var iframeObj = document.getElementById('dashboardIframe');
+                if (iframeObj) {
+                    iframeObj.src = newValue;
+                    iframeObj.contentWindow.location.reload();
+                }
+            });
 
             $scope.updateLevels = function (player) {
                 var levels = player.levels || [];
@@ -151,7 +161,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 });
             };
 
-            $scope.deleteUserData = function (name){
+            $scope.deleteUserData = function (name) {
                 $http.delete(CONSTANTS.PROXY + '/sessions/data/' + $scope.session._id + '/' + name).success(function () {
                     $scope.sessionOpenedError = '';
                 }).error(function (err, status) {
