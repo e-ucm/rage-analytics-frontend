@@ -21,14 +21,12 @@
 var express = require('express'),
     router = express.Router();
 
-var getBasePath = function(req){
-    if(req.protocol === 'https'){
-        console.log('>>>>>>>>>I>>  ' ,"https://"+req.headers['x-forwarded-host']);
-        return 'https://'+req.headers['x-forwarded-host'];
+var getBasePath = function(req) {
+    if (req.protocol === 'https') {
+        return 'https://' + req.headers['x-forwarded-host'];
     }
 
     var proto = req.headers['x-forwarded-proto'];
-    console.log('>>>>>>>>>E>>  ' , proto + '://' + req.headers['x-forwarded-host']);
     return proto + '://' + req.headers['x-forwarded-host'];
 };
 
