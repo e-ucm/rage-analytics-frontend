@@ -143,6 +143,7 @@ angular.module('myApp', [
                     $scope.href('login');
                 }, 110);
             }).error(function (data, status) {
+                delete $scope.$storage.user;
                 console.error('Error on get /logout ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
@@ -1196,9 +1197,14 @@ angular.module('myApp', [
         };
 
         $scope.setSelectedClass = function (classRes, url) {
+            if (!classRes) {
+                return;
+            }
             $scope.form.selectedClass = classRes;
-            $window.location = url + '?game=' + $scope.form.selectedGame._id + '&version=' + $scope.form.selectedVersion._id +
-                '&class=' + classRes._id;
+            if ($scope.form.selectedGame && $scope.form.selectedVersion) {
+                $window.location = url + '?game=' + $scope.form.selectedGame._id + '&version=' + $scope.form.selectedVersion._id +
+                    '&class=' + classRes._id;
+            }
         };
 
         var getGameId = function () {
@@ -1232,15 +1238,20 @@ angular.module('myApp', [
         };
 
         $scope.setSelectedSession = function (session, url) {
+            if (!session) {
+                return;
+            }
             var gameId = getGameId();
             var versionId = getVersionId();
             var classId = getClassId();
             var sessionId = session._id;
 
             $scope.form.selectedSession = session;
-            $window.location = url + '?game=' + gameId +
-                '&version=' + versionId +
-                '&class=' + classId + '&session=' + sessionId;
+            if (gameId && versionId && classId && sessionId) {
+                $window.location = url + '?game=' + gameId +
+                    '&version=' + versionId +
+                    '&class=' + classId + '&session=' + sessionId;
+            }
         };
 
         $scope.$watch('form.selectedGame', function (selected) {

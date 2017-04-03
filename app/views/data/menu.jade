@@ -24,7 +24,7 @@ ul.nav
         span.left-menu-item(href="#students", role="tab", data-toggle="tab", ng-click="view = 'students'")
             span.glyphicon.glyphicon-apple.right20
             | Students
-    li(ng-if='isTeacher()')
+    li(ng-if='isTeacher() || isStudent()')
         span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
             span.glyphicon.glyphicon-dashboard.right20
             | Real Time
