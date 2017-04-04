@@ -60,10 +60,10 @@ link(rel="stylesheet", href="css/realtime.css")
                             | Warnings
                         th Remove data
                 tbody
-                    tr(ng-repeat="result in results | orderBy:alertScore:true" ng-click="viewPlayer(result)")
-                        td {{ result.name }}
-                        td {{ result.alerts.length }}
-                        td {{ result.warnings.length }}
+                    tr(ng-repeat="result in results | orderBy:alertScore:true")
+                        td(ng-click="viewPlayer(result)") {{ result.name }}
+                        td(ng-click="viewPlayer(result)") {{ result.alerts.length }}
+                        td(ng-click="viewPlayer(result)") {{ result.warnings.length }}
                         td
                             a(ng-click='deleteUserData(result.name)')
                                 span.glyphicon.glyphicon-remove-sign

@@ -175,9 +175,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.deleteUserData = function (name) {
                 $http.delete(CONSTANTS.PROXY + '/sessions/data/' + $scope.session._id + '/' + name).success(function () {
-                    $scope.sessionOpenedError = '';
-                }).error(function (err, status) {
-                    console.err(err);
+                }).error(function (err) {
+                    console.error(err);
                 });
             };
         }
