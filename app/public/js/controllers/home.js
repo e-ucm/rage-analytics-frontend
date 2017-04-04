@@ -55,10 +55,24 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                                 $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' +  game._id + '/' + visualization.id, {})
                                                     .success(function() {
                                                         if (visualization.isTeacher) {
-                                                            selectedVisualizationTch.push(visualization.id);
+                                                            selectedVisualizationTch.push({
+                                                                id: visualization.id,
+                                                                title: visualization.title,
+                                                                order: selectedVisualizationTch.length,
+                                                                x: selectedVisualizationTch.length % 2 + 1,
+                                                                y: Math.floor(selectedVisualizationTch.length / 2) + 1,
+                                                                fillRow: false
+                                                            });
                                                         }
                                                         if (visualization.isDeveloper) {
-                                                            selectedVisualizationDev.push(visualization.id);
+                                                            selectedVisualizationDev.push({
+                                                                id: visualization.id,
+                                                                title: visualization.title,
+                                                                order: selectedVisualizationDev.length,
+                                                                x: selectedVisualizationDev.length % 2 + 1,
+                                                                y: Math.floor(selectedVisualizationDev.length / 2) + 1,
+                                                                fillRow: false
+                                                            });
                                                         }
                                                         count++;
                                                         if (count >= data.length) {

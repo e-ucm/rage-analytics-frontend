@@ -1,0 +1,8 @@
+h1 DeveloperDashboard
+.row
+    div.col-nd-6(ng-repeat-start="devVis in orderedDevList track by $index" class="col-md-6")
+        button.btn-primary.btn-lg(ng-click='pressVisualizationButton($index, "dev")' ng-if='devVis!==undefined') {{devVis.title}}
+        button.btn-primary.btn-lg(ng-click='pressVisualizationButton($index, "dev")' ng-if='devVis===undefined') empty
+    div(ng-repeat-end ng-if="($index+1) % 2 == 0" class="clearfix")
+
+
