@@ -71,7 +71,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             };
 
 
-            var dashboardLink = function () {
+            var dashboardLink = function (userName) {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
                     QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
@@ -79,7 +79,10 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                     url = 'http://' + url;
                 }
 
-                if ($scope.player) {
+                if (userName) {
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
+                        userName + '\')))';
+                } else if ($scope.player) {
                     url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
                         $scope.player.name + '\')))';
                 }
@@ -91,6 +94,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 return $sce.trustAsResourceUrl(url);
             };
             $scope.iframeDashboardUrl = dashboardLink();
+            $scope.studentIframe = dashboardLink($scope.$storage.user.username);
 
             var calculateResults = function (rawResults) {
                 var results = [];
@@ -141,6 +145,14 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.$watch('iframeDashboardUrl', function (newValue, oldValue) {
                 var iframeObj = document.getElementById('dashboardIframe');
+                if (iframeObj) {
+                    iframeObj.src = newValue;
+                    iframeObj.contentWindow.location.reload();
+                }
+            });
+
+            $scope.$watch('studentIframe', function (newValue, oldValue) {
+                var iframeObj = document.getElementById('dashboardIframeStudent');
                 if (iframeObj) {
                     iframeObj.src = newValue;
                     iframeObj.contentWindow.location.reload();
