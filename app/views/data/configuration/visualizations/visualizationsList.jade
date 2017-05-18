@@ -1,0 +1,34 @@
+.row
+    label Select the visualizations that you want use in your dashboard:
+    button.btn-info(ng-if='waitOperation')
+        span.fa.fa-refresh.fa-spin
+.row.top30
+    table.table.table-striped.hover.fix
+        thead.fix
+            tr.fix
+                th.fix.large Visualizations
+                th.fix.short Teacher
+                th.fix.short Developer
+        tbody.fix.overflow
+            tr.fix.info(ng-repeat='defaultVis in defaultList')
+                td.fix.filterable-cell.large
+                    label {{defaultVis.title}}
+                td.fix.filterable-cell.short
+                    label
+                        input(type="checkbox" ng-model='checkboxVisualizationsTch[defaultVis.id]' ng-if='!waitOperation'  ng-click='selectVisualization("tch", defaultVis)')
+                        p
+                td.fix.filterable-cell.short
+                    label
+                        input(type="checkbox" ng-model='checkboxVisualizationsDev[defaultVis.id]' ng-if='!waitOperation' ng-click='selectVisualization("dev", defaultVis)')
+                        p
+            tr.fix(ng-repeat='visualization in visualizationList')
+                td.fix.filterable-cell.large
+                    label {{visualization.title}}
+                td.fix.filterable-cell.short
+                    label
+                        input(type="checkbox" ng-model='checkboxVisualizationsTch[visualization.id]' ng-if='!waitOperation' ng-click='selectVisualization("tch", visualization)')
+                        p
+                td.fix.filterable-cell.short
+                    label
+                        input(type="checkbox" ng-model='checkboxVisualizationsDev[visualization.id]' ng-if='!waitOperation' ng-click='selectVisualization("dev", visualization)')
+                        p
