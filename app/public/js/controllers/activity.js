@@ -18,7 +18,7 @@
 
 'use strict';
 
-angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
+angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
     .config(['$locationProvider',
         function ($locationProvider) {
             $locationProvider.html5Mode(false);
@@ -30,8 +30,8 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .controller('SessionCtrl', ['$scope', '$location', '$http', 'SessionsId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS', 'Role',
-        function ($scope, $location, $http, SessionsId, Results, Versions, QueryParams, $sce, CONSTANTS, Role) {
+    .controller('ActivityCtrl', ['$scope', '$location', '$http', 'ActivitiesId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS', 'Role',
+        function ($scope, $location, $http, ActivitiesId, Results, Versions, QueryParams, $sce, CONSTANTS, Role) {
 
             $scope.isTeacher = function () {
                 return Role.isTeacher();
@@ -39,28 +39,31 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.refreshResults = function () {
                 var rawResults = Results.query({
-                        id: $scope.session._id
+                        id: $scope.activity._id
                     },
                     function () {
                         calculateResults(rawResults);
                     });
             };
 
-            $scope.session = SessionsId.get({
-                id: QueryParams.getQueryParam('session')
-            }, function () {
-                $scope.version = Versions.get({
-                    gameId: $scope.session.gameId,
-                    versionId: $scope.session.versionId
+            var activityId = QueryParams.getQueryParam('activity');
+            if (activityId) {
+                $scope.activity = ActivitiesId.get({
+                    id: activityId
                 }, function () {
-                    $scope.refreshResults();
-                    if (!$scope.session.end) {
-                        setInterval(function () {
-                            $scope.refreshResults();
-                        }, 10000);
-                    }
+                    $scope.version = Versions.get({
+                        gameId: $scope.activity.gameId,
+                        versionId: $scope.activity.versionId
+                    }, function () {
+                        $scope.refreshResults();
+                        if (!$scope.activity.end) {
+                            setInterval(function () {
+                                $scope.refreshResults();
+                            }, 10000);
+                        }
+                    });
                 });
-            });
+            }
 
             var evalExpression = function (expression, defaultValue) {
                 try {
@@ -73,7 +76,7 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
 
             var dashboardLink = function (userName) {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                    QueryParams.getQueryParam('session') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
+                    QueryParams.getQueryParam('activity') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
@@ -167,14 +170,14 @@ angular.module('sessionApp', ['myApp', 'ngStorage', 'services'])
                 });
                 delete player.alerts;
                 player.levels = levels;
-                player.$save({id: $scope.session._id}, function () {
+                player.$save({id: $scope.activity._id}, function () {
                     $scope.player = null;
                     $scope.refreshResults();
                 });
             };
 
             $scope.deleteUserData = function (name) {
-                $http.delete(CONSTANTS.PROXY + '/sessions/data/' + $scope.session._id + '/' + name).success(function () {
+                $http.delete(CONSTANTS.PROXY + '/activities/data/' + $scope.activity._id + '/' + name).success(function () {
                 }).error(function (err) {
                     console.error(err);
                 });
