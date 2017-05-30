@@ -41,15 +41,24 @@ nav.navbar.navbar-inverse.navbar-top
                         ul.dropdown-menu(aria-labelledby='dropdownGames')
                             li(ng-repeat='game in games')
                                 a(ng-if='isDeveloper()' ng-href='data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
-                                a(ng-if='!isDeveloper()' ng-href='class?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-if='!isDeveloper()' ng-href='gameactivity?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
                 li.dropdown
-                    li(ng-if='isUser()&&isTeacher()&&hasSessions()')
+                    li(ng-if='isUser()&&hasClasses()')
                         a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Classes
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownClasses')
-                            li(ng-repeat='session in sessions')
-                                a(ng-href="#" ng-click='setSelectedSession(session, "data")') {{session.name}}
+                            li(ng-repeat='class in classes')
+                                a(ng-if='isDeveloper()' ng-href="#" ng-click='setSelectedClass(class, "data")') {{class.name}}
+                                a(ng-if='!isDeveloper()' ng-href="#" ng-click='setSelectedClass(class, "classactivity")') {{class.name}}
+                li.dropdown
+                    li(ng-if='isUser()&&hasActivities()')
+                        a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                            | Activities
+                            span.caret
+                        ul.dropdown-menu(aria-labelledby='dropdownActivities')
+                            li(ng-repeat='activity in activities')
+                                a(ng-href="#" ng-click='setSelectedActivity(activity, "data")') {{activity.name}}
             ul.nav.navbar-nav.navbar-right
                 li
                     span.label.label-danger(ng-if='isDeveloper()') developer role
