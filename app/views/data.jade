@@ -23,12 +23,14 @@ block content
                 a(ng-if='isDeveloper()' href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
                 label(ng-if='!isDeveloper()') Game {{ selectedGame.title }} -
                 a(ng-if='isTeacher()' href="#", editable-text="selectedClass.name" onaftersave="changeName()")  Class {{ selectedClass.name }}
+                label(ng-if='isStudent()') Class {{ selectedClass.name }}
         .col-md-12
             h3(ng-if='isTeacher()')
-                a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Session {{ selectedSession.name }}
-            div(ng-if='isTeacher()' ng-controller='ClassSessionCtrl' ng-model='selectedSession')
-                button.btn-success(ng-if='!loading && sessionState(selectedSession)' ng-click='endSession(selectedSession)') Opened
-                button.btn-warning(ng-if='!loading && !sessionState(selectedSession)' ng-click='startSession(selectedSession)') Closed
+                a(href="#", editable-text="selectedActivity.name" onaftersave="changeActivityName()") Activity {{ selectedActivity.name }}
+            h3(ng-if='isStudent()') Activity {{ selectedActivity.name }}
+            div(ng-if='isTeacher()' ng-controller='ActivitiesCtrl' ng-model='selectedActivity')
+                button.btn-success(ng-if='!loading && activityState(selectedActivity)' ng-click='endActivity(selectedActivity)') Opened
+                button.btn-warning(ng-if='!loading && !activityState(selectedActivity)' ng-click='startActivity(selectedActivity)') Closed
                 button.btn-info(ng-if='loading') Loading
                     span.fa.fa-refresh.fa-spin
 

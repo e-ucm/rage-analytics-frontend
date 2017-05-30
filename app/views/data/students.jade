@@ -40,9 +40,9 @@ h1 Students
         .col-md-4
             .row
                 .col-md-2
-                    a.pull-right.glyphicon.glyphicon-plus(ng-click='updateSessionToClass()' title="Add missing students from class")
+                    a.pull-right.glyphicon.glyphicon-plus(ng-click='updateActivityToClass()' title="Add missing students from class")
                 .col-md-2
-                    a.pull-right.glyphicon.glyphicon-adjust(ng-click='resetSessionToClass()' title="Reset students to class students")
+                    a.pull-right.glyphicon.glyphicon-adjust(ng-click='resetActivityToClass()' title="Reset students to class students")
     .row
         .col-md-6
             table.table.table-hover
@@ -51,7 +51,7 @@ h1 Students
                         th Students
                         th Remove
                 tbody
-                    tr(ng-repeat='student in selectedSession.students')
+                    tr(ng-repeat='student in selectedActivity.students')
                         td
                             label {{student}}
                         td
