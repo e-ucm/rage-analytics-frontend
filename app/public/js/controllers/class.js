@@ -19,36 +19,31 @@
 'use strict';
 
 angular.module('classApp', ['ngStorage', 'services'])
-    .controller('ClassCtrl', ['$scope', '$location', '$http', '$window', '$localStorage', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS', 'QueryParams',
-        function ($scope, $location, $http, $window, $localStorage, Games, Versions, Sessions, Role, CONSTANTS, QueryParams) {
+    .controller('ClassCtrl', ['$scope', '$location', '$http', '$window', '$localStorage', 'Games', 'Versions',
+        'ClassActivities', 'Role', 'CONSTANTS', 'QueryParams',
+        function ($scope, $location, $http, $window, $localStorage, Games, Versions, ClassActivities, Role,
+                  CONSTANTS, QueryParams) {
             $scope.$storage = $localStorage;
-            $scope.session = {};
+            $scope.activity = {};
             $scope.class = {};
 
             var getClasses = function () {
-                $http.get(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/classes/my').success(function (data) {
+                $http.get(CONSTANTS.PROXY + '/classes/my').success(function (data) {
                     $scope.classes = data;
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                        QueryParams.getQueryParam('version') + '/classes/my' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on get /classes/my' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
             getClasses();
-            $scope.gameId = QueryParams.getQueryParam('game');
-            $scope.versionId = QueryParams.getQueryParam('version');
             $scope.loading = false;
 
             $scope.createClass = function () {
                 var className = $scope.class.name ? $scope.class.name : 'New class';
-                $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/classes', {name: className}).success(function (classRes) {
-                        $window.location = 'classsession' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                            QueryParams.getQueryParam('version') + '&class=' + classRes._id;
-                    }).error(function (data, status) {
-                    console.error('Error on post /games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                        QueryParams.getQueryParam('version') + '/classes' + JSON.stringify(data) + ', status: ' + status);
+                $http.post(CONSTANTS.PROXY + '/classes', {name: className}).success(function (classRes) {
+                    $window.location = 'classactivity?class=' + classRes._id;
+                }).error(function (data, status) {
+                    console.error('Error on post /classes' + JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
