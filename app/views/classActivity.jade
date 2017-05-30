@@ -30,13 +30,14 @@ block content
                         .panel-heading Create a new Activity
                         .panel-body
                             label Activity title:
-                                input.form-control(type='text' ng-model='activity.name')
+                                input.form-control(placeholder='New Activity' type='text' ng-model='activity.name')
                             label Game:
                                 select.form-control(ng-controller='AppCtrl' ng-model='activity.gameId')
                                     option(ng-repeat='game in games' value='{{ game._id }}') {{ game.title }}
                             a.btn.btn-primary(type='button', ng-click='createActivity()')
                                 span.glyphicon.glyphicon-plus.right10
                                 | New activity
+                            p.btn-danger {{activityCreatedError}}
                     p.btn-danger {{activityOpenedError}}
                     table.table.table-hover
                         thead

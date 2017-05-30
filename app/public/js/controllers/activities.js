@@ -160,13 +160,16 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
             };
 
             $scope.createActivity = function () {
+                $scope.activityCreatedError = '';
                 if (!$scope.activity.gameId && !QueryParams.getQueryParam('game')) {
                     // It's necessary to pick a game
+                    $scope.activityCreatedError = 'Please, select a game.';
                     return;
                 }
 
                 if (!$scope.activity.classId && !QueryParams.getQueryParam('class')) {
                     // It's necessary to pick a class
+                    $scope.activityCreatedError = 'Please, select a class.';
                     return;
                 }
 
@@ -224,6 +227,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
             };
 
             $scope.activityOpenedError = '';
+            $scope.activityCreatedError = '';
             $scope.deleteActivity = function (activityObj) {
                 if (activityObj) {
                     $http.delete(CONSTANTS.PROXY + '/activities/' + activityObj._id).success(function () {

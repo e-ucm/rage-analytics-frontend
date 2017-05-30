@@ -28,14 +28,15 @@ block content
                         .panel-heading Create a new Activity
                         .panel-body
                             label Activity title:
-                                input.form-control(type='text' ng-model='activity.name')
+                                input.form-control(placeholder='New Activity' type='text' ng-model='activity.name')
                             label Class:
                                 select.form-control(ng-controller='AppCtrl' ng-model='activity.classId')
                                     option(ng-repeat='class in classes' value='{{ class._id }}') {{ class.name }}
                             a.btn.btn-primary(type='button', ng-click='createActivity()')
                                 span.glyphicon.glyphicon-plus.right10
                                 | New activity
-                        p.btn-danger {{activityOpenedError}}
+                            p.btn-danger {{activityCreatedError}}
+                    p.btn-danger {{activityOpenedError}}
                     table.table.table-hover
                         thead
                             tr
