@@ -55,26 +55,44 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
     }
 ]);
 
-services.factory('Sessions', ['$resource', 'CONSTANTS',
+services.factory('Activities', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/classes/:classId/sessions', {
-            sessionId: '@_id',
-            classId: '@classId',
+        return $resource(CONSTANTS.PROXY + '/activities', {
+            activityId: '@_id',
             versionId: '@versionId',
             gameId: '@gameId'
         });
     }
 ]);
 
-services.factory('SessionsId', ['$resource', 'CONSTANTS',
+services.factory('GameActivities', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/sessions/:id');
+        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities', {
+            activityId: '@_id',
+            versionId: '@versionId',
+            gameId: '@gameId'
+        });
+    }
+]);
+
+services.factory('ClassActivities', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/classes/:classId/activities', {
+            activityId: '@_id',
+            classId: '@classId'
+        });
+    }
+]);
+
+services.factory('ActivitiesId', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/activities/:id');
     }
 ]);
 
 services.factory('Results', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/sessions/:id/results/:resultId', {
+        return $resource(CONSTANTS.PROXY + '/activities/:id/results/:resultId', {
             resultId: '@_id'
         });
     }

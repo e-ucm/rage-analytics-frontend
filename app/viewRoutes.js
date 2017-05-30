@@ -54,8 +54,12 @@ router.get('/class', function (req, res) {
     res.render('class', {basePath: getBasePath(req)});
 });
 
-router.get('/classsession', function (req, res) {
-    res.render('classSession', {basePath: getBasePath(req)});
+router.get('/classactivity', function (req, res) {
+    res.render('classActivity', {basePath: getBasePath(req)});
+});
+
+router.get('/gameactivity', function (req, res) {
+    res.render('gameActivity', {basePath: getBasePath(req)});
 });
 
 router.get('/data', function (req, res) {
