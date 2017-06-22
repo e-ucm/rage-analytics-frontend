@@ -30,31 +30,91 @@ angular.module('classApp', ['ngStorage', 'services'])
             var getClasses = function () {
                 $http.get(CONSTANTS.PROXY + '/classes/my').success(function (data) {
                     $scope.classes = data;
-                }).error(function (data, status) {
-                    console.error('Error on get /classes/my' + JSON.stringify(data) + ', status: ' + status);
+            // Class
+
+            $scope.changeName = function () {
+                $scope.class.$update(function() {
+                    $rootScope.$broadcast('refreshClasses');
                 });
             };
 
-            getClasses();
-            $scope.loading = false;
+            // Teachers
 
-            $scope.createClass = function () {
-                var className = $scope.class.name ? $scope.class.name : 'New class';
-                $http.post(CONSTANTS.PROXY + '/classes', {name: className}).success(function (classRes) {
-                    $window.location = 'classactivity?class=' + classRes._id;
+            $scope.isRemovable = function (dev) {
+                var teachers = $scope.class.teachers;
+                if (teachers && teachers.length === 1) {
+                    return false;
+                }
+                if ($scope.username === dev) {
+                    return false;
+                }
+                return true;
+            };
+
+            $scope.inviteTeacher = function () {
+                if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
+                    $scope.class.teachers.push($scope.teacher.name);
+                    $scope.class.$update(function () {
+                        $scope.teacher.name = '';
+                    });
+                }
+            };
+
+            $scope.ejectTeacher = function (teacher) {
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/remove';
+                $http.put(route, {teachers: teacher}).success(function (data) {
+                    $scope.class.teachers = data.teachers;
                 }).error(function (data, status) {
-                    console.error('Error on post /classes' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
-            $scope.isTeacher = function () {
-                return Role.isTeacher();
+            // Students
+
+            $scope.inviteStudent = function () {
+                if ($scope.student.name && $scope.student.name.trim() !== '') {
+                    var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
+                    $http.put(route, {students: $scope.student.name}).success(function (data) {
+                        $scope.class = data;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
             };
 
-            $scope.deleteClass = function (classObj) {
-                if (classObj) {
-                    $http.delete(CONSTANTS.PROXY + '/classes/' + classObj._id).success(function () {
-                        getClasses();
+
+            $scope.ejectStudent = function (student, fromClass) {
+                var route = '';
+                if (fromClass) {
+                    route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id + '/remove';
+                } else {
+                    route = CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id + '/remove';
+                }
+                $http.put(route, {students: student}).success(function (data) {
+                    $scope.class = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.addCsvClass = function () {
+                var students = [];
+                $scope.fileContent.contents.trim().split(',').forEach(function (student) {
+                    if (student) {
+                        students.push(student);
+                    }
+                });
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
+                $http.put(route, {students: students}).success(function (data) {
+                    $scope.class.students = data.students;
+                }).error(function (data, status) {
+                    console.error('Error on put', route, status);
+                });
+            };
+
                     }).error(function (data, status) {
                         console.error('Error on delete /classes/' + classObj._id + ' ' +
                             JSON.stringify(data) + ', status: ' + status);

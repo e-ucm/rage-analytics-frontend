@@ -217,13 +217,6 @@ angular.module('myApp', [
             });
         };
 
-        $scope.changeName = function () {
-            $http.put(CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id,
-                {name: $scope.selectedClass.name}).success(function (data) {
-                }).error(function (data, status) {
-                    console.error('Error on put /classes/' + $scope.selectedClass._id + ' ' + JSON.stringify(data) + ', status: ' + status);
-                });
-        };
 
         $scope.changeGameLink = function () {
             $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
@@ -232,34 +225,6 @@ angular.module('myApp', [
             });
         };
 
-        $scope.addCsvClass = function (toClass) {
-            var students = [];
-            $scope.fileContent.contents.trim().split(',').forEach(function (student) {
-                if (student) {
-                    /**
-                     *
-                     *  Parse and check the values
-                     *
-                     */
-                    students.push(student);
-                }
-            });
-            var route = '';
-            if (toClass) {
-                route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
-            } else {
-                route = CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id;
-            }
-            $http.put(route, {students: students}).success(function (data) {
-                if (toClass) {
-                    refreshClasses();
-                } else {
-                    $scope.refreshActivities();
-                }
-            }).error(function (data, status) {
-                console.error('Error on put', route, status);
-            });
-        };
 
         // Upload later on form submit or something similar
         $scope.submit = function () {
