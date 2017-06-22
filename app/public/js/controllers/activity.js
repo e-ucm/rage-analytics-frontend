@@ -266,6 +266,14 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
 
+            // Name
+
+            $scope.changeActivityName = function () {
+                $scope.activity.$update(function() {
+                    $rootScope.$broadcast('refreshClasses');
+                });
+            };
+
             $scope.$watch('iframeDashboardUrl', function (newValue, oldValue) {
                 var iframeObj = document.getElementById('dashboardIframe');
                 if (iframeObj) {

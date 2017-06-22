@@ -161,14 +161,6 @@ angular.module('myApp', [
             });
         };
 
-
-        $scope.changeActivityName = function () {
-            $http.put(CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id, {name: $scope.selectedActivity.name}).success(function (data) {
-            }).error(function (data, status) {
-                console.error('Error on put /activities/' + $scope.selectedActivity._id + ' ' + JSON.stringify(data) + ', status: ' + status);
-            });
-        };
-
         $scope.testIndex = 'default';
         $scope.statementSubmitted = false;
         $scope.submitStatementsFile = function () {
