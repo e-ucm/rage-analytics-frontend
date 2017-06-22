@@ -96,7 +96,34 @@
                     .col-md-10(ng-if='lti.key')
                         label Launch URL:
                             kbd.label-success  {{ lti.launch }}
-    .col-md-4(ng-controller='AppCtrl' ng-if='isTeacher()')
+        .panel.panel-default
+            .panel-heading
+                h3
+                    label Class teachers
+            .panel-body
+                p An activity will inherit all the class teachers when created
+                .panel.panel-primary
+                    .panel-heading Add teacher to class
+                    .panel-body
+                        label Username:
+                            input.form-control(type='text' ng-model='teacher.name')
+                        a.btn.btn-primary(type='button', ng-click='inviteTeacher(true)')
+                            span.glyphicon.glyphicon-plus.right10
+                table.table.table-hover
+                    thead
+                        tr
+                            th Teacher
+                            th Remove
+                    tbody
+                        tr(ng-if='class.teachers.length == 0')
+                            td(colspan=6)
+                                div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                        tr(ng-repeat='teacher in class.teachers')
+                            td
+                                label {{teacher}}
+                            td
+                                a(ng-if='isRemovable(teacher)' ng-click='ejectTeacher(teacher, true)')
+                                    span.glyphicon.glyphicon-remove-sign
         .panel.panel-default
             .panel-heading
                 h3
