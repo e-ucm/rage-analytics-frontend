@@ -100,7 +100,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
             var dashboardLink = function (userName) {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                    QueryParams.getQueryParam('activity') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
+                    $scope.activity._id + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
@@ -120,8 +120,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
                 return $sce.trustAsResourceUrl(url);
             };
-            $scope.iframeDashboardUrl = dashboardLink();
-            $scope.studentIframe = dashboardLink($scope.$storage.user.username);
 
             var calculateResults = function (rawResults) {
                 var results = [];
@@ -158,7 +156,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
                 $scope.results = results;
             };
-
 
             $scope.viewAll = function () {
                 $scope.player = null;
@@ -295,6 +292,30 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             $scope.changeActivityName = function () {
                 $scope.activity.$update(function() {
                     $rootScope.$broadcast('refreshClasses');
+                });
+            };
+
+            // Realtime control
+
+            $scope.startActivity = function () {
+                $scope.loading = true;
+                $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/start').success(function (s) {
+                    $scope.loading = false;
+                }).error(function (data, status) {
+                    console.error('Error on get /activities/' + $scope.activity._id + '/event/start ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                    $scope.loading = false;
+                });
+            };
+
+            $scope.endActivity = function () {
+                $scope.loading = true;
+                $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/end').success(function (s) {
+                    $scope.loading = false;
+                }).error(function (data, status) {
+                    console.error('Error on get /activities/' + $scope.activity._id + '/event/end ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                    $scope.loading = false;
                 });
             };
 
