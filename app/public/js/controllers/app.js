@@ -235,37 +235,6 @@ angular.module('myApp', [
                     $location.search('version', $scope.selectedVersion._id);
                 });
             }
-        /*
-        Var getGameId = function () {
-            var gameId = null;
-            if ($scope.selectedGame) {
-                gameId = $scope.selectedGame._id;
-            } else if ($scope.form.selectedGame) {
-                gameId = $scope.form.selectedGame._id;
-            }
-            return gameId;
-        };
-
-        var getVersionId = function () {
-            var versionId = null;
-            if ($scope.selectedVersion) {
-                versionId = $scope.selectedVersion._id;
-            } else if ($scope.form.selectedVersion) {
-                versionId = $scope.form.selectedVersion._id;
-            }
-            return versionId;
-        };
-        */
-        var getClassId = function () {
-            var classId = null;
-            if ($scope.selectedClass) {
-                classId = $scope.selectedClass._id;
-            } else if ($scope.form.selectedClass) {
-                classId = $scope.form.selectedClass._id;
-            }
-            return classId;
-        };
-
         });
 
         $scope.$on('selectClass', function (event, params) {
