@@ -161,23 +161,6 @@ angular.module('myApp', [
             });
         };
 
-
-        $scope.public = 'btn-default';
-        var checkPublic = function () {
-            $scope.checkboxPublic = $scope.selectedGame.public ? true : false;
-        };
-
-        $scope.publicGame = function () {
-            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {public: $scope.checkboxPublic}).success(function (data) {
-                $scope.selectedGame = data;
-                checkPublic();
-            }).error(function (data, status) {
-                checkPublic();
-                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
-            });
-        };
-
-
         $scope.getClassById = function(_id) {
             var r = null;
             if ($scope.classes) {
@@ -209,22 +192,6 @@ angular.module('myApp', [
                 console.error('Error on put /activities/' + $scope.selectedActivity._id + ' ' + JSON.stringify(data) + ', status: ' + status);
             });
         };
-
-        $scope.changeTitle = function () {
-            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {title: $scope.selectedGame.title}).success(function (data) {
-            }).error(function (data, status) {
-                console.error('Error on put /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
-            });
-        };
-
-
-        $scope.changeGameLink = function () {
-            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {link: $scope.selectedGame.link}).success(function (data) {
-            }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
-            });
-        };
-
 
         // Upload later on form submit or something similar
         $scope.submit = function () {

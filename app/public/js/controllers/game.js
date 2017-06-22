@@ -27,10 +27,32 @@ angular.module('gameApp', ['ngStorage', 'services', 'myApp'])
                 return Role.isTeacher();
             };
 
-            $scope.deleteGame = function () {
-                if ($scope.selectedGame) {
-                    $scope.selectedGame.$remove(function () {
-                        $window.location = '/home';
+            $scope.changeTitle = function () {
+                $http.put(CONSTANTS.PROXY + '/games/' + $scope.game._id, {title: $scope.game.title}).success(function (data) {
+                }).error(function (data, status) {
+                    console.error('Error on put /games/' + $scope.game._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.public = 'btn-default';
+
+            $scope.publicGame = function () {
+                $scope.game.$update();
+            };
+
+            $scope.changeGameLink = function () {
+                $http.put(CONSTANTS.PROXY + '/games/' + $scope.game._id, {link: $scope.game.link}).success(function (data) {
+                }).error(function (data, status) {
+                    console.error('Error on post /games/' + $scope.game._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.deleteGame = function (redirect) {
+                if ($scope.game) {
+                    $scope.game.$remove(function () {
+                        if (redirect) {
+                            $window.location = '/home';
+                        }
                     });
                 }
             };
