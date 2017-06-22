@@ -19,8 +19,8 @@
 'use strict';
 
 angular.module('loginApp', ['ngStorage', 'ngCookies'])
-    .controller('LoginCtrl', ['$scope', '$http', '$window', '$timeout', '$localStorage', '$cookies', 'CONSTANTS',
-        function ($scope, $http, $window, $timeout, $localStorage, $cookies, CONSTANTS) {
+    .controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$window', '$location', '$timeout', '$localStorage', '$cookies', 'CONSTANTS',
+        function ($scope, $rootScope, $http, $window, $location, $timeout, $localStorage, $cookies, CONSTANTS) {
             $scope.$storage = $localStorage;
 
             $scope.login = function () {
@@ -34,9 +34,11 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
                         // Timeout needed in order to ensure that the
                         // $localStorage changes are persisted, more info. at
                         // https://github.com/gsklee/ngStorage/issues/39
-                        $timeout(function () {
-                            $window.location.href = 'home';
-                        }, 110);
+                        $location.url('home');
+                        $rootScope.$broadcast('login');
+                        $rootScope.$broadcast('refreshGames');
+                        $rootScope.$broadcast('refreshClasses');
+                        $rootScope.$broadcast('refreshActivities');
                     }).error(function (data, status) {
                         console.error('Error on get /api/users/:userId/roles: ' + JSON.stringify(data) + ', status: ' + status);
                         $scope.errorResponse = data.message;
@@ -49,8 +51,8 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
 
             $scope.loginSaml = function () {
                 var location = CONSTANTS.APIPATH + '/login/' + $scope.saml.pluginId + '?callback=' + encodeURIComponent(
-                        window.location.origin + window.location.pathname + 'byplugin');
-                window.location.href = location;
+                        $window.location.origin + $window.location.pathname + 'byplugin');
+                $location.url(location);
             };
 
             $scope.saml = null;
