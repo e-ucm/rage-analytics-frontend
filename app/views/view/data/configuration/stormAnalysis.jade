@@ -1,4 +1,4 @@
-.container-fluid.top20
+.container-fluid.top20(ng-if='game&&version' ng-controller='AnalysisCtrl' ng-init='init(game,version)')
     .row
         h1 Analysis
             a.pull-right.glyphicon.glyphicon-question-sign(href='{{DOCS.STORMANALYSIS}}'
@@ -13,7 +13,7 @@
         .row
             label.top30 Add an analysis package:
         .row
-            .btn.btn-primary.top5.right10(ngf-select='' ng-model='file' name='file' ngf-pattern="'*'" ngf-accept="'*'"
+            .btn.btn-primary.top5.right10(ngf-select='' ng-model='analysisFile' name='analysisFile' ngf-pattern="'*'" ngf-accept="'*'"
             ngf-max-size='200MB' ngf-min-height='100' ngf-resize='{width: 100, height: 100}') Select
             button.btn.btn-primary.top5(type='submit', ng-click='submit()') Submit
         .row
