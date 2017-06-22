@@ -161,62 +161,6 @@ angular.module('myApp', [
             });
         };
 
-        if ($scope.isUser()) {
-            var gameId = QueryParams.getQueryParam('game');
-            var versionId = QueryParams.getQueryParam('version');
-            var classId = QueryParams.getQueryParam('class');
-            var activityId = QueryParams.getQueryParam('activity');
-
-            if (activityId) {
-                $scope.selectedActivity = null;
-                $scope.selectedGame = null;
-                $scope.selectedVersion = null;
-                $scope.selectedClass = null;
-                console.log('loading activity related data');
-                $http.get(CONSTANTS.PROXY + '/activities/' + activityId).success(function (data) {
-                    $scope.selectedActivity = data;
-                    console.log('getting game');
-                    $http.get(CONSTANTS.PROXY + '/games/' + data.gameId).success(function (data) {
-                        console.log('game: ' + JSON.stringify(data));
-                        $scope.selectedGame = data;
-                    }).error(function (data, status) {
-                        console.error('Error on getting /games/' + $scope.selectedGame._id + ' ' + JSON.stringify(data) + ', status: ' + status);
-                    });
-
-                    $http.get(CONSTANTS.PROXY + '/games/' + data.gameId + '/versions/' + data.versionId).success(function (data) {
-                        $scope.selectedVersion = data;
-                    });
-
-                    $http.get(CONSTANTS.PROXY + '/classes/' + data.classId).success(function (data) {
-                        $scope.selectedClass = data;
-                    });
-
-                });
-            }else if (classId) {
-                $scope.selectedActivity = null;
-                $scope.selectedGame = null;
-                $scope.selectedVersion = null;
-                $scope.selectedClass = null;
-
-                $http.get(CONSTANTS.PROXY + '/classes/' + classId).success(function (data) {
-                    $scope.selectedClass = data;
-                });
-
-            }else if (gameId && versionId) {
-                $scope.selectedActivity = null;
-                $scope.selectedGame = null;
-                $scope.selectedVersion = null;
-                $scope.selectedClass = null;
-
-                $http.get(CONSTANTS.PROXY + '/games/' + gameId).success(function (data) {
-                    $scope.selectedGame = data;
-                });
-
-                $http.get(CONSTANTS.PROXY + '/games/' + gameId + '/versions/' + versionId).success(function (data) {
-                    $scope.selectedVersion = data;
-                });
-            }
-        }
 
         $scope.public = 'btn-default';
         var checkPublic = function () {
@@ -233,39 +177,6 @@ angular.module('myApp', [
             });
         };
 
-        if ($scope.isUser()) {
-            var route = $scope.isDeveloper() ? '/my' : '/public';
-            $http.get(CONSTANTS.PROXY + '/games' + route).success(function (data) {
-                $scope.games = data;
-                var gameId = $location.search().game;
-                if (gameId) {
-                    for (var i = 0; i < $scope.games.length; i++) {
-                        if ($scope.games[i]._id === gameId) {
-                            $scope.selectedGame = $scope.games[i];
-                            checkPublic();
-                        }
-                    }
-                }
-                $scope.refreshVersions();
-            }).error(function (data, status) {
-                console.error('Error on get /games' + route + ' ' + JSON.stringify(data) + ', status: ' + status);
-            });
-
-            if (!$scope.isDeveloper()) {
-                var classroute = $scope.isDeveloper() ? '/' : '/my';
-                $http.get(CONSTANTS.PROXY + '/classes' + classroute).success(function (data) {
-                    $scope.classes = data;
-                }).error(function (data, status) {
-                    console.error('Error on get /classes' + classroute + ' ' + JSON.stringify(data) + ', status: ' + status);
-                });
-
-                $http.get(CONSTANTS.PROXY + '/activities/my').success(function (data) {
-                    $scope.activities = data;
-                }).error(function (data, status) {
-                    console.error('Error on get /activities/my' + JSON.stringify(data) + ', status: ' + status);
-                });
-            }
-        }
 
         $scope.getClassById = function(_id) {
             var r = null;
