@@ -69,7 +69,7 @@
                                     span.glyphicon.glyphicon-remove-sign
     //- Games
     .theme-showcase(ng-class='(isDeveloper() ? "col-md-12" : "col-md-6")')
-        .panel.panel-default(ng-controller='GamesCtrl')
+        .panel.panel-default(ng-controller='GameListCtrl')
             .panel-heading(ng-if='isDeveloper()') My Games
             .panel-heading(ng-if='!isDeveloper()') Public Games
             .panel-body

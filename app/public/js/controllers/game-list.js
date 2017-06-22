@@ -19,7 +19,7 @@
 'use strict';
 
 angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
-    .controller('GamesCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'CONSTANTS',
+    .controller('GameListCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'CONSTANTS',
         function ($scope, $rootScope, $http, $window, Games, Versions, Role, CONSTANTS) {
 
             $scope.game = {};
