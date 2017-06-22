@@ -212,30 +212,8 @@ angular.module('myApp', [
             }
 
             return 'Show JSON';
-        }
-        ;
         };
 
-        $scope.deleteGame = function (game) {
-            if (game) {
-                $http.delete(CONSTANTS.PROXY + '/games/' + game._id).success(function () {
-                    $scope.games = $http.get(CONSTANTS.PROXY + '/games' + route).success(function (data) {
-                        $scope.games = data;
-                    }).error(function (data, status) {
-                        console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
-                    });
-                }).error(function (data, status) {
-                    console.error('Error on delete /games/' + game._id + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            }
-        };
-
-        $scope.saveVersion = function (callback) {
-            if ($scope.selectedVersion) {
-                $scope.selectedVersion.$save(callback);
-            }
-        };
         $scope.$on('selectGame', function (event, params) {
             if (params.game) {
                 $scope.selectedGame = params.game;
