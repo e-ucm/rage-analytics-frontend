@@ -21,6 +21,10 @@ ul.nav
             span.glyphicon.glyphicon-info-sign.right20
             | Information
     li(ng-if='isTeacher()')
+        span.left-menu-item(href="#teachers", role="tab", data-toggle="tab", ng-click="view = 'teachers'")
+            span.glyphicon.glyphicon-briefcase.right20
+            | Teachers
+    li(ng-if='isTeacher()')
         span.left-menu-item(href="#students", role="tab", data-toggle="tab", ng-click="view = 'students'")
             span.glyphicon.glyphicon-apple.right20
             | Students
