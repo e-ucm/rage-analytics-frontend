@@ -193,24 +193,6 @@ angular.module('myApp', [
             });
         };
 
-        // Upload later on form submit or something similar
-        $scope.submit = function () {
-            if ($scope.file) {
-                if ($scope.analysis && $scope.selectedVersion._id === $scope.analysis._id) {
-                    $scope.deleteAnalysis();
-                } else {
-                    $scope.upload($scope.file);
-                }
-            }
-        };
-
-        $scope.deleteAnalysis = function () {
-            Analysis.delete({versionId: $scope.selectedVersion._id}, function () {
-                $scope.analysis = undefined;
-                $scope.upload($scope.file);
-            });
-        };
-
         $scope.testIndex = 'default';
         $scope.statementSubmitted = false;
         $scope.submitStatementsFile = function () {
@@ -253,35 +235,6 @@ angular.module('myApp', [
             return 'Show JSON';
         }
         ;
-        // Upload on file select or drop
-        $scope.upload = function (file) {
-            var formData = new FormData();
-            $scope.loadingAnalysis = true;
-            formData.append('analysis', file);
-            $http.post(CONSTANTS.PROXY + '/analysis/' + $scope.selectedVersion._id, formData, {
-                transformRequest: angular.identity,
-                headers: {
-                    'Content-Type': undefined,
-                    enctype: 'multipart/form-data'
-                }
-            }).then(function successCallback(response) {
-                // This callback will be called asynchronously
-                // when the response is available
-
-                // Check if the version has an analysis uploaded
-                updateAnalysis();
-                $scope.loadingAnalysis = false;
-            }, function errorCallback(response) {
-                // Called asynchronously if an error occurs
-                // or server returns response with an error status.
-                console.error('Error on post /analysis/' + $scope.selectedVersion._id + ' ' +
-                    JSON.stringify(response, null, '  '));
-
-                // Check if the version has an analysis uploaded
-                updateAnalysis();
-                $scope.loadingAnalysis = false;
-            });
-        };
 
         $scope.inviteStudent = function (toClass) {
             var route = '';
@@ -482,12 +435,6 @@ angular.module('myApp', [
             }
         };
 
-        var updateAnalysis = function () {
-            if ($scope.selectedVersion) {
-                $scope.analysis = Analysis.get({versionId: $scope.selectedVersion._id}, function (analysis) {
-                });
-            }
-        };
 
 
         $scope.refreshActivities = function () {
