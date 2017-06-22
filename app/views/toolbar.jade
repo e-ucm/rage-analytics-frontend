@@ -43,7 +43,7 @@ nav.navbar.navbar-inverse.navbar-top
                             li(ng-repeat='game in games')
                                 a(ng-href="#" ng-click='goToGame(game)') {{game.title}}
                 li.dropdown
-                    li(ng-if='isUser()&&hasClasses()')
+                    li(ng-if='isUser()&&!isDeveloper()&&hasClasses()')
                         a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Classes
                             span.caret
@@ -51,7 +51,7 @@ nav.navbar.navbar-inverse.navbar-top
                             li(ng-repeat='class in classes')
                                 a(ng-href="#" ng-click='goToClass(class)') {{class.name}}
                 li.dropdown
-                    li(ng-if='isUser()&&hasActivities()')
+                    li(ng-if='isUser()&&!isDeveloper()&&hasActivities()')
                         a#dropdownActivities.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Activities
                             span.caret
