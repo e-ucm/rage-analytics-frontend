@@ -48,8 +48,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/', require('./viewRoutes'));
 app.use('/health', require('./health'));
+app.use('/', require('./viewRoutes'));
 
 
 // Catch 404 and forward to error handler
