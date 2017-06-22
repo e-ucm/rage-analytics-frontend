@@ -18,14 +18,45 @@
 
 'use strict';
 
-angular.module('gameApp', ['ngStorage', 'services', 'myApp'])
-    .controller('GameCtrl', ['$scope', '$http', '$window', '$localStorage', 'Games', 'Role',
-        function ($scope, $http, $window, $localStorage, Games, Role) {
-            $scope.$storage = $localStorage;
+angular.module('gameApp', ['ngStorage', 'services', 'ngFileUpload'])
+    .controller('GameCtrl', ['$scope', '$attrs', '$http', '$window', '$sce', '$timeout', 'Games', 'Versions', 'Analysis', 'Role', 'CONSTANTS',
+        function ($scope, $attrs, $http, $window, $sce, $timeout, Games, Versions, Analysis, Role, CONSTANTS) {
 
-            $scope.isTeacher = function () {
-                return Role.isTeacher();
+            var gameId, versionId;
+            var load = function(gameId, versionId) {
+                var afterLoad = function() {
+                    if ($scope.game && $scope.version) {
+                        console.log('loaded');
+                    }
+                };
+                Games.get({gameId: gameId}).$promise.then(function(game) {
+                    $scope.game = game;
+                    afterLoad();
+                });
+                Versions.get({gameId: gameId, versionId: versionId}).$promise.then(function(version) {
+                    $scope.version = version;
+                    afterLoad();
+                });
             };
+
+            $attrs.$observe('gameid', function() {
+                gameId = $attrs.gameid;
+                if (gameId && versionId) {
+                    load(gameId, versionId);
+                }
+            });
+
+            $attrs.$observe('versionid', function() {
+                versionId = $attrs.versionid;
+                if (gameId && versionId) {
+                    load(gameId, versionId);
+                }
+            });
+
+            $scope.init = function(game, version) {
+
+            };
+            $scope.developer = {};
 
             $scope.changeTitle = function () {
                 $http.put(CONSTANTS.PROXY + '/games/' + $scope.game._id, {title: $scope.game.title}).success(function (data) {
@@ -56,6 +87,13 @@ angular.module('gameApp', ['ngStorage', 'services', 'myApp'])
                     });
                 }
             };
+
+            $scope.saveVersion = function() {
+                if ($scope.version) {
+                    $scope.version.$update();
+                }
+            };
+
             // Developers
 
             $scope.inviteDeveloper = function () {
