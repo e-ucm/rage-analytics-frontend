@@ -146,6 +146,86 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
+            // Students
+
+            $scope.inviteStudent = function () {
+                if ($scope.student.name && $scope.student.name.trim() !== '') {
+                    var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id;
+                    $http.put(route, {students: $scope.student.name}).success(function (data) {
+                        $scope.student.name = '';
+                        $scope.activity.students = data.students;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+
+            };
+
+            $scope.ejectStudent = function (student) {
+                var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
+                $http.put(route, {students: student}).success(function (data) {
+                    $scope.activity.students = data.students;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.updateActivityToClass = function () {
+                Classes.get({classId: $scope.activity.classId}).$promise.then(function(c) {
+                    angular.extend($scope.activity.students, c.students);
+                    $scope.activity.$update();
+                });
+            };
+
+            $scope.resetActivityToClass = function () {
+
+                Classes.get({classId: $scope.activity.classId}).$promise.then(function(c) {
+
+                    var toRemove = _.difference($scope.activity.students, c.students);
+                    $scope.activity.students = _.intersection($scope.activity.students, c.students);
+                    var then = function() {
+                        angular.extend($scope.activity.students, c.students);
+                        $scope.activity.$update();
+                    };
+                    if (toRemove.length > 0) {
+                        removeStudentsFromActivity(toRemove, then);
+                    } else {
+                        then();
+                    }
+                });
+            };
+
+            var removeStudentsFromActivity = function (students, then) {
+                if (students.length > 0) {
+                    var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
+                    $http.put(route, {students: students}).success(function (data) {
+                        $scope.activity.students = data.students;
+                        then();
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+            };
+
+            $scope.addCsvActivity = function () {
+                var students = [];
+                $scope.fileContent.contents.trim().split(',').forEach(function (student) {
+                    if (student) {
+                        students.push(student);
+                    }
+                });
+                var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id;
+                $http.put(route, {students: students}).success(function (data) {
+                    $scope.activity.students = data.students;
+                }).error(function (data, status) {
+                    console.error('Error on put', route, status);
+                });
+            };
+
+
             $scope.$watch('iframeDashboardUrl', function (newValue, oldValue) {
                 var iframeObj = document.getElementById('dashboardIframe');
                 if (iframeObj) {
