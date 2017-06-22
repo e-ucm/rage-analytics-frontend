@@ -19,17 +19,33 @@
 'use strict';
 
 angular.module('classApp', ['ngStorage', 'services'])
-    .controller('ClassCtrl', ['$scope', '$location', '$http', '$window', '$localStorage', 'Games', 'Versions',
-        'ClassActivities', 'Role', 'CONSTANTS', 'QueryParams',
-        function ($scope, $location, $http, $window, $localStorage, Games, Versions, ClassActivities, Role,
-                  CONSTANTS, QueryParams) {
-            $scope.$storage = $localStorage;
-            $scope.activity = {};
-            $scope.class = {};
+    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Classes', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, Classes, CONSTANTS) {
 
-            var getClasses = function () {
-                $http.get(CONSTANTS.PROXY + '/classes/my').success(function (data) {
-                    $scope.classes = data;
+            var onSetClass = function() {
+                if (!$scope.class) {
+                    throw new Error('No class for ClassCtrl');
+                } else {
+                    $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.class._id).success(function (data) {
+                        if (data && data.length > 0) {
+                            $scope.lti.key = data[0]._id;
+                            $scope.lti.secret = data[0].secret;
+                        }
+                    });
+                }
+            };
+
+            $attrs.$observe('classid', function() {
+                $scope.class = Classes.get({classId: $attrs.classid}, onSetClass);
+            });
+
+            $attrs.$observe('forclass', function() {
+                $scope.class = JSON.parse($attrs.forclass);
+                Classes.get({classId: $scope.class._id}).$promise.then(function(c) {
+                    $scope.class = c;
+                });
+                onSetClass();
+            });
 
             $scope.student = {};
             $scope.teacher = {};
