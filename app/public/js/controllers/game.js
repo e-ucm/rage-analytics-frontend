@@ -102,6 +102,42 @@ angular.module('gameApp', ['ngStorage', 'services', 'myApp'])
                 }
                 return true;
             };
+
+            // Alerts and warnings
+            $scope.addWarning = function () {
+                $scope.addToList('warnings', {
+                    cond: 'false',
+                    message: 'No message'
+                });
+            };
+
+            $scope.addAlert = function () {
+                $scope.addToList('alerts', {
+                    expression: '0',
+                    maxDiff: 0,
+                    message: 'No message'
+                });
+            };
+
+            $scope.addToList = function (list, object) {
+                if ($scope.version) {
+                    if (!$scope.version[list]) {
+                        $scope.version[list] = [];
+                    }
+                    $scope.version[list].push(object);
+                    $scope.version.$save();
+                }
+            };
+
+            $scope.deleteFromList = function (list, object) {
+                var index = $scope.version[list].indexOf(object);
+                if (index > -1) {
+                    $scope.version[list].splice(index, 1);
+                }
+                $scope.version.$save();
+            };
+
+
         }
     ]);
 
