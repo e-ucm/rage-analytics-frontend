@@ -73,50 +73,62 @@ angular.module('myApp', [
             }
         };
     }
-]).config(['$routeProvider', '$httpProvider', '$locationProvider',
-    function ($routeProvider, $httpProvider, $locationProvider) {
+]).config(['$routeProvider', '$httpProvider', '$locationProvider', '$stateProvider',
+    function ($routeProvider, $httpProvider, $locationProvider, $stateProvider) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
         $locationProvider.html5Mode({enabled: true, requireBase: false});
-    }
-]).directive('fileReader', function () {
-    return {
-        scope: {
-            fileReader: '='
-        },
-        link: function (scope, element) {
-            $(element).on('change', function (changeEvent) {
-                var files = changeEvent.target.files;
-                if (files.length) {
-                    var r = new FileReader();
-                    r.onload = function (e) {
-                        var contents = e.target.result;
-                        scope.$apply(function () {
-                            scope.fileReader = {
-                                contents: contents,
-                                name: files[0].name
-                            };
-                        });
-                    };
 
-                    r.readAsText(files[0]);
-                }
-            });
-        }
-    };
-}).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window',
-    'Games', 'Versions', 'GameActivities', 'ClassActivities', 'Analysis', 'Role', 'CONSTANTS', '$sce', 'QueryParams',
+        $stateProvider.state({
+            name: 'default',
+            url: '/',
+            templateUrl: 'view/home'
+        });
+
+        $stateProvider.state({
+            name: 'home',
+            url: '/home',
+            templateUrl: 'view/home'
+        });
+        $stateProvider.state({
+            name: 'login',
+            url: '/login',
+            templateUrl: 'view/login'
+        });
+        $stateProvider.state({
+            name: 'signup',
+            url: '/signup',
+            templateUrl: 'view/signup'
+        });
+        $stateProvider.state({
+            name: 'class',
+            url: '/class',
+            templateUrl: 'view/classactivity'
+        });
+        $stateProvider.state({
+            name: 'data',
+            url: '/data',
+            templateUrl: 'view/data'
+        });
+        $stateProvider.state({
+            name: 'game',
+            url: '/game',
+            templateUrl: 'view/gameactivity'
+        });
+    }
+]).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window',
+    'Games', 'Classes', 'Activities', 'Versions', 'Analysis', 'Role', 'CONSTANTS', 'QueryParams',
     function ($scope, $location, $http, $timeout, $localStorage,
-              $window, Games, Versions, GameActivities, ClassActivities, Analysis, Role, CONSTANTS, $sce, QueryParams) {
+              $window, Games, Classes, Activities, Versions, Analysis, Role, CONSTANTS, QueryParams) {
         $scope.$storage = $localStorage;
         $scope.DOCS = CONSTANTS.DOCS;
 
-        $scope.isAdmin = function () {
-            return $scope.isUser() &&
-                $scope.$storage.user.roles && $scope.$storage.user.roles.indexOf('admin') !== -1;
+        // Role determination
+        $scope.isUser = function () {
+            return Role.isUser();
         };
 
-        $scope.isUser = function () {
-            return $scope.$storage && $scope.$storage.user;
+        $scope.isAdmin = function () {
+            return Role.isAdmin();
         };
 
         $scope.isStudent = function () {
