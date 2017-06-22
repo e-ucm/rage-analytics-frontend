@@ -30,6 +30,15 @@ var getBasePath = function(req) {
     return proto + '://' + req.headers['x-forwarded-host'];
 };
 
+router.get('/view/:page', function (req, res) {
+    res.render('view/' + req.param('page'), {basePath: getBasePath(req)});
+});
+
+router.get('*', function (req, res) {
+    res.render('page', {basePath: getBasePath(req)});
+});
+
+/* A
 router.get('/', function (req, res) {
     res.render('login', {basePath: getBasePath(req)});
 });
@@ -69,5 +78,6 @@ router.get('/data', function (req, res) {
 router.get('/loginbyplugin/', function (req, res) {
     res.render('loginplugin', {user: JSON.stringify(req.query), basePath: getBasePath(req)});
 });
+*/
 
 module.exports = router;
