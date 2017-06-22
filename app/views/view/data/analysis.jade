@@ -30,7 +30,7 @@ div
         li(ng-class = 'getActiveClass("traces")' )
             a(href="#traces" role="tab" data-toggle="tab") 5.- Test Everything
 
-    .col-xs-9.col-md-10.tab-content
+    .col-xs-9.col-md-10.tab-content(ng-if='game&&version' ng-controller='KibanaCtrl' ng-init='init(game, version)')
         #stormAnalysis.tab-pane.active
             include configuration/stormAnalysis
         #kibanaIndex.tab-pane
