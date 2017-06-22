@@ -16,7 +16,7 @@
     limitations under the License.
  
 nav.navbar.navbar-inverse.navbar-top
-    .container
+    .container(ng-controller='ToolbarCtrl')
         .navbar-header
             button.navbar-toggle.collapsed(type='button' data-toggle='collapse' data-target='#navbar' aria-expanded='false' aria-controls='navbar')
                 span.sr-only Toggle navigation
@@ -24,15 +24,16 @@ nav.navbar.navbar-inverse.navbar-top
                 span.icon-bar
                 span.icon-bar
             img.navbar-brand(src='rageicon.png' alt='Rage' style='float:left')
-            a.btn.navbar-brand(ng-click="href('')") A.F.
-        #navbar.navbar-collapse.collapse(ng-controller='AppCtrl')
+            a.btn.navbar-brand(ng-if='isUser()' ui-sref='home') A.F.
+            a.btn.navbar-brand(ng-if='!isUser()' ui-sref='login') A.F.
+        #navbar.navbar-collapse.collapse
             ul.nav.navbar-nav
                 li
                     a.btn(href="{{DOCS.QUICKSTART}}" target="_blank") Help
                 li(ng-if='isUser()')
-                    a.btn(ng-href='#' ng-click='deselectedGameAndGo("home")') Home
+                    a.btn(ui-sref='home') Home
                 li(ng-if='!isUser()')
-                    a.btn(ng-click="href('signup')") SignUp
+                    a.btn(ui-sref='signup') SignUp
                 li.dropdown
                     li(ng-if='isUser()&&hasGames()')
                         a#dropdownGames.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
@@ -40,8 +41,7 @@ nav.navbar.navbar-inverse.navbar-top
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownGames')
                             li(ng-repeat='game in games')
-                                a(ng-if='isDeveloper()' ng-href='data?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
-                                a(ng-if='!isDeveloper()' ng-href='gameactivity?game={{game._id}}' ng-click='setSelectedGame(game)') {{game.title}}
+                                a(ng-href="#" ng-click='goToGame(game)') {{game.title}}
                 li.dropdown
                     li(ng-if='isUser()&&hasClasses()')
                         a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
@@ -49,16 +49,15 @@ nav.navbar.navbar-inverse.navbar-top
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownClasses')
                             li(ng-repeat='class in classes')
-                                a(ng-if='isDeveloper()' ng-href="#" ng-click='setSelectedClass(class, "data")') {{class.name}}
-                                a(ng-if='!isDeveloper()' ng-href="#" ng-click='setSelectedClass(class, "classactivity")') {{class.name}}
+                                a(ng-href="#" ng-click='goToClass(class)') {{class.name}}
                 li.dropdown
                     li(ng-if='isUser()&&hasActivities()')
-                        a#dropdownClasses.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                        a#dropdownActivities.btn(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
                             | Activities
                             span.caret
                         ul.dropdown-menu(aria-labelledby='dropdownActivities')
                             li(ng-repeat='activity in activities')
-                                a(ng-href="#" ng-click='setSelectedActivity(activity, "data")') {{activity.name}}
+                                a(ng-href="#" ng-click='goToActivity(activity)') {{activity.name}}
             ul.nav.navbar-nav.navbar-right
                 li
                     span.label.label-danger(ng-if='isDeveloper()') developer role
@@ -76,6 +75,6 @@ nav.navbar.navbar-inverse.navbar-top
                                     i.fa.fa-sign-out
                                     |   Logout
                 li(ng-if='!isUser()')
-                    a.btn(ng-click="href('login')")
+                    a.btn(ui-sref='login')
                         i.fa.fa-user
                         |   Login

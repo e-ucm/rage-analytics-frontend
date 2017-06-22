@@ -143,7 +143,18 @@ angular.module('myApp', [
             return Role.isDeveloper();
         };
 
-        $scope.username = $scope.isUser() ? $scope.$storage.user.username : '';
+        $scope.goToClass = function(c) {
+            $scope.$emit('selectClass', { class: c});
+        };
+
+        $scope.goToGame = function(game) {
+            $scope.$emit('selectGame', { game: game});
+        };
+
+        $scope.goToActivity = function(activity) {
+            $scope.$emit('selectActivity', { activity: activity});
+        };
+
 
         $scope.href = function (href) {
             $window.location.href = href;
@@ -241,20 +252,6 @@ angular.module('myApp', [
                     $location.search('version', $scope.selectedVersion._id);
                 });
             }
-
-        $scope.hasActivities = function () {
-            return ($scope.activities ? $scope.activities.length : 0) !== 0;
-        };
-
-
-        $scope.hasClasses = function () {
-            return ($scope.classes ? $scope.classes.length : 0) !== 0;
-        };
-
-        $scope.hasGames = function () {
-            return ($scope.games ? $scope.games.length : 0) !== 0;
-        };
-
         /*
         Var getGameId = function () {
             var gameId = null;
