@@ -16,7 +16,7 @@
     limitations under the License.
 
 .container.theme-showcase(ng-if='selectedClass' ng-controller='ClassCtrl' ng-attr-classid='{{ selectedClass._id }}')
-    div(ng-controller='ActivitiesCtrl', ng-attr-classid='{{ class._id }}' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
+    div(ng-controller='ActivityListCtrl', ng-attr-classid='{{ class._id }}' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
         .panel.panel-default
             .panel-heading
                 h1(ng-if='isTeacher()')

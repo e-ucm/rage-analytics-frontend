@@ -22,7 +22,7 @@
             .panel-heading
                 h1
                     label Game {{ game.title }}
-            .panel-body(ng-controller='ActivitiesCtrl', gameid='{{game._id}}', versionid='{{version._id}}')
+            .panel-body(ng-controller='ActivityListCtrl', gameid='{{game._id}}', versionid='{{version._id}}')
                 .panel.panel-primary(ng-if='isTeacher()')
                     .panel-heading Create a new Activity
                     .panel-body

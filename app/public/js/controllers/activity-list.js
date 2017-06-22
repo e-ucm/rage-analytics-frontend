@@ -19,7 +19,7 @@
 'use strict';
 
 angular.module('activitiesApp', ['ngStorage', 'services'])
-    .controller('ActivitiesCtrl', ['$rootScope', '$scope', '$attrs', '$interpolate', '$http', 'Activities', 'Games', 'Versions', 'Classes', 'CONSTANTS',
+    .controller('ActivityListCtrl', ['$rootScope', '$scope', '$attrs', '$interpolate', '$http', 'Activities', 'Games', 'Versions', 'Classes', 'CONSTANTS',
         function ($rootScope, $scope, $attrs, $interpolate, $http,  Activities, Games, Versions, Classes, CONSTANTS) {
 
             $scope.activityOpenedError = '';

@@ -18,7 +18,7 @@
 .container
     .theme-showcase(ng-if='!isDeveloper()').col-md-12
         //- Activities
-        .panel.panel-default(ng-controller='ActivitiesCtrl', ng-init='init()')
+        .panel.panel-default(ng-controller='ActivityListCtrl', ng-init='init()')
             .panel-heading My Activities
             .panel-body
                 .panel.panel-primary(ng-if='isTeacher()')
