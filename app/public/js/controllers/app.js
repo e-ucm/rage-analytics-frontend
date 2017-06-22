@@ -225,81 +225,22 @@ angular.module('myApp', [
                 $scope.selectedVersion.$save(callback);
             }
         };
+        $scope.$on('selectGame', function (event, params) {
+            if (params.game) {
+                $scope.selectedGame = params.game;
+                Versions.forGame({gameId: params.game._id}).$promise.then(function(versions) {
+                    $scope.selectedVersion = versions[0];
 
-        $scope.refreshVersions = function (callback) {
-            if ($scope.selectedGame) {
-                $scope.form.selectedGame = $scope.selectedGame;
-                $scope.versions = Versions.query({
-                    gameId: $scope.selectedGame._id
-                }, function () {
-                    var versionId = $location.search().version;
-                    if (versionId) {
-                        for (var i = 0; i < $scope.versions.length; i++) {
-                            if ($scope.versions[i]._id === versionId) {
-                                $scope.selectedVersion = $scope.versions[i];
-                            }
-                        }
+                    if (Role.isDeveloper()) {
+                        $location.url('data');
                     } else {
-                        $scope.selectedVersion = null;
+                        $location.url('game');
                     }
 
-                    if (!$scope.selectedVersion && $scope.versions.length > 0) {
-                        $scope.selectedVersion = $scope.versions[0];
-                    }
-
-                    $scope.form.selectedVersion = $scope.selectedVersion;
-
-                    refreshClasses();
-
-                    // Check if the version has an analysis uploaded
-                    updateAnalysis();
-
-
-                    $scope.getTempleateVisualizations();
-
-                    if (callback) {
-                        callback();
-                    }
+                    $location.search('game', params.game._id);
+                    $location.search('version', $scope.selectedVersion._id);
                 });
             }
-        };
-
-        var refreshClasses = function () {
-            var classId = $location.search().class;
-            if (classId) {
-
-                $http.get(CONSTANTS.PROXY + '/classes/' + classId).success(function (data) {
-                    $scope.selectedClass = data;
-                    $scope.refreshActivities();
-                }).error(function (data, status) {
-                    console.error('Error on get /classes/' + classId);
-                });
-            }
-        };
-
-
-
-        $scope.refreshActivities = function () {
-            if ($scope.selectedGame && $scope.selectedVersion && $scope.selectedClass) {
-                $http.get(CONSTANTS.PROXY + '/activities/my').success(function (data) {
-                    $scope.activities = data;
-
-                    var activityId = $location.search().activity;
-                    if (activityId) {
-                        for (var i = 0; i < $scope.activities.length; i++) {
-                            if ($scope.activities[i]._id === activityId) {
-                                $scope.selectedActivity = $scope.activities[i];
-                                checkAnonymous();
-                            }
-                        }
-                    } else {
-                        $scope.selectedActivity = null;
-                    }
-                }).error(function (data, status) {
-                    console.error('Error on get /activities/my' + JSON.stringify(data) + ', status: ' + status);
-                });
-            }
-        };
 
         $scope.hasActivities = function () {
             return ($scope.activities ? $scope.activities.length : 0) !== 0;
@@ -314,43 +255,6 @@ angular.module('myApp', [
             return ($scope.games ? $scope.games.length : 0) !== 0;
         };
 
-        $scope.form = {
-            selectedGame: null,
-            selectedVersion: null,
-            selectedActivity: null,
-            selectedClass: null
-        };
-
-        $scope.deselectedGameAndGo = function (href) {
-            $scope.form.selectedGame = null;
-            $scope.form.selectedVersion = null;
-            $scope.form.selectedActivity = null;
-            $scope.form.selectedClass = null;
-            $window.location = href;
-        };
-
-        $scope.setSelectedGame = function (game) {
-            $scope.form.selectedGame = game;
-            if (!game) {
-                $scope.form.selectedVersion = null;
-                $scope.form.selectedClass = null;
-                $scope.form.selectedActivity = null;
-            }
-        };
-
-        $scope.setSelectedVersionAndGo = function (version) {
-            $scope.form.selectedVersion = version;
-        };
-
-        $scope.setSelectedClass = function (classRes, url) {
-            if (!classRes) {
-                return;
-            }
-            $scope.form.selectedClass = classRes;
-            // A if ($scope.form.selectedGame && $scope.form.selectedVersion) {
-            $window.location = url + '?class=' + classRes._id;
-            // }
-        };
         /*
         Var getGameId = function () {
             var gameId = null;
@@ -382,50 +286,24 @@ angular.module('myApp', [
             return classId;
         };
 
-        $scope.setSelectedActivity = function (activity, url) {
-            if (!activity) {
-                return;
-            }
+        });
 
-            var activityId = activity._id;
-
-            $scope.form.selectedActivity = activity;
-            if (activityId) {
-                $window.location = url + '?activity=' + activityId;
-            }
-        };
-
-        $scope.$watch('form.selectedGame', function (selected) {
-            if (selected) {
-                $scope.selectedGame = selected;
-                $location.search('game', selected._id);
-                $scope.refreshVersions();
+        $scope.$on('selectClass', function (event, params) {
+            if (params.class) {
+                $scope.selectedClass = params.class;
+                $location.url('class');
+                $location.search('class', params.class._id);
             }
         });
 
-        $scope.$watch('form.selectedVersion', function (selected) {
-            var oldURL = $location.absUrl();
-            if (selected) {
-                $location.search('version', selected._id);
-                $scope.selectedVersion = selected;
-            }
-            if (oldURL !== $location.absUrl()) {
-                $window.location = $location.absUrl();
-            }
-
-        });
-
-        $scope.$watch('form.selectedClass', function (selected) {
-            if (selected) {
-                $location.search('class', selected._id);
-                $scope.selectedClass = selected;
-            }
-        });
-
-        $scope.$watch('form.selectedActivity', function (selected) {
-            if (selected) {
-                $location.search('activity', selected._id);
-                $scope.selectedActivity = selected;
+        $scope.$on('selectActivity', function (event, params) {
+            if (params.activity) {
+                $scope.selectedActivity = params.activity;
+                $scope.selectedClass = Classes.get({classId: params.activity.classId});
+                $scope.selectedVersion = Versions.get({gameId: gameId, versionId: params.activity.versionId});
+                $scope.selectedGame = Games.get({gameId: params.activity.gameId});
+                $location.url('data');
+                $location.search('activity', params.activity._id);
             }
         });
 
@@ -433,9 +311,31 @@ angular.module('myApp', [
             name: ''
         };
 
+        // Load
+        if ($scope.isUser()) {
+            var gameId = QueryParams.getQueryParam('game');
+            if (gameId) {
+                $scope.selectedGame = Games.get({gameId: gameId});
             }
+            var versionId = QueryParams.getQueryParam('version');
+            if (gameId && versionId) {
+                $scope.selectedVersion = Versions.get({gameId: gameId, versionId: versionId});
             }
+            var classId = QueryParams.getQueryParam('class');
+            if (classId) {
+                $scope.selectedClass = Classes.get({classId: classId});
             }
+            var activityId = QueryParams.getQueryParam('activity');
+            if (activityId) {
+                Activities.get({activityId: activityId}).$promise.then(function(activity) {
+                    $scope.selectedActivity = activity;
+                    $scope.selectedClass = Classes.get({classId: activity.classId});
+                    $scope.selectedVersion = Versions.get({gameId: gameId, versionId: activity.versionId});
+                    $scope.selectedGame = Games.get({gameId: activity.gameId});
+                });
             }
+        } else {
+            $location.url('login');
+        }
     }
 ]);
