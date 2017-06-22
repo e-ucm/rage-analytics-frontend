@@ -15,43 +15,39 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  
-extends page
-block content
-    .container.theme-showcase(ng-controller='AppCtrl')
-        .col-md-12
-            h1
-                a(ng-if='isDeveloper()' href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
-                label(ng-if='!isDeveloper()') Game {{ selectedGame.title }} -
-                a(ng-if='isTeacher()' href="#", editable-text="selectedClass.name" onaftersave="changeName()")  Class {{ selectedClass.name }}
-                label(ng-if='isStudent()') Class {{ selectedClass.name }}
-        .col-md-12
-            h3(ng-if='isTeacher()')
-                a(href="#", editable-text="selectedActivity.name" onaftersave="changeActivityName()") Activity {{ selectedActivity.name }}
-            h3(ng-if='isStudent()') Activity {{ selectedActivity.name }}
-            div(ng-if='isTeacher()' ng-controller='ActivitiesCtrl' ng-model='selectedActivity')
-                button.btn-success(ng-if='!loading && activityState(selectedActivity)' ng-click='endActivity(selectedActivity)') Opened
-                button.btn-warning(ng-if='!loading && !activityState(selectedActivity)' ng-click='startActivity(selectedActivity)') Closed
-                button.btn-info(ng-if='loading') Loading
-                    span.fa.fa-refresh.fa-spin
+.container.theme-showcase(ng-controller='AppCtrl')
+    .col-md-12
+        h1
+            a(ng-if='isDeveloper()' href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
+            label(ng-if='!isDeveloper()') Game {{ selectedGame.title }} -
+            a(ng-if='isTeacher()' href="#", editable-text="selectedClass.name" onaftersave="changeName()")  Class {{ selectedClass.name }}
+            label(ng-if='isStudent()') Class {{ selectedClass.name }}
+    .col-md-12
+        h3(ng-if='isTeacher()')
+            a(href="#", editable-text="selectedActivity.name" onaftersave="changeActivityName()") Activity {{ selectedActivity.name }}
+        h3(ng-if='isStudent()') Activity {{ selectedActivity.name }}
+        div(ng-if='isTeacher()' ng-controller='ActivitiesCtrl' ng-model='selectedActivity')
+            button.btn-success(ng-if='!loading && activityState(selectedActivity)' ng-click='endActivity(selectedActivity)') Opened
+            button.btn-warning(ng-if='!loading && !activityState(selectedActivity)' ng-click='startActivity(selectedActivity)') Closed
+            button.btn-info(ng-if='loading') Loading
+                span.fa.fa-refresh.fa-spin
 
-        .container-fluid(ng-show="selectedVersion")
-            .row
-                .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')
-                    include data/menu
-                .col-xs-9.col-md-10.tab-content
-                    #info.tab-pane.active
-                        include data/information
-                    #realtime.tab-pane
-                        include data/realtime/realtime
-                    #students.tab-pane
-                        include data/students
-                    #config.tab-pane
-                        include data/config
-                    #analysis.tab-pane
-                        include data/analysis
-                    #dev-visualization.tab-pane
-                        include data/dev-visualization
-                    #game-analytics.tab-pane
-                        include data/game-analytics
-
-
+    .container-fluid(ng-show="selectedVersion")
+        .row
+            .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')
+                include data/menu
+            .col-xs-9.col-md-10.tab-content
+                #info.tab-pane.active
+                    include data/information
+                #realtime.tab-pane
+                    include data/realtime/realtime
+                #students.tab-pane
+                    include data/students
+                #config.tab-pane
+                    include data/config
+                #analysis.tab-pane
+                    include data/analysis
+                #dev-visualization.tab-pane
+                    include data/dev-visualization
+                #game-analytics.tab-pane
+                    include data/game-analytics

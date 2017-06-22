@@ -15,114 +15,112 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  
-extends page
-block content
-    .container.theme-showcase(ng-controller='AppCtrl')
-        div(ng-controller='ActivitiesCtrl' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
-            .panel.panel-default
-                .panel-heading
-                    h1(ng-if='isTeacher()')
-                        a(href="#", editable-text="selectedClass.name" onaftersave="changeName()") Class {{ selectedClass.name }}
-                    h1(ng-if='!isTeacher()') Class {{ selectedClass.name }}
+.container.theme-showcase(ng-controller='AppCtrl')
+    div(ng-controller='ActivitiesCtrl' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
+        .panel.panel-default
+            .panel-heading
+                h1(ng-if='isTeacher()')
+                    a(href="#", editable-text="selectedClass.name" onaftersave="changeName()") Class {{ selectedClass.name }}
+                h1(ng-if='!isTeacher()') Class {{ selectedClass.name }}
 
-                .panel-body
-                    .panel.panel-primary(ng-if='isTeacher()')
-                        .panel-heading Create a new Activity
-                        .panel-body
-                            label Activity title:
-                                input.form-control(placeholder='New Activity' type='text' ng-model='activity.name')
-                            label Game:
-                                select.form-control(ng-controller='AppCtrl' ng-model='activity.gameId')
-                                    option(ng-repeat='game in games' value='{{ game._id }}') {{ game.title }}
-                            a.btn.btn-primary(type='button', ng-click='createActivity()')
-                                span.glyphicon.glyphicon-plus.right10
-                                | New activity
-                            p.btn-danger {{activityCreatedError}}
-                    p.btn-danger {{activityOpenedError}}
-                    table.table.table-hover
-                        thead
-                            tr
-                                th Activities
-                                th Game
-                                th Created
-                                th(ng-if='isTeacher()') State
-                                th(ng-if='isTeacher()') Delete
-                        tbody
-                            tr(ng-repeat='activity in activities')
-                                td(ng-controller='AppCtrl')
-                                    span.glyphicon.glyphicon-stats
-                                    a(ng-href="#" ng-click='setSelectedActivity(activity, "data")') {{activity.name}}
-                                td
-                                    a(ng-href='gameactivity?game={{activity.gameId}}', ng-click='setSelectedGame(getGameById(activity.gameId))') {{ getGameById(activity.gameId).title }}
-                                td {{activity._id | prettyDateId }}
-                                td(ng-if='isTeacher()')
-                                    button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
-                                    button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
-                                    button.btn-info(ng-if='loading') Loading
-                                        span.fa.fa-refresh.fa-spin
-                                td(ng-if='isTeacher()')
-                                    a(ng-click='deleteActivity(activity)')
-                                        span.glyphicon.glyphicon-remove-sign
-        .col-md-4(ng-controller='AppCtrl' ng-if='isTeacher()')
-            .panel.panel-default(ng-controller='ActivitiesCtrl')
-                .panel-heading
-                    h3
-                        label LTI
-                        a.pull-right.glyphicon.glyphicon-question-sign(href='{{DOCS.LTI}}'
-                        target="_blank" title="See documentation on GitHub")
-                .panel-body
-                    .row
-                        .col-md-8(ng-if='!lti.key')
-                            p Configure class to use lti
-                    .row
-                        .col-md-8(ng-if='!lti.key')
-                            label Type the secret:
-                                input.form-control(type='text' ng-model='lti.secret')
-                            a.btn.btn-primary(type='button', ng-click='createLtiKey()')
-                                | Configure Lti
-                    .row
-                        .col-md-8(ng-if='lti.key')
-                            p Introduce the key and secret values in your tool consumer (e.g Moodle)
-                    .row
-                        .col-md-8(ng-if='lti.key')
-                            label KEY:
-                                kbd.label-success {{ lti.key }}
-                    .row
-                        .col-md-8(ng-if='lti.key')
-                            label Secret:
-                                kbd.label-success  {{ lti.secret }}
-                    .row
-                        .col-md-10(ng-if='lti.key')
-                            label Launch URL:
-                                kbd.label-success  {{ lti.launch }}
-        .col-md-4(ng-controller='AppCtrl' ng-if='isTeacher()')
-            .panel.panel-default
-                .panel-heading
-                    h3
-                        label Class Students
-                .panel-body
-                    p An activity will inherit all the class students when created
-                    .panel.panel-primary
-                        .panel-heading Add students to class
-                        .panel-body
-                            label Add students to class from file:
-                                input#inputFile.file(type='file' file-reader="fileContent")
-                            button.btn.btn-primary(ng-click='addCsvClass(true)')  Add class
-                            hr
-                            label Username:
-                                input.form-control(type='text' ng-model='student.name')
-                            a.btn.btn-primary(type='button', ng-click='inviteStudent(true)')
-                                | Add student to class
-                    table.table.table-hover
-                        thead
-                            tr
-                                th Students
-                                th Remove
-                        tbody
-                            tr(ng-repeat='student in selectedClass.students')
-                                td
-                                    label {{student}}
-                                td
-                                    a(ng-click='ejectStudent(student, true)')
-                                        span.glyphicon.glyphicon-remove-sign
+            .panel-body
+                .panel.panel-primary(ng-if='isTeacher()')
+                    .panel-heading Create a new Activity
+                    .panel-body
+                        label Activity title:
+                            input.form-control(placeholder='New Activity' type='text' ng-model='activity.name')
+                        label Game:
+                            select.form-control(ng-controller='AppCtrl' ng-model='activity.gameId')
+                                option(ng-repeat='game in games' value='{{ game._id }}') {{ game.title }}
+                        a.btn.btn-primary(type='button', ng-click='createActivity()')
+                            span.glyphicon.glyphicon-plus.right10
+                            | New activity
+                        p.btn-danger {{activityCreatedError}}
+                p.btn-danger {{activityOpenedError}}
+                table.table.table-hover
+                    thead
+                        tr
+                            th Activities
+                            th Game
+                            th Created
+                            th(ng-if='isTeacher()') State
+                            th(ng-if='isTeacher()') Delete
+                    tbody
+                        tr(ng-repeat='activity in activities')
+                            td(ng-controller='AppCtrl')
+                                span.glyphicon.glyphicon-stats
+                                a(ng-href="#" ng-click='setSelectedActivity(activity, "data")') {{activity.name}}
+                            td
+                                a(ng-href='gameactivity?game={{activity.gameId}}', ng-click='setSelectedGame(getGameById(activity.gameId))') {{ getGameById(activity.gameId).title }}
+                            td {{activity._id | prettyDateId }}
+                            td(ng-if='isTeacher()')
+                                button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
+                                button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
+                                button.btn-info(ng-if='loading') Loading
+                                    span.fa.fa-refresh.fa-spin
+                            td(ng-if='isTeacher()')
+                                a(ng-click='deleteActivity(activity)')
+                                    span.glyphicon.glyphicon-remove-sign
+    .col-md-4(ng-controller='AppCtrl' ng-if='isTeacher()')
+        .panel.panel-default(ng-controller='ActivitiesCtrl')
+            .panel-heading
+                h3
+                    label LTI
+                    a.pull-right.glyphicon.glyphicon-question-sign(href='{{DOCS.LTI}}'
+                    target="_blank" title="See documentation on GitHub")
+            .panel-body
+                .row
+                    .col-md-8(ng-if='!lti.key')
+                        p Configure class to use lti
+                .row
+                    .col-md-8(ng-if='!lti.key')
+                        label Type the secret:
+                            input.form-control(type='text' ng-model='lti.secret')
+                        a.btn.btn-primary(type='button', ng-click='createLtiKey()')
+                            | Configure Lti
+                .row
+                    .col-md-8(ng-if='lti.key')
+                        p Introduce the key and secret values in your tool consumer (e.g Moodle)
+                .row
+                    .col-md-8(ng-if='lti.key')
+                        label KEY:
+                            kbd.label-success {{ lti.key }}
+                .row
+                    .col-md-8(ng-if='lti.key')
+                        label Secret:
+                            kbd.label-success  {{ lti.secret }}
+                .row
+                    .col-md-10(ng-if='lti.key')
+                        label Launch URL:
+                            kbd.label-success  {{ lti.launch }}
+    .col-md-4(ng-controller='AppCtrl' ng-if='isTeacher()')
+        .panel.panel-default
+            .panel-heading
+                h3
+                    label Class Students
+            .panel-body
+                p An activity will inherit all the class students when created
+                .panel.panel-primary
+                    .panel-heading Add students to class
+                    .panel-body
+                        label Add students to class from file:
+                            input#inputFile.file(type='file' file-reader="fileContent")
+                        button.btn.btn-primary(ng-click='addCsvClass(true)')  Add class
+                        hr
+                        label Username:
+                            input.form-control(type='text' ng-model='student.name')
+                        a.btn.btn-primary(type='button', ng-click='inviteStudent(true)')
+                            | Add student to class
+                table.table.table-hover
+                    thead
+                        tr
+                            th Students
+                            th Remove
+                    tbody
+                        tr(ng-repeat='student in selectedClass.students')
+                            td
+                                label {{student}}
+                            td
+                                a(ng-click='ejectStudent(student, true)')
+                                    span.glyphicon.glyphicon-remove-sign
 

@@ -14,50 +14,48 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
-extends page
-block content
-    .container.theme-showcase(ng-controller='AppCtrl')
-        .col-md-12(ng-controller='ActivitiesCtrl')
-            .panel.panel-default
-                .panel-heading
-                    h1
-                        label Game {{ selectedGame.title }}
-                .panel-body
-                    .panel.panel-primary(ng-if='isTeacher()')
-                        .panel-heading Create a new Activity
-                        .panel-body
-                            label Activity title:
-                                input.form-control(placeholder='New Activity' type='text' ng-model='activity.name')
-                            label Class:
-                                select.form-control(ng-controller='AppCtrl' ng-model='activity.classId')
-                                    option(ng-repeat='class in classes' value='{{ class._id }}') {{ class.name }}
-                            a.btn.btn-primary(type='button', ng-click='createActivity()')
-                                span.glyphicon.glyphicon-plus.right10
-                                | New activity
-                            p.btn-danger {{activityCreatedError}}
-                    p.btn-danger {{activityOpenedError}}
-                    table.table.table-hover
-                        thead
-                            tr
-                                th Activities
-                                th Class
-                                th Created
-                                th(ng-if='isTeacher()') State
-                                th(ng-if='isTeacher()') Delete
-                        tbody
-                            tr(ng-repeat='activity in activities')
-                                td(ng-controller='AppCtrl')
-                                    span.glyphicon.glyphicon-stats
-                                    a(ng-href="#" ng-click='setSelectedActivity(activity, "data")') {{activity.name}}
-                                td
-                                    a(ng-href='#', ng-click='setSelectedClass(getClassById(activity.classId),"classactivity")') {{ getClassById(activity.classId).name }}
-                                td {{activity._id | prettyDateId }}
-                                td(ng-if='isTeacher()')
-                                    button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
-                                    button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
-                                    button.btn-info(ng-if='loading') Loading
-                                        span.fa.fa-refresh.fa-spin
-                                td(ng-if='isTeacher()')
-                                    a(ng-click='deleteActivity(activity)')
-                                        span.glyphicon.glyphicon-remove-sign
+
+.container.theme-showcase(ng-controller='AppCtrl')
+    .col-md-12(ng-controller='ActivitiesCtrl')
+        .panel.panel-default
+            .panel-heading
+                h1
+                    label Game {{ selectedGame.title }}
+            .panel-body
+                .panel.panel-primary(ng-if='isTeacher()')
+                    .panel-heading Create a new Activity
+                    .panel-body
+                        label Activity title:
+                            input.form-control(placeholder='New Activity' type='text' ng-model='activity.name')
+                        label Class:
+                            select.form-control(ng-controller='AppCtrl' ng-model='activity.classId')
+                                option(ng-repeat='class in classes' value='{{ class._id }}') {{ class.name }}
+                        a.btn.btn-primary(type='button', ng-click='createActivity()')
+                            span.glyphicon.glyphicon-plus.right10
+                            | New activity
+                        p.btn-danger {{activityCreatedError}}
+                p.btn-danger {{activityOpenedError}}
+                table.table.table-hover
+                    thead
+                        tr
+                            th Activities
+                            th Class
+                            th Created
+                            th(ng-if='isTeacher()') State
+                            th(ng-if='isTeacher()') Delete
+                    tbody
+                        tr(ng-repeat='activity in activities')
+                            td(ng-controller='AppCtrl')
+                                span.glyphicon.glyphicon-stats
+                                a(ng-href="#" ng-click='setSelectedActivity(activity, "data")') {{activity.name}}
+                            td
+                                a(ng-href='#', ng-click='setSelectedClass(getClassById(activity.classId),"classactivity")') {{ getClassById(activity.classId).name }}
+                            td {{activity._id | prettyDateId }}
+                            td(ng-if='isTeacher()')
+                                button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
+                                button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
+                                button.btn-info(ng-if='loading') Loading
+                                    span.fa.fa-refresh.fa-spin
+                            td(ng-if='isTeacher()')
+                                a(ng-click='deleteActivity(activity)')
+                                    span.glyphicon.glyphicon-remove-sign

@@ -14,26 +14,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
-extends page
-block content
-   .container.theme-showcase(ng-controller='LoginCtrl')
-      .row-fluid(ng-if='!isUser()')
-         .col-sm-4
-            .page-header
-               h1 Sign In
-            #login(ng-controller='LoginCtrl')
-               .form-group
-                  input.form-control(type='text' name='username' placeholder='Username' ng-model='user.username')
-               .form-group
-                  input.form-control(type='password' name='password' placeholder='Password' ng-model='user.password')
-               .form-actions
-                  button.btn.btn-success.btn-login(type='submit' ng-click='login()') Sign In
-                  a.btn.btn-link(href='login/forgot') Forgot your password?
-               alert.alert-danger {{errorResponse}}
-               hr
-               input.btn.btn-primary.btn-block(ng-if='hasSaml()' type='button' value='Sign In with {{saml.name}}' ng-click='loginSaml()')
-      .row-fluid(ng-if='isUser()')
-         .alert.alert-success(role='alert')
-            | You are already logged
+
+.container.theme-showcase(ng-controller='LoginCtrl')
+  .row-fluid(ng-if='!isUser()')
+     .col-sm-4
+        .page-header
+           h1 Sign In
+        #login(ng-controller='LoginCtrl')
+           .form-group
+              input.form-control(type='text' name='username' placeholder='Username' ng-model='user.username')
+           .form-group
+              input.form-control(type='password' name='password' placeholder='Password' ng-model='user.password')
+           .form-actions
+              button.btn.btn-success.btn-login(type='submit' ng-click='login()') Sign In
+              a.btn.btn-link(href='login/forgot') Forgot your password?
+           alert.alert-danger {{errorResponse}}
+           hr
+           input.btn.btn-primary.btn-block(ng-if='hasSaml()' type='button' value='Sign In with {{saml.name}}' ng-click='loginSaml()')
+  .row-fluid(ng-if='isUser()')
+     .alert.alert-success(role='alert')
+        | You are already logged
 

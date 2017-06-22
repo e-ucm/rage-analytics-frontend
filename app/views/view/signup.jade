@@ -15,52 +15,50 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  
-extends page
-block content
-    style.
-        .role-button {
-            padding: 2%;
-            margin: 2%
-        }
-    .container.theme-showcase
-        .row-fluid
-            .col-sm-6
-                .page-header
-                    h1 Sign Up
-                #signup(ng-controller='SignupCtrl')
-                    .form-group(ng-class="{'has-error':isEmpty(user.username)}")
-                        label Pick a Username:
-                        input.form-control(type='text', ng-model='user.username')
-                        alert.alert-danger(ng-if='isEmpty(user.username)') The username is empty
-                    .form-group(ng-class="{'has-error':isEmpty(user.email)}")
-                        label Enter Your Email:
-                        input.form-control(type='text', ng-model='user.email')
-                        alert.alert-danger(ng-if='isEmpty(user.email)') The e-mail is empty
-                    .form-group(ng-class="{'has-error':!isValidPassword()}")
-                        label Create a Password:
-                        input.form-control(type='password', ng-model='user.password')
-                    .form-group(ng-class="{'has-error':!isValidPassword()}")
-                        label Repeat the Password:
-                        input.form-control(type='password', ng-model='repeatedPassword')
-                        alert.alert-danger(ng-if='!isValidPassword()') The passwords are different
-                    label Select your type account: {{selectedRole}}
-                    .row-fluid
-                        button.btn-default.role-button.col-sm-3(ng-click='selectRole("student")' ng-class="{'active': selectedRole==='student'}")
-                            i.fa.fa-graduation-cap.fa-5x
-                            br
-                            label Student
-                        button.btn-primary.role-button.col-sm-3(ng-click='selectRole("teacher")' ng-class="{'active': selectedRole==='teacher'}")
-                            i.fa.fa-book.fa-5x
-                            br
-                            label Teacher
-                        button.btn-danger.role-button.col-sm-3(ng-click='selectRole("developer")' ng-class="{'active': selectedRole==='developer'}")
-                            i.fa.fa-code.fa-5x
-                            br
-                            label Developer
-                    .form-group
-                        button.btn.btn-primary.btn-signup(ng-class="{" +
-                        "disabled:!isValidPassword() || " +
-                        "isEmpty(user.username) || " +
-                        "isEmpty(user.email)}"
-                        type='submit', ng-click='signup()') Create My Account
-                    alert.alert-danger {{errorResponse}}
+style.
+    .role-button {
+        padding: 2%;
+        margin: 2%
+    }
+.container.theme-showcase
+    .row-fluid
+        .col-sm-6
+            .page-header
+                h1 Sign Up
+            #signup(ng-controller='SignupCtrl')
+                .form-group(ng-class="{'has-error':isEmpty(user.username)}")
+                    label Pick a Username:
+                    input.form-control(type='text', ng-model='user.username')
+                    alert.alert-danger(ng-if='isEmpty(user.username)') The username is empty
+                .form-group(ng-class="{'has-error':isEmpty(user.email)}")
+                    label Enter Your Email:
+                    input.form-control(type='text', ng-model='user.email')
+                    alert.alert-danger(ng-if='isEmpty(user.email)') The e-mail is empty
+                .form-group(ng-class="{'has-error':!isValidPassword()}")
+                    label Create a Password:
+                    input.form-control(type='password', ng-model='user.password')
+                .form-group(ng-class="{'has-error':!isValidPassword()}")
+                    label Repeat the Password:
+                    input.form-control(type='password', ng-model='repeatedPassword')
+                    alert.alert-danger(ng-if='!isValidPassword()') The passwords are different
+                label Select your type account: {{selectedRole}}
+                .row-fluid
+                    button.btn-default.role-button.col-sm-3(ng-click='selectRole("student")' ng-class="{'active': selectedRole==='student'}")
+                        i.fa.fa-graduation-cap.fa-5x
+                        br
+                        label Student
+                    button.btn-primary.role-button.col-sm-3(ng-click='selectRole("teacher")' ng-class="{'active': selectedRole==='teacher'}")
+                        i.fa.fa-book.fa-5x
+                        br
+                        label Teacher
+                    button.btn-danger.role-button.col-sm-3(ng-click='selectRole("developer")' ng-class="{'active': selectedRole==='developer'}")
+                        i.fa.fa-code.fa-5x
+                        br
+                        label Developer
+                .form-group
+                    button.btn.btn-primary.btn-signup(ng-class="{" +
+                    "disabled:!isValidPassword() || " +
+                    "isEmpty(user.username) || " +
+                    "isEmpty(user.email)}"
+                    type='submit', ng-click='signup()') Create My Account
+                alert.alert-danger {{errorResponse}}
