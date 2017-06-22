@@ -155,6 +155,11 @@ angular.module('myApp', [
             $scope.$emit('selectActivity', { activity: activity});
         };
 
+        var checkLogin = function() {
+            $scope.username = $scope.isUser() ? $scope.$storage.user.username : '';
+        };
+        checkLogin();
+        $scope.$on('login', checkLogin);
 
         $scope.href = function (href) {
             $window.location.href = href;
@@ -164,8 +169,8 @@ angular.module('myApp', [
             $http.delete(CONSTANTS.APIPATH + '/logout').success(function () {
                 delete $scope.$storage.user;
                 $timeout(function () {
-                    $scope.href('login');
-                }, 110);
+                    $location.url('login');
+                }, 50);
             }).error(function (data, status) {
                 delete $scope.$storage.user;
                 console.error('Error on get /logout ' + JSON.stringify(data) + ', status: ' + status);
