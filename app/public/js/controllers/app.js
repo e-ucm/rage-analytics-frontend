@@ -211,28 +211,6 @@ angular.module('myApp', [
             return 'Show JSON';
         }
         ;
-
-
-        $scope.anonymous = 'btn-default';
-        var checkAnonymous = function () {
-            $scope.checkboxAns = $scope.selectedActivity.allowAnonymous ? true : false;
-        };
-
-        $scope.allowAnonymous = function () {
-            $http.put(CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id, {allowAnonymous: $scope.checkboxAns}).success(function (data) {
-                $scope.selectedActivity = data;
-                checkAnonymous();
-            }).error(function (data, status) {
-                checkAnonymous();
-                console.error('Error on put /activities/' + $scope.selectedActivity._id + ' ' +
-                    JSON.stringify(data) + ', status: ' + status);
-            });
-        };
-
-        $scope.saveGame = function () {
-            if ($scope.selectedGame) {
-                $scope.selectedGame.$save();
-            }
         };
 
         $scope.deleteGame = function (game) {

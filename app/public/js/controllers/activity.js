@@ -146,6 +146,14 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
+            // Anonymous
+
+            $scope.anonymous = 'btn-default';
+
+            $scope.allowAnonymous = function () {
+                $scope.activity.$update();
+            };
+
             // Teachers
 
             $scope.isRemovable = function (dev) {
