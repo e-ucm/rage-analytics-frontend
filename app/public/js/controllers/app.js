@@ -433,49 +433,9 @@ angular.module('myApp', [
             name: ''
         };
 
-        $scope.inviteDeveloper = function () {
-            if ($scope.developer.name) {
-                $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id, {developers: $scope.developer.name}).success(function (data) {
-                    $scope.selectedGame = data;
-                }).error(function (data, status) {
-                    console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
             }
-        };
-
-        $scope.ejectDeveloper = function (developer) {
-            $http.put(CONSTANTS.PROXY + '/games/' + $scope.selectedGame._id + '/remove', {developers: developer}).success(function (data) {
-                $scope.selectedGame = data;
-            }).error(function (data, status) {
-                console.error('Error on post /games/' + $scope.selectedGame._id + ' ' +
-                    JSON.stringify(data) + ', status: ' + status);
-            });
-        };
-
-        $scope.isRemovable = function (dev) {
-            var developers = $scope.selectedGame.developers;
-            if (developers && developers.length === 1) {
-                return false;
             }
-            if ($scope.username === dev) {
-                return false;
             }
-            return $scope.isAuthor();
-        };
-
-        $scope.isAuthor = function () {
-            if (!$scope.selectedGame) {
-                return false;
             }
-            var authors = $scope.selectedGame.authors;
-            if (!authors) {
-                return false;
-            }
-            if (authors.indexOf($scope.username) === -1) {
-                return false;
-            }
-            return true;
-        };
     }
 ]);

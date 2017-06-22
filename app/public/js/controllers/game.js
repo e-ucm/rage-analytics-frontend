@@ -56,6 +56,52 @@ angular.module('gameApp', ['ngStorage', 'services', 'myApp'])
                     });
                 }
             };
+            // Developers
+
+            $scope.inviteDeveloper = function () {
+                if ($scope.developer.name) {
+                    $http.put(CONSTANTS.PROXY + '/games/' + $scope.game._id, {developers: $scope.developer.name}).success(function (data) {
+                        $scope.game.developers = data.developers;
+                    }).error(function (data, status) {
+                        console.error('Error on post /games/' + $scope.game._id + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+            };
+
+            $scope.ejectDeveloper = function (developer) {
+                $http.put(CONSTANTS.PROXY + '/games/' + $scope.game._id + '/remove', {developers: developer}).success(function (data) {
+                    $scope.game.developers = data.developers;
+                }).error(function (data, status) {
+                    console.error('Error on post /games/' + $scope.game._id + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.isRemovable = function (dev) {
+                var developers = $scope.game.developers;
+                if (developers && developers.length === 1) {
+                    return false;
+                }
+                if ($scope.username === dev) {
+                    return false;
+                }
+                return $scope.isAuthor();
+            };
+
+            $scope.isAuthor = function () {
+                if (!$scope.game) {
+                    return false;
+                }
+                var authors = $scope.game.authors;
+                if (!authors) {
+                    return false;
+                }
+                if (authors.indexOf($scope.username) === -1) {
+                    return false;
+                }
+                return true;
+            };
         }
     ]);
 
