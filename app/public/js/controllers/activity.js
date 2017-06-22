@@ -19,51 +19,75 @@
 'use strict';
 
 angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
+    .factory('_', ['$window', function($window) {
+        return $window._;
+    }])
     .config(['$locationProvider',
         function ($locationProvider) {
             $locationProvider.html5Mode(false);
         }
     ])
     .directive('reports', function () {
-        return function (scope, element, attrs) {
+        return function (scope, element) {
             new RadialProgress(angular.element(element).children('.progress-marker')[0], scope.result.progress);
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .controller('ActivityCtrl', ['$scope', '$location', '$http', 'ActivitiesId', 'Results', 'Versions', 'QueryParams', '$sce', 'CONSTANTS', 'Role',
-        function ($scope, $location, $http, ActivitiesId, Results, Versions, QueryParams, $sce, CONSTANTS, Role) {
+    .controller('ActivityCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Activities', 'Classes', '_',
+        'Results', 'Versions', '$sce', '$interval', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, $sce, $interval, CONSTANTS) {
 
-            $scope.isTeacher = function () {
-                return Role.isTeacher();
-            };
+            var refresh;
+            var onSetActivity = function() {
+                $scope.refreshResults = function () {
+                    var rawResults = Results.query({
+                            id: $scope.activity._id
+                        },
+                        function () {
+                            calculateResults(rawResults);
+                        });
+                };
 
-            $scope.refreshResults = function () {
-                var rawResults = Results.query({
-                        id: $scope.activity._id
-                    },
-                    function () {
-                        calculateResults(rawResults);
-                    });
-            };
+                if (!$attrs.lite) {
+                    $scope.iframeDashboardUrl = dashboardLink();
+                    $scope.studentIframe = dashboardLink($scope.$storage.user.username);
 
-            var activityId = QueryParams.getQueryParam('activity');
-            if (activityId) {
-                $scope.activity = ActivitiesId.get({
-                    id: activityId
-                }, function () {
                     $scope.version = Versions.get({
                         gameId: $scope.activity.gameId,
                         versionId: $scope.activity.versionId
                     }, function () {
                         $scope.refreshResults();
                         if (!$scope.activity.end) {
-                            setInterval(function () {
+                            refresh = $interval(function () {
                                 $scope.refreshResults();
                             }, 10000);
                         }
                     });
+                }
+            };
+
+            $scope.$on('$destroy', function() {
+                if (refresh) {
+                    $interval.cancel(refresh);
+                }
+            });
+
+            $attrs.$observe('activityid', function() {
+                $scope.activity = Activities.get({activityId: $attrs.activityid}, onSetActivity);
+            });
+
+            $attrs.$observe('activity', function() {
+                $scope.activity = JSON.parse($attrs.activity);
+                Activities.get({activityId: $scope.activity._id}).$promise.then(function(a) {
+                    $scope.activity = a;
                 });
-            }
+
+                onSetActivity();
+            });
+
+            $scope.student = {};
+            $scope.teacher = {};
+
 
             var evalExpression = function (expression, defaultValue) {
                 try {
