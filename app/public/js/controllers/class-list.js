@@ -19,7 +19,7 @@
 'use strict';
 
 angular.module('classesApp', ['ngStorage', 'services'])
-    .controller('ClassesCtrl', ['$scope', '$rootScope', '$location', '$http', 'Classes', '$timeout',
+    .controller('ClassListCtrl', ['$scope', '$rootScope', '$location', '$http', 'Classes', '$timeout',
         function ($scope, $rootScope, $location, $http, Classes, $timeout) {
             $scope.activity = {};
             $scope.class = {};
