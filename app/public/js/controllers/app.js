@@ -161,30 +161,6 @@ angular.module('myApp', [
             });
         };
 
-        $scope.getClassById = function(_id) {
-            var r = null;
-            if ($scope.classes) {
-                $scope.classes.forEach(function (c) {
-                    if (c._id === _id) {
-                        r = c;
-                    }
-                });
-            }
-            return r;
-        };
-
-        $scope.getGameById = function(_id) {
-            var r = null;
-            if ($scope.games) {
-                $scope.games.forEach(function (g) {
-                    if (g._id === _id) {
-                        r = g;
-                    }
-                });
-            }
-            return r;
-        };
-
 
         $scope.changeActivityName = function () {
             $http.put(CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id, {name: $scope.selectedActivity.name}).success(function (data) {
