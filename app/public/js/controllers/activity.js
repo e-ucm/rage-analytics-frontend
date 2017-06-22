@@ -146,6 +146,38 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
+            // Teachers
+
+            $scope.isRemovable = function (dev) {
+                var teachers = $scope.activity.teachers;
+                if (teachers && teachers.length === 1) {
+                    return false;
+                }
+                if ($scope.username === dev) {
+                    return false;
+                }
+                return true;
+            };
+
+            $scope.inviteTeacher = function () {
+                if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
+                    $scope.activity.teachers.push($scope.teacher.name);
+                    $scope.activity.$update(function() {
+                        $scope.teacher.name = '';
+                    });
+                }
+            };
+
+            $scope.ejectTeacher = function (teacher) {
+                var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
+                $http.put(route, {teachers: teacher}).success(function (data) {
+                    $scope.activity.teachers = data.teachers;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
             // Students
 
             $scope.inviteStudent = function () {

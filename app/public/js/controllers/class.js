@@ -30,6 +30,10 @@ angular.module('classApp', ['ngStorage', 'services'])
             var getClasses = function () {
                 $http.get(CONSTANTS.PROXY + '/classes/my').success(function (data) {
                     $scope.classes = data;
+
+            $scope.student = {};
+            $scope.teacher = {};
+
             // Class
 
             $scope.changeName = function () {
