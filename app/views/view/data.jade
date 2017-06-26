@@ -23,10 +23,10 @@
             h1
                 a(ng-if='isDeveloper()' href="#", editable-text="game.title" onaftersave="changeTitle()") Game {{ game.title }}
                 label(ng-if='!isDeveloper()') Game {{ game.title }} -
-                span(ng-controller='ClassCtrl' forclass='{{ selectedClass }}')
+                span(ng-if='!isDeveloper() && selectedClass' ng-controller='ClassCtrl' forclass='{{ selectedClass }}')
                     a(ng-if='isTeacher()' href="#", editable-text="class.name" onaftersave="changeName()")  Class {{ class.name }}
                     label(ng-if='isStudent()') Class {{ class.name }}
-        .col-md-12(ng-controller='ActivityCtrl' lite='true' activity='{{ selectedActivity }}')
+        .col-md-12(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' lite='true' activity='{{ selectedActivity }}')
             h3(ng-if='isTeacher()')
                 a(href="#", editable-text="activity.name" onaftersave="changeActivityName()") Activity {{ activity.name }}
             h3(ng-if='isStudent()') Activity {{ activity.name }}
