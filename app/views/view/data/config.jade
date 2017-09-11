@@ -16,33 +16,33 @@
     limitations under the License.
 
 h1 Alerts & Warnings Setup
-a(href="#", editable-text="selectedGame.link" onaftersave="changeGameLink()") Link: {{ selectedGame.link }}
+a(href="#", editable-text="game.link" onaftersave="changeGameLink()") Link: {{ game.link }}
 .row
     .col-md-8
         .checkbox
             label
-                input(type="checkbox" ng-change='publicGame()' ng-model='checkboxPublic')
+                input(type="checkbox" ng-change='publicGame()' ng-model='game.public')
                 | Public game
                 br
 .row.top10
     .col-sm-12
-        h4 Session information
-.row.top10(ng-if="selectedVersion")
+        h4 Activity information
+.row.top10(ng-if="version")
     .col-sm-12
         ul
             li
                 span Alias
                 | =
-                a(href="#", editable-text="selectedVersion.alias" onbeforesave="saveVersion()") {{ selectedVersion.alias || 'this.name' }}
-.row(ng-controller="DataCtrl")
+                a(href="#", editable-text="version.alias" onbeforesave="saveVersion()") {{ version.alias || 'this.name' }}
+.row
     .row.top10
         .col-sm-12
             strong Warnings
             a.glyphicon.glyphicon-plus(ng-click="addWarning()")
-    .row.top10(ng-if="selectedVersion")
+    .row.top10(ng-if="version")
         .col-sm-12
             ul
-                li(ng-repeat="warning in selectedVersion.warnings")
+                li(ng-repeat="warning in version.warnings")
                     span.right10.left10  Message:
                     a(href="#",editable-text="warning.message" onbeforesave="saveVersion()") {{ warning.message }}
                     span.right10.left10  Condition:
@@ -52,10 +52,10 @@ a(href="#", editable-text="selectedGame.link" onaftersave="changeGameLink()") Li
         .col-sm-12
             strong Alerts
             a.glyphicon.glyphicon-plus(ng-click="addAlert()")
-    .row.top10(ng-if="selectedVersion")
+    .row.top10(ng-if="version")
         .col-sm-12
             ul
-                li(ng-repeat="alert in selectedVersion.alerts")
+                li(ng-repeat="alert in version.alerts")
                     span.right10.left10  Message:
                     a(href="#",editable-text="alert.message" onbeforesave="saveVersion()") {{ alert.message }}
                     span.right10.left10 Value:

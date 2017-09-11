@@ -14,27 +14,31 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
-extends page
-block content
-    .container.theme-showcase(ng-controller='AppCtrl')
+
+.container(ng-if='selectedGame && selectedVersion' ng-controller='GameCtrl' gameid='{{selectedGame._id}}', versionid='{{selectedVersion._id}}')
+    div(style='width=100%')
+        img(style='align="center"' src='loading.svg' ng-if='!game || !version')
+    .theme-showcase(ng-if='game && version')
         .col-md-12
             h1
-                a(ng-if='isDeveloper()' href="#", editable-text="selectedGame.title" onaftersave="changeTitle()") Game {{ selectedGame.title }}
-                label(ng-if='!isDeveloper()') Game {{ selectedGame.title }} -
-                a(ng-if='isTeacher()' href="#", editable-text="selectedClass.name" onaftersave="changeName()")  Class {{ selectedClass.name }}
-        .col-md-12
+                a(ng-if='isDeveloper()' href="#", editable-text="game.title" onaftersave="changeTitle()") Game {{ game.title }}
+                label(ng-if='!isDeveloper()') Game {{ game.title }} -
+                span(ng-if='!isDeveloper() && selectedClass' ng-controller='ClassCtrl' forclass='{{ selectedClass }}')
+                    a(ng-if='isTeacher()' href="#", editable-text="class.name" onaftersave="changeName()")  Class {{ class.name }}
+                    label(ng-if='isStudent()') Class {{ class.name }}
+        .col-md-12(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' lite='true' activity='{{ selectedActivity }}')
             h3(ng-if='isTeacher()')
-                a(href="#", editable-text="selectedSession.name" onaftersave="changeSessionName()") Session {{ selectedSession.name }}
-            div(ng-if='isTeacher()' ng-controller='ClassSessionCtrl' ng-model='selectedSession')
-                button.btn-success(ng-if='!loading && sessionState(selectedSession)' ng-click='endSession(selectedSession)') Opened
-                button.btn-warning(ng-if='!loading && !sessionState(selectedSession)' ng-click='startSession(selectedSession)') Closed
-                button.btn-info(ng-if='loading') Loading
+                a(href="#", editable-text="activity.name" onaftersave="changeActivityName()") Activity {{ activity.name }}
+            h3(ng-if='isStudent()') Activity {{ activity.name }}
+            div(ng-if='isTeacher()')
+                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
+                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
+                button.btn-info(ng-if='activityState() == 1') Loading
                     span.fa.fa-refresh.fa-spin
 
         .container-fluid(ng-show="selectedVersion")
             .row
-                .col-xs-3.col-md-2.left-menu(ng-controller='HomeCtrl')
+                .col-xs-3.col-md-2.left-menu
                     include data/menu
                 .col-xs-9.col-md-10.tab-content
                     #info.tab-pane.active
@@ -43,6 +47,8 @@ block content
                         include data/realtime/realtime
                     #students.tab-pane
                         include data/students
+                    #teachers.tab-pane
+                        include data/teachers
                     #config.tab-pane
                         include data/config
                     #analysis.tab-pane
@@ -51,5 +57,3 @@ block content
                         include data/dev-visualization
                     #game-analytics.tab-pane
                         include data/game-analytics
-
-

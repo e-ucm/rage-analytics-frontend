@@ -16,12 +16,12 @@
     limitations under the License.
  
 h1 Students
-.container.theme-showcase(ng-controller='AppCtrl')
+.container.theme-showcase(ng-if='selectedActivity' ng-controller="ActivityCtrl" lite='true' ng-attr-activityid='{{selectedActivity._id}}')
     .row
         .col-md-8
             .checkbox
                 label
-                    input(type="checkbox" ng-change='allowAnonymous()' ng-model='checkboxAns')
+                    input(type="checkbox" ng-change='allowAnonymous()' ng-model='activity.allowAnonymous')
                     | Allow anonymous users
                     br
     .row
@@ -29,7 +29,7 @@ h1 Students
             hr
             label Add class from file:
                 input#inputFile.file(type='file' file-reader="fileContent")
-            button.btn.btn-primary(ng-click='addCsvClass()')  Add class
+            button.btn.btn-primary(ng-click='addCsvActivity()')  Add class
             hr
     .row
         .col-md-4
@@ -40,9 +40,9 @@ h1 Students
         .col-md-4
             .row
                 .col-md-2
-                    a.pull-right.glyphicon.glyphicon-plus(ng-click='updateSessionToClass()' title="Add missing students from class")
+                    a.pull-right.glyphicon.glyphicon-plus(ng-click='updateActivityToClass(class)' title="Add missing students from class")
                 .col-md-2
-                    a.pull-right.glyphicon.glyphicon-adjust(ng-click='resetSessionToClass()' title="Reset students to class students")
+                    a.pull-right.glyphicon.glyphicon-adjust(ng-click='resetActivityToClass(class)' title="Reset students to class students")
     .row
         .col-md-6
             table.table.table-hover
@@ -51,7 +51,10 @@ h1 Students
                         th Students
                         th Remove
                 tbody
-                    tr(ng-repeat='student in selectedSession.students')
+                    tr(ng-if='activity.students.length == 0')
+                        td(colspan=6)
+                            div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                    tr(ng-repeat='student in activity.students')
                         td
                             label {{student}}
                         td

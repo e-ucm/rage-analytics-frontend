@@ -29,11 +29,9 @@ angular.module('loginPluginApp', ['ngStorage', 'ngCookies'])
                         $http.get(CONSTANTS.PROXY + '/lti/key/' + user.redirect).success(function(data) {
                             var baseUrl = 'home';
                             var params = '?';
-                            params += data.gameId ? 'game=' + data.gameId : '';
-                            params += data.versionId ? '&version=' + data.versionId : '';
                             params += data.classId ? '&class=' + data.classId : '';
                             if (data.classId) {
-                                baseUrl = 'classsession';
+                                baseUrl = 'classactivity';
                             } else if (data.gameId) {
                                 baseUrl = 'class';
                             }

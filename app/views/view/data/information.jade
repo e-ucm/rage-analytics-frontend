@@ -20,10 +20,10 @@
     .row.top20
         .col-xs-12
             | Game link:
-            a(href='{{ selectedGame.link }}') {{ selectedGame.link }}
+            a(href='{{ game.link }}') {{ game.link }}
         .col-xs-12
             | Tracking code:
-            kbd.left10 {{ selectedVersion.trackingCode }}
+            kbd.left10 {{ version.trackingCode }}
     .row.top20(ng-if='isDeveloper()')
         .col-sm-12
             h4 Developers
@@ -38,7 +38,7 @@
             .row
                 .col-md-8
                     table.table.table-hover
-                        tr(ng-repeat='dev in selectedGame.developers')
+                        tr(ng-repeat='dev in game.developers')
                             td
                                 label {{dev}}
                             td
