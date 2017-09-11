@@ -56,10 +56,10 @@
                             td
                                 a(ng-href='#', ng-click='goToGame(getGameById(activity.gameId))') {{ getGameById(activity.gameId).title }}
                             td {{activity._id | prettyDateId }}
-                            td(ng-if='isTeacher()')
-                                button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
-                                button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
-                                button.btn-info(ng-if='loading') Loading
+                            td(ng-if='isTeacher()', ng-controller='ActivityCtrl' activity='{{ activity }}')
+                                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
+                                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
+                                button.btn-info(ng-if='activityState() == 1') Loading
                                     span.fa.fa-refresh.fa-spin
                             td(ng-if='isTeacher()')
                                 a(ng-click='deleteActivity(activity)')

@@ -210,10 +210,6 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 }
             };
 
-            $scope.activityState = function (activity) {
-                return activity && activity.start && !activity.end;
-            };
-
             $scope.getClassById = function(_id) {
                 var r = null;
                 if ($scope.classes) {

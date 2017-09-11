@@ -297,10 +297,30 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
             // Realtime control
 
+            /**
+             * ActivityState returns the state of the activity from one of the next possible states:
+             *  - 0: Stopped
+             *  - 1: Loading
+             *  - 2: Open
+             *
+             * @param activity
+             * @returns {*|boolean}
+             */
+            $scope.activityState = function () {
+                if (!$scope.activity || $scope.loading) {
+                    return 1;
+                }
+
+                return $scope.activity.start && !$scope.activity.end ? 2 : 0;
+            };
+
+            // TODO Move these methods to the service
             $scope.startActivity = function () {
                 $scope.loading = true;
                 $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/start').success(function (s) {
                     $scope.loading = false;
+                    $scope.activity.start = s.start;
+                    $scope.activity.end = s.end;
                 }).error(function (data, status) {
                     console.error('Error on get /activities/' + $scope.activity._id + '/event/start ' +
                         JSON.stringify(data) + ', status: ' + status);
@@ -312,6 +332,8 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.loading = true;
                 $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/end').success(function (s) {
                     $scope.loading = false;
+                    $scope.activity.start = s.start;
+                    $scope.activity.end = s.end;
                 }).error(function (data, status) {
                     console.error('Error on get /activities/' + $scope.activity._id + '/event/end ' +
                         JSON.stringify(data) + ', status: ' + status);

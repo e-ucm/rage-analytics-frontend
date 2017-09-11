@@ -30,10 +30,10 @@
             h3(ng-if='isTeacher()')
                 a(href="#", editable-text="activity.name" onaftersave="changeActivityName()") Activity {{ activity.name }}
             h3(ng-if='isStudent()') Activity {{ activity.name }}
-            div(ng-if='isTeacher()' ng-model='activity')
-                button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
-                button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
-                button.btn-info(ng-if='loading') Loading
+            div(ng-if='isTeacher()')
+                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
+                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
+                button.btn-info(ng-if='activityState() == 1') Loading
                     span.fa.fa-refresh.fa-spin
 
         .container-fluid(ng-show="selectedVersion")

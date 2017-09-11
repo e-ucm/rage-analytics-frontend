@@ -48,7 +48,7 @@
                         tr(ng-if='activities.length == 0')
                             td(colspan=6)
                                 div.alert.alert-info(style='margin-bottom: 0px') No activities found
-                        tr(ng-repeat='activity in activities')
+                        tr(ng-repeat='activity in activities', ng-controller='ActivityCtrl' activity='{{ activity }}')
                             td
                                 span.glyphicon.glyphicon-stats
                                 a(ng-href="#" ng-click='goToActivity(activity)') {{activity.name}}
@@ -56,9 +56,9 @@
                                 a(ng-href='#', ng-click='goToClass(getClassById(activity.classId))') {{ getClassById(activity.classId).name }}
                             td {{activity._id | prettyDateId }}
                             td(ng-if='isTeacher()')
-                                button.btn-success(ng-if='!loading && activityState(activity)' ng-click='endActivity(activity)') Opened
-                                button.btn-warning(ng-if='!loading && !activityState(activity)' ng-click='startActivity(activity)') Closed
-                                button.btn-info(ng-if='loading') Loading
+                                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
+                                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
+                                button.btn-info(ng-if='activityState() == 1') Loading
                                     span.fa.fa-refresh.fa-spin
                             td(ng-if='isTeacher()')
                                 a(ng-click='deleteActivity(activity)')
