@@ -61,9 +61,11 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
     }
 ]);
 
+var loadingStatus = {};
+
 services.factory('Activities', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/activities/:activityId', {
+        var Activity = $resource(CONSTANTS.PROXY + '/activities/:activityId', {
             activityId: '@_id',
             versionId: '@versionId',
             gameId: '@gameId'
@@ -73,6 +75,17 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },
             update: { method: 'PUT' }
         });
+
+        Object.defineProperty(Activity.prototype, 'loading', {
+            get: function loading() {
+                return loadingStatus[this._id];
+            },
+            set: function loading(value) {
+                loadingStatus[this._id] = value;
+            }
+        });
+
+        return Activity;
     }
 ]);
 

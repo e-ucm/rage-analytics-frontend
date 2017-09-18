@@ -23,6 +23,8 @@
         "underscore": "http://underscorejs.org/underscore.js",
         "d3": "*",
         "gauss": "*",
-        "hammerjs": "*"
+        "hammerjs": "*",
+        "remarkable-bootstrap-notify": "*",
+        "animate.css": "*"
     }
 }

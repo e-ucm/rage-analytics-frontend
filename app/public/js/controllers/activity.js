@@ -307,37 +307,66 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
              * @returns {*|boolean}
              */
             $scope.activityState = function () {
-                if (!$scope.activity || $scope.loading) {
+                if (!$scope.activity || $scope.activity.loading) {
                     return 1;
                 }
 
                 return $scope.activity.start && !$scope.activity.end ? 2 : 0;
             };
 
-            // TODO Move these methods to the service
+            $scope.$on('refreshActivity', function(evt, activity) {
+                $scope.activity = activity;
+                console.log('Activity updated');
+            });
+
             $scope.startActivity = function () {
-                $scope.loading = true;
+                if (!$scope.activity || $scope.activity.loading) {
+                    return;
+                }
+
+                $scope.activity.loading = true;
                 $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/start').success(function (s) {
-                    $scope.loading = false;
+                    $scope.activity.loading = false;
                     $scope.activity.start = s.start;
                     $scope.activity.end = s.end;
+                    $rootScope.$broadcast('refreshActivity', $scope.activity);
                 }).error(function (data, status) {
                     console.error('Error on get /activities/' + $scope.activity._id + '/event/start ' +
                         JSON.stringify(data) + ', status: ' + status);
-                    $scope.loading = false;
+
+                    $.notify('<strong>Error while opening the activity:</strong><br>If the session was recently closed it ' +
+                        'might need to be cleaned by the system. <br>Please try again in a few seconds.', {
+                        offset: { x: 10, y: 65 },
+                        type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+                    });
+
+                    $scope.activity.loading = false;
+                    $rootScope.$broadcast('refreshActivity', $scope.activity);
                 });
             };
 
             $scope.endActivity = function () {
-                $scope.loading = true;
+                if (!$scope.activity || $scope.activity.loading) {
+                    return;
+                }
+
+                $scope.activity.loading = true;
                 $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/end').success(function (s) {
-                    $scope.loading = false;
+                    $scope.activity.loading = false;
                     $scope.activity.start = s.start;
                     $scope.activity.end = s.end;
+                    $rootScope.$broadcast('refreshActivity', $scope.activity);
                 }).error(function (data, status) {
                     console.error('Error on get /activities/' + $scope.activity._id + '/event/end ' +
                         JSON.stringify(data) + ', status: ' + status);
-                    $scope.loading = false;
+
+                    $.notify('<strong>Error while closing the activity:</strong><br>Please try again in a few seconds.', {
+                        offset: { x: 10, y: 65 },
+                        type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+                    });
+
+                    $scope.activity.loading = false;
+                    $rootScope.$broadcast('refreshActivity', $scope.activity);
                 });
             };
 

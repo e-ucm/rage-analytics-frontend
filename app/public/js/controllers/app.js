@@ -115,9 +115,9 @@ angular.module('myApp', [
             templateUrl: 'view/gameactivity'
         });
     }
-]).controller('AppCtrl', ['$scope', '$location', '$http', '$timeout', '$localStorage', '$window',
+]).controller('AppCtrl', ['$rootScope', '$scope', '$location', '$http', '$timeout', '$localStorage', '$window',
     'Games', 'Classes', 'Activities', 'Versions', 'Analysis', 'Role', 'CONSTANTS', 'QueryParams',
-    function ($scope, $location, $http, $timeout, $localStorage,
+    function ($rootScope, $scope, $location, $http, $timeout, $localStorage,
               $window, Games, Classes, Activities, Versions, Analysis, Role, CONSTANTS, QueryParams) {
         $scope.$storage = $localStorage;
         $scope.DOCS = CONSTANTS.DOCS;
