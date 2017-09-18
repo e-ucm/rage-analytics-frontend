@@ -14,17 +14,20 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
-h1 Teachers
-.container.theme-showcase(ng-if='selectedActivity' ng-controller="ActivityCtrl" lite='true' ng-attr-activityid='{{selectedActivity._id}}')
+
+.container-fluid.theme-showcase(ng-if='selectedActivity' ng-controller="ActivityCtrl" lite='true' ng-attr-activityid='{{selectedActivity._id}}')
+    h1 Teachers
     .row
-        .col-md-4
-            label Username:
-                input.form-control(type='text' ng-model='teacher.name')
-            a.btn.btn-primary(type='button', ng-click='inviteTeacher()')
-                | Add teacher
+        .col-md-12
+            .panel.panel-primary
+                .panel-heading Add teacher to this activity
+                .panel-body
+                    label Username:
+                        input.form-control(type='text' ng-model='teacher.name')
+                    a.btn.btn-primary(type='button', ng-click='inviteTeacher()')
+                        .glyphicon.glyphicon-plus
     .row
-        .col-md-6
+        .col-md-12
             table.table.table-hover
                 thead
                     tr

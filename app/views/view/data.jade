@@ -16,44 +16,52 @@
     limitations under the License.
 
 .container(ng-if='selectedGame && selectedVersion' ng-controller='GameCtrl' gameid='{{selectedGame._id}}', versionid='{{selectedVersion._id}}')
-    div(style='width=100%')
-        img(style='align="center"' src='loading.svg' ng-if='!game || !version')
-    .theme-showcase(ng-if='game && version')
-        .col-md-12
-            h1
-                a(ng-if='isDeveloper()' href="#", editable-text="game.title" onaftersave="changeTitle()") Game {{ game.title }}
-                label(ng-if='!isDeveloper()') Game {{ game.title }} -
+    .panel.panel-default(ng-if='isDeveloper()' style='width=100%')
+        .panel-body(ng-if='!game || !version')
+            img(src='loading.svg')
+        .panel-heading(ng-if='game && version' style='font-size: 2.5em')
+            block dataHeader
+                span
+                    a(ng-if='!isDeveloper()') Game {{ game.title }} -
+                    a(ng-if='isDeveloper()' href="#", editable-text="game.title" onaftersave="changeTitle()") Game {{ game.title }}
                 span(ng-if='!isDeveloper() && selectedClass' ng-controller='ClassCtrl' forclass='{{ selectedClass }}')
-                    a(ng-if='isTeacher()' href="#", editable-text="class.name" onaftersave="changeName()")  Class {{ class.name }}
-                    label(ng-if='isStudent()') Class {{ class.name }}
-        .col-md-12(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' lite='true' activity='{{ selectedActivity }}')
-            h3(ng-if='isTeacher()')
-                a(href="#", editable-text="activity.name" onaftersave="changeActivityName()") Activity {{ activity.name }}
-            h3(ng-if='isStudent()') Activity {{ activity.name }}
-            div(ng-if='isTeacher()')
-                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
-                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
-                button.btn-info(ng-if='activityState() == 1') Loading
-                    span.fa.fa-refresh.fa-spin
-
-        .container-fluid(ng-show="selectedVersion")
-            .row
-                .col-xs-3.col-md-2.left-menu
-                    include data/menu
-                .col-xs-9.col-md-10.tab-content
-                    #info.tab-pane.active
-                        include data/information
-                    #realtime.tab-pane
-                        include data/realtime/realtime
-                    #students.tab-pane
-                        include data/students
-                    #teachers.tab-pane
-                        include data/teachers
-                    #config.tab-pane
-                        include data/config
-                    #analysis.tab-pane
-                        include data/analysis
-                    #dev-visualization.tab-pane
-                        include data/dev-visualization
-                    #game-analytics.tab-pane
-                        include data/game-analytics
+                    a(ng-if='isTeacher()' href="#", editable-text="class.name" onaftersave="changeName()")  Class {{ class.name }} -
+                    a(ng-if='isStudent()') Class {{ class.name }} -
+                span(ng-if='!isDeveloper() && activity')
+                    span(ng-if='isTeacher()')
+                        a(href="#", editable-text="activity.name" onaftersave="changeActivityName()")  Activity {{ activity.name }}
+                    a(ng-if='isStudent()') Activity {{ activity.name }}
+                span(ng-if='isTeacher()' style='float: right; margin-top: 5px; font-size: 0.70em;')
+                    button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
+                    button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
+                    button.btn-info(ng-if='activityState() == 1') Loading&nbsp;
+                        span.fa.fa-refresh.fa-spin
+        .panel-body.tabled(ng-if='game && version' style='padding-top: 0px')
+            block dataMenu
+                .row.row-tabled
+                    .col-xs-3.col-md-2.left-menu
+                        include data/menu
+                    .col-xs-9.col-md-10.tab-content.table-cell
+                        #info.tab-pane.active
+                            include data/information
+                        #realtime.tab-pane
+                            include data/realtime/realtime
+                        #students.tab-pane
+                            include data/students
+                        #teachers.tab-pane
+                            include data/teachers
+                        #config.tab-pane
+                            include data/config
+                        #analysis.tab-pane
+                            include data/analysis
+                        #dev-visualization.tab-pane
+                            include data/dev-visualization
+                        #game-analytics.tab-pane
+                            include data/game-analytics
+    .panel.panel-default(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' lite='true' activity='{{ selectedActivity }}' style='width=100%')
+        .panel-body(ng-if='!game || !version || !activity')
+            img(src='loading.svg')
+        .panel-heading(ng-if='game && version && activity' style='font-size: 2.5em')
+            block dataHeader
+        .panel-body.tabled(ng-if='game && version && activity' style='padding-top: 0px')
+            block dataMenu

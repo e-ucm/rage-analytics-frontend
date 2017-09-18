@@ -16,7 +16,6 @@
     limitations under the License.
 
 h1(ng-controller='DevVisualizatorCtrl') Developer Visualizations
-    .row(ng-if="isDeveloper()")
-        .row(data-ng-init='showVisualization()')
-            iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}" width="100%")
-            script(src='./js/iresizer.js')
+    .row(ng-if="isDeveloper()" data-ng-init='showVisualization()')
+        iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}" width="100%")
+        script(src='./js/iresizer.js')

@@ -52,7 +52,7 @@
                                 div.alert.alert-info(style='margin-bottom: 0px') No activities found
                         tr(ng-repeat='localactivity in activities', ng-controller='ActivityCtrl' activity='{{ localactivity }}')
                             td
-                                span.glyphicon.glyphicon-stats
+                                span.glyphicon.glyphicon-stats.right10
                                 a(ng-href="#" ng-click='goToActivity(localactivity)') {{ localactivity.name }}
                             td
                                 a(ng-href='#', ng-click='goToGame(getGameById(localactivity.gameId))') {{ getGameById(localactivity.gameId).title }}
@@ -94,7 +94,7 @@
                                 div.alert.alert-info(style='margin-bottom: 0px') No games found
                         tr(ng-repeat='game in games')
                             td
-                                span.glyphicon.glyphicon-stats
+                                span.glyphicon.glyphicon-stats.right10
                                 a(ng-href='#', ng-click='goToGame(game)') {{game.title}}
                             td {{game._id | prettyDateId }}
                             td(ng-if='isDeveloper()')
@@ -125,7 +125,7 @@
                                 div.alert.alert-info(style='margin-bottom: 0px') No classes found
                         tr(ng-repeat='class in classes')
                             td(ng-controller='AppCtrl')
-                                span.glyphicon.glyphicon-stats
+                                span.glyphicon.glyphicon-stats.right10
                                 a(ng-href='#', ng-click='goToClass(class)') {{class.name}}
                             td {{class._id | prettyDateId }}
                             td(ng-if='isTeacher()')
