@@ -175,7 +175,12 @@ angular.module('gameApp', ['ngStorage', 'services', 'ngFileUpload'])
                 $scope.version.$save();
             };
 
-
+            $scope.showLrs = undefined;
+            if($scope.showLrs === undefined){
+                $http.get(CONSTANTS.PROXY + '/env').success(function (data) {
+                    $scope.showLrs = data.useLrs;
+                });
+            }
         }
     ]);
 

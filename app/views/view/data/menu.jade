@@ -32,7 +32,7 @@ ul.nav
         span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
             span.glyphicon.glyphicon-dashboard.right20
             | Real Time
-    li(ng-if='isDeveloper()' ng-controller='AnalyticsCtrl')
+    li(ng-if='isDeveloper() && showLrs' ng-controller='AnalyticsCtrl')
         span.left-menu-item(href="#game-analytics", role="tab", data-toggle="tab", ng-click="view = 'game-analytics'; getStatements()")
             span.fa.fa-bar-chart.right20
             | LRS Analytics
