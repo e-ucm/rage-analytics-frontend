@@ -3,9 +3,8 @@
         h1 Fields
             a.pull-right.glyphicon.glyphicon-question-sign(href='{{DOCS.CONFIGUREFIELDS}}'
                 target="_blank" title="See documentation on GitHub")
-    .col-md-16
-        .row
-            label.top30 Select the fields that your visualization template have to use:
+    .row
+        label.top30 Select the fields that your visualization template have to use:
         table.table.table-hover
             thead
                 tr
@@ -23,13 +22,12 @@
                             ul.dropdown-menu
                                 li(ng-repeat='f in dropfields')
                                     a(ng-click='selectField(field, f)') {{f}}
-    .col-md-16
-        .row
-            nav.top30
-            ul.pager
-                li(class="previous")
-                    a(href="#kibanaVisualization" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaVisualization'") Previous
-                        span.glyphicon.glyphicon-arrow-left
-                li(class="next")
-                    a(href="#traces" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'traces'") Next
-                        span.glyphicon.glyphicon-arrow-right
+    .row
+        nav.top30
+        ul.pager
+            li(class="previous")
+                a(href="#kibanaVisualization" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaVisualization'") Previous
+                    span.glyphicon.glyphicon-arrow-left
+            li(class="next")
+                a(href="#traces" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'traces'") Next
+                    span.glyphicon.glyphicon-arrow-right

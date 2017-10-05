@@ -54,7 +54,7 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
                         var numPan = 1;
                         data.forEach(function (visualizationId) {
 
-                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/session/' + $scope.gameId + '/' + visualizationId + '/' + versionId,
+                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/activity/' + $scope.gameId + '/' + visualizationId + '/' + versionId,
                                 {}).success(function(result) {
                                 panels.push('{\"id\":\"' + visualizationId + '_' + versionId +
                                     '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
@@ -85,16 +85,16 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
                                             searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
                                         }
                                     };
-                                    $http.post(CONSTANTS.PROXY + '/kibana/dashboard/session/' + versionId, dashboard)
+                                    $http.post(CONSTANTS.PROXY + '/kibana/dashboard/activity/' + versionId, dashboard)
                                         .success(function(data) {
                                             $scope.dashboardLink = getDashboardLink();
                                         }).error(function (data, status) {
-                                        console.error('Error on post /kibana/dashboard/session/' + versionId + ' ' +
+                                        console.error('Error on post /kibana/dashboard/activity/' + versionId + ' ' +
                                             JSON.stringify(data) + ', status: ' + status);
                                     });
                                 }
                             }).error(function (data, status) {
-                                console.error('Error on post /kibana/visualization/session/' + visualizationId + '/' + versionId + ' ' +
+                                console.error('Error on post /kibana/visualization/activity/' + visualizationId + '/' + versionId + ' ' +
                                     JSON.stringify(data) + ', status: ' + status);
                             });
                         });

@@ -1,0 +1,64 @@
+//- 
+    Copyright 2016 e-UCM (http://www.e-ucm.es/)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    This project has received funding from the European Union’s Horizon
+    2020 research and innovation programme under grant agreement No 644187.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 (link is external)
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+.container-fluid.theme-showcase(ng-if='selectedActivity' ng-controller="ActivityCtrl" lite='true' ng-attr-activityid='{{selectedActivity._id}}')
+    h1 Students
+    .row
+        .col-md-12
+            .checkbox
+                label
+                    input(type="checkbox" ng-change='allowAnonymous()' ng-model='activity.allowAnonymous')
+                    | Allow anonymous users
+            br
+    .row
+        .col-md-12
+            .panel.panel-primary
+                .panel-heading Add students to this activity
+                .panel-body
+                    label Add class from file:
+                        input.form-control#inputFile.file(type='file' file-reader="fileContent")
+                    span &nbsp;
+                        button.btn.btn-primary(ng-click='addCsvActivity()')  Add class
+                    hr
+                    label Username:
+                        input.form-control(type='text' ng-model='student.name')
+                    span &nbsp;
+                    a.btn.btn-primary(type='button', ng-click='inviteStudent()')
+                        .glyphicon.glyphicon-plus
+                    span &nbsp;
+                    button.btn.btn-primary Add missing students from class&nbsp;
+                        .glyphicon.glyphicon-plus(ng-click='updateActivityToClass(class)' title="Add missing students from class")
+                    span &nbsp;
+                    button.btn.btn-primary Reset students to class students&nbsp;
+                        .glyphicon.glyphicon-adjust(ng-click='resetActivityToClass(class)' title="Reset students to class students")
+    .row
+        .col-md-12
+            table.table.table-hover
+                thead
+                    tr
+                        th Students
+                        th Remove
+                tbody
+                    tr(ng-if='activity.students.length == 0')
+                        td(colspan=6)
+                            div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                    tr(ng-repeat='student in activity.students')
+                        td
+                            label {{student}}
+                        td
+                            a(ng-click='ejectStudent(student)')
+                                span.glyphicon.glyphicon-remove-sign

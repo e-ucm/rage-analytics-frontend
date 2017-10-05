@@ -22,8 +22,10 @@ var services = angular.module('services', ['ngResource', 'ngStorage']);
 
 services.factory('Games', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/games', {
-            gameId: '@_id'
+        return $resource(CONSTANTS.PROXY + '/games/:gameId', { gameId: '@_id' }, {
+            my: { method: 'GET', isArray: true , url: CONSTANTS.PROXY + '/games/my' },
+            public: { method: 'GET', isArray: true , url: CONSTANTS.PROXY + '/games/public' },
+            update: { method: 'PUT' }
         });
     }
 ]);
@@ -41,40 +43,55 @@ services.factory('Versions', ['$resource', 'CONSTANTS',
         return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId', {
             versionId: '@_id',
             gameId: '@gameId'
+        }, {
+            forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions' },
+            update: { method: 'POST' } // TODO Update this to PUT or update all the others to POST
         });
     }
 ]);
 
 services.factory('Classes', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/classes', {
-            classId: '@_id',
-            versionId: '@versionId',
-            gameId: '@gameId'
+        return $resource(CONSTANTS.PROXY + '/classes/:classId', {
+            classId: '@_id'
+        }, {
+            my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/my' },
+            update: { method: 'PUT' }
         });
     }
 ]);
 
-services.factory('Sessions', ['$resource', 'CONSTANTS',
+var loadingStatus = {};
+
+services.factory('Activities', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/classes/:classId/sessions', {
-            sessionId: '@_id',
-            classId: '@classId',
+        var Activity = $resource(CONSTANTS.PROXY + '/activities/:activityId', {
+            activityId: '@_id',
             versionId: '@versionId',
             gameId: '@gameId'
+        }, {
+            my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/my' },
+            forClass: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/activities/my' },
+            forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },
+            update: { method: 'PUT' }
         });
-    }
-]);
 
-services.factory('SessionsId', ['$resource', 'CONSTANTS',
-    function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/sessions/:id');
+        Object.defineProperty(Activity.prototype, 'loading', {
+            get: function loading() {
+                return loadingStatus[this._id];
+            },
+            set: function loading(value) {
+                loadingStatus[this._id] = value;
+            }
+        });
+
+        return Activity;
     }
 ]);
 
 services.factory('Results', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
-        return $resource(CONSTANTS.PROXY + '/sessions/:id/results/:resultId', {
+        return $resource(CONSTANTS.PROXY + '/activities/:id/results/:resultId', {
             resultId: '@_id'
         });
     }
@@ -83,6 +100,12 @@ services.factory('Results', ['$resource', 'CONSTANTS',
 services.factory('Role', ['$localStorage',
     function ($localStorage) {
         return {
+            isUser: function () {
+                return $localStorage && $localStorage.user;
+            },
+            isAdmin: function () {
+                return $localStorage.user && $localStorage.user.roles && $localStorage.user.roles.indexOf('admin') !== -1;
+            },
             isTeacher: function () {
                 return $localStorage.user && $localStorage.user.roles && $localStorage.user.roles.indexOf('teacher') !== -1;
             },

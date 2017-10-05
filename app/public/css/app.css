@@ -6,18 +6,27 @@ html, body {
 
 .left-menu {
     padding-left: 0px;
+    padding-right: 0px;
+    height: 100%;
+    float: none;
+    display: table-cell;
+    position: relative;
 }
 
 .left-menu ul.nav {
+    top: 0;
+    bottom: 0;
+    position: absolute;
     background-color: #f8f8f8;
     border-right: 1px solid #e7e7e7;
-    height: 75vh;
+    height: 100%;
+    width: 100%;
 }
 
 .left-menu ul.nav span.left-menu-item {
     color: #707070;
     display: block;
-    padding: 15px 10px;
+    padding: 15px 13px 15px 20px;
 }
 
 .left-menu ul.nav span.left-menu-item:hover {
@@ -35,12 +44,29 @@ html, body {
     user-select: none;
 }
 
+.tabled {
+    display: table;
+    padding: 0px;
+    min-height: 80vh;
+    width: 100%;
+}
+
+.row-tabled {
+    display: table-row;
+    width: 100%;
+}
+
 .left-menu ul.nav li.active {
     font-weight: bold;
 }
 
 .left-menu ul.nav li.active span.left-menu-item {
     color: #606060;
+}
+
+.table-cell {
+    display: table-cell;
+    float: none;
 }
 
 .no-border { border: 0; }
@@ -59,9 +85,11 @@ html, body {
 .right20 { margin-right:20px; }
 .right30 { margin-right:30px; }
 
+.left10 { margin-left: 10px; }
+
 .in-line {
     display: inline-block;
-    vertical-align: text-top;
+    vertical-align: middle;
 }
 
 .warning-alert-table {

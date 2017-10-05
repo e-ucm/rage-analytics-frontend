@@ -19,50 +19,140 @@
 'use strict';
 
 angular.module('classApp', ['ngStorage', 'services'])
-    .controller('ClassCtrl', ['$scope', '$location', '$http', '$window', '$localStorage', 'Games', 'Versions', 'Sessions', 'Role', 'CONSTANTS', 'QueryParams',
-        function ($scope, $location, $http, $window, $localStorage, Games, Versions, Sessions, Role, CONSTANTS, QueryParams) {
-            $scope.$storage = $localStorage;
-            $scope.session = {};
-            $scope.class = {};
+    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Classes', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, Classes, CONSTANTS) {
 
-            var getClasses = function () {
-                $http.get(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/classes/my').success(function (data) {
-                    $scope.classes = data;
+            var onSetClass = function() {
+                if (!$scope.class) {
+                    throw new Error('No class for ClassCtrl');
+                } else {
+                    $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.class._id).success(function (data) {
+                        if (data && data.length > 0) {
+                            $scope.lti.key = data[0]._id;
+                            $scope.lti.secret = data[0].secret;
+                        }
+                    });
+                }
+            };
+
+            $attrs.$observe('classid', function() {
+                $scope.class = Classes.get({classId: $attrs.classid}, onSetClass);
+            });
+
+            $attrs.$observe('forclass', function() {
+                $scope.class = JSON.parse($attrs.forclass);
+                Classes.get({classId: $scope.class._id}).$promise.then(function(c) {
+                    $scope.class = c;
+                });
+                onSetClass();
+            });
+
+            $scope.student = {};
+            $scope.teacher = {};
+
+            // Class
+
+            $scope.changeName = function () {
+                $scope.class.$update(function() {
+                    $rootScope.$broadcast('refreshClasses');
+                });
+            };
+
+            // Teachers
+
+            $scope.isRemovable = function (dev) {
+                var teachers = $scope.class.teachers;
+                if (teachers && teachers.length === 1) {
+                    return false;
+                }
+                if ($scope.username === dev) {
+                    return false;
+                }
+                return true;
+            };
+
+            $scope.inviteTeacher = function () {
+                if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
+                    $scope.class.teachers.push($scope.teacher.name);
+                    $scope.class.$update(function () {
+                        $scope.teacher.name = '';
+                    });
+                }
+            };
+
+            $scope.ejectTeacher = function (teacher) {
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/remove';
+                $http.put(route, {teachers: teacher}).success(function (data) {
+                    $scope.class.teachers = data.teachers;
                 }).error(function (data, status) {
-                    console.error('Error on get /games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                        QueryParams.getQueryParam('version') + '/classes/my' + JSON.stringify(data) + ', status: ' + status);
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
-            getClasses();
-            $scope.gameId = QueryParams.getQueryParam('game');
-            $scope.versionId = QueryParams.getQueryParam('version');
-            $scope.loading = false;
+            // Students
 
-            $scope.createClass = function () {
-                var className = $scope.class.name ? $scope.class.name : 'New class';
-                $http.post(CONSTANTS.PROXY + '/games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                    QueryParams.getQueryParam('version') + '/classes', {name: className}).success(function (classRes) {
-                        $window.location = 'classsession' + '?game=' + QueryParams.getQueryParam('game') + '&version=' +
-                            QueryParams.getQueryParam('version') + '&class=' + classRes._id;
+            $scope.inviteStudent = function () {
+                if ($scope.student.name && $scope.student.name.trim() !== '') {
+                    var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
+                    $http.put(route, {students: $scope.student.name}).success(function (data) {
+                        $scope.class = data;
                     }).error(function (data, status) {
-                    console.error('Error on post /games/' + QueryParams.getQueryParam('game') + '/versions/' +
-                        QueryParams.getQueryParam('version') + '/classes' + JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
-            $scope.isTeacher = function () {
-                return Role.isTeacher();
-            };
-
-            $scope.deleteClass = function (classObj) {
-                if (classObj) {
-                    $http.delete(CONSTANTS.PROXY + '/classes/' + classObj._id).success(function () {
-                        getClasses();
-                    }).error(function (data, status) {
-                        console.error('Error on delete /classes/' + classObj._id + ' ' +
+                        console.error('Error on put' + route + ' ' +
                             JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+            };
+
+
+            $scope.ejectStudent = function (student, fromClass) {
+                var route = '';
+                if (fromClass) {
+                    route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id + '/remove';
+                } else {
+                    route = CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id + '/remove';
+                }
+                $http.put(route, {students: student}).success(function (data) {
+                    $scope.class = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $scope.addCsvClass = function () {
+                var students = [];
+                $scope.fileContent.contents.trim().split(',').forEach(function (student) {
+                    if (student) {
+                        students.push(student);
+                    }
+                });
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
+                $http.put(route, {students: students}).success(function (data) {
+                    $scope.class.students = data.students;
+                }).error(function (data, status) {
+                    console.error('Error on put', route, status);
+                });
+            };
+
+            // LTI
+            $scope.lti = {};
+            $scope.lti.key = '';
+            $scope.lti.secret = '';
+
+            var myPrefix = $location.$$path.split('/')[3];
+            $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
+                '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
+
+            $scope.createLtiKey = function () {
+                if ($scope.lti.secret) {
+                    $http.post(CONSTANTS.PROXY + '/lti', {
+                        secret: $scope.lti.secret,
+                        classId: $scope.class._id
+                    }).success(function (data) {
+                        $scope.lti.key = data._id;
+                    }).error(function (data, status) {
+                        console.error('Error on get /lti' + JSON.stringify(data) + ', status: ' + status);
                     });
                 }
             };

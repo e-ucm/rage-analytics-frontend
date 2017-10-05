@@ -1,0 +1,58 @@
+//- 
+    Copyright 2016 e-UCM (http://www.e-ucm.es/)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    This project has received funding from the European Union’s Horizon
+    2020 research and innovation programme under grant agreement No 644187.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 (link is external)
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+.container-fluid.theme-showcase
+    h1 Information
+    .row
+        .col-xs-12
+            | Game link:
+            a(href='{{ game.link }}') {{ game.link }}
+        .col-xs-12
+            | Tracking code:
+            kbd.left10 {{ version.trackingCode }}
+    .row(ng-if='isDeveloper()')
+        hr
+        .col-xs-12
+            h4 Developers
+            .row(ng-if='isAuthor()')
+                .col-md-12
+                    .panel.panel-primary
+                        .panel-heading Add developer to this game
+                        .panel-body
+                            label Username:
+                                input.form-control(type='text' ng-model='developer.name')
+                            a.btn.btn-primary(type='button', ng-click='inviteDeveloper()')
+                                .glyphicon.glyphicon-plus
+            .row
+                .col-md-12
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Developers
+                                th Remove
+                        tbody
+                            tr(ng-if='activity.teachers.length == 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No teachers found
+                            tr(ng-repeat='dev in game.developers')
+                                td
+                                    label {{dev}}
+                                td
+                                    a(ng-if='isRemovable(dev)' ng-click='ejectDeveloper(dev)')
+                                        span.glyphicon.glyphicon-remove-sign
+
+

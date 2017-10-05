@@ -21,6 +21,10 @@ ul.nav
             span.glyphicon.glyphicon-info-sign.right20
             | Information
     li(ng-if='isTeacher()')
+        span.left-menu-item(href="#teachers", role="tab", data-toggle="tab", ng-click="view = 'teachers'")
+            span.glyphicon.glyphicon-briefcase.right20
+            | Teachers
+    li(ng-if='isTeacher()')
         span.left-menu-item(href="#students", role="tab", data-toggle="tab", ng-click="view = 'students'")
             span.glyphicon.glyphicon-apple.right20
             | Students
@@ -28,13 +32,13 @@ ul.nav
         span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
             span.glyphicon.glyphicon-dashboard.right20
             | Real Time
-    li(ng-if='isDeveloper()' ng-controller='AnalyticsCtrl')
+    li(ng-if='isDeveloper() && showLrs' ng-controller='AnalyticsCtrl')
         span.left-menu-item(href="#game-analytics", role="tab", data-toggle="tab", ng-click="view = 'game-analytics'; getStatements()")
             span.fa.fa-bar-chart.right20
             | LRS Analytics
     li(ng-if='isDeveloper()')
         span.left-menu-item(href="#config", role="tab", data-toggle="tab", ng-click="view = 'config'")
-            span.glyphicon.glyphicon-cog.right20
+            span.glyphicon.glyphicon-warning-sign.right20
             div.in-line Alerts & Warnings
                 br
                 | Setup

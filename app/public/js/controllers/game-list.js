@@ -18,20 +18,23 @@
 
 'use strict';
 
-angular.module('homeApp', ['ngStorage', 'services'])
-    .controller('HomeCtrl', ['$scope', '$http', '$window', '$localStorage', 'Games', 'Versions', 'Role', 'CONSTANTS',
-        function ($scope, $http, $window, $localStorage, Games, Versions, Role, CONSTANTS) {
-            $scope.$storage = $localStorage;
+angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
+    .controller('GameListCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'CONSTANTS',
+        function ($scope, $rootScope, $http, $window, Games, Versions, Role, CONSTANTS) {
+
             $scope.game = {};
+
+            $scope.goToGame = function(game) {
+                $rootScope.$broadcast('selectGame', { game: game });
+            };
+
+            // Initialization load
             var getGames = function () {
-                if (!$scope.isDeveloper()) {
-                    return;
+                if (Role.isDeveloper()) {
+                    $scope.games = Games.my();
+                } else {
+                    $scope.games = Games.public();
                 }
-                $http.get(CONSTANTS.PROXY + '/games/my').success(function (data) {
-                    $scope.games = data;
-                }).error(function (data, status) {
-                    console.error('Error on get /games/my ' + JSON.stringify(data) + ', status: ' + status);
-                });
             };
 
             getGames();
@@ -67,9 +70,9 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                                             visJSON.visualizationsTch =  selectedVisualizationTch;
                                                             $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id,
                                                                 visJSON).success(function(data) {
-                                                                    $scope.gameTitle = '';
-                                                                    $window.location = 'data?game=' + game._id + '&version=' + version._id;
-                                                                }).error(function (data, status) {
+                                                                $rootScope.$broadcast('refreshGames');
+                                                                $scope.goToGame(data);
+                                                            }).error(function (data, status) {
                                                                 console.error('Error on post /kibana/visualization/list/' +  game._id + ' ' +
                                                                     JSON.stringify(data) + ', status: ' + status);
                                                             });
@@ -89,19 +92,17 @@ angular.module('homeApp', ['ngStorage', 'services'])
                                 });
                             }).error(function (data, status) {
                         });
-
-
                     });
-
                 });
             };
 
-            $scope.isTeacher = function () {
-                return Role.isTeacher();
+            $scope.deleteGame = function (game) {
+                game.$remove();
+                $rootScope.$broadcast('refreshGames');
             };
 
-            $scope.isDeveloper = function () {
-                return Role.isDeveloper();
-            };
+            $scope.$on('refreshGames', function() {getGames();});
         }
     ]);
+
+

@@ -30,6 +30,15 @@ var getBasePath = function(req) {
     return proto + '://' + req.headers['x-forwarded-host'];
 };
 
+router.get('/view/:page', function (req, res) {
+    res.render('view/' + req.param('page'), {basePath: getBasePath(req)});
+});
+
+router.get('*', function (req, res) {
+    res.render('page', {basePath: getBasePath(req)});
+});
+
+/* A
 router.get('/', function (req, res) {
     res.render('login', {basePath: getBasePath(req)});
 });
@@ -54,8 +63,12 @@ router.get('/class', function (req, res) {
     res.render('class', {basePath: getBasePath(req)});
 });
 
-router.get('/classsession', function (req, res) {
-    res.render('classSession', {basePath: getBasePath(req)});
+router.get('/classactivity', function (req, res) {
+    res.render('classActivity', {basePath: getBasePath(req)});
+});
+
+router.get('/gameactivity', function (req, res) {
+    res.render('gameActivity', {basePath: getBasePath(req)});
 });
 
 router.get('/data', function (req, res) {
@@ -65,5 +78,6 @@ router.get('/data', function (req, res) {
 router.get('/loginbyplugin/', function (req, res) {
     res.render('loginplugin', {user: JSON.stringify(req.query), basePath: getBasePath(req)});
 });
+*/
 
 module.exports = router;

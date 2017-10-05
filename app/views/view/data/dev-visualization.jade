@@ -1,4 +1,4 @@
-//- 
+//-
     Copyright 2016 e-UCM (http://www.e-ucm.es/)
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +14,8 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
-extends layout
 
-block content
-    h1= message
-    h2= error.status
-    pre #{error.stack}
+h1(ng-controller='DevVisualizatorCtrl') Developer Visualizations
+    .row(ng-if="isDeveloper()" data-ng-init='showVisualization()')
+        iframe#dashboardIframe.no-border.top10(src = "{{dashboardLink}}" width="100%")
+        script(src='./js/iresizer.js')
