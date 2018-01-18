@@ -21,7 +21,6 @@
 angular.module('classApp', ['ngStorage', 'services'])
     .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Classes', 'CONSTANTS',
         function ($rootScope, $scope, $attrs, $location, $http, Classes, CONSTANTS) {
-
             var onSetClass = function() {
                 if (!$scope.class) {
                     throw new Error('No class for ClassCtrl');
@@ -61,7 +60,7 @@ angular.module('classApp', ['ngStorage', 'services'])
             // Teachers
 
             $scope.isRemovable = function (dev) {
-                var teachers = $scope.class.teachers;
+                var teachers = $scope.class.participants.teachers;
                 if (teachers && teachers.length === 1) {
                     return false;
                 }
@@ -73,17 +72,20 @@ angular.module('classApp', ['ngStorage', 'services'])
 
             $scope.inviteTeacher = function () {
                 if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
-                    $scope.class.teachers.push($scope.teacher.name);
-                    $scope.class.$update(function () {
-                        $scope.teacher.name = '';
+                    var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
+                    $http.put(route, { participants: {teachers: $scope.teacher.name}}).success(function (data) {
+                        $scope.class = data;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
                     });
                 }
             };
 
             $scope.ejectTeacher = function (teacher) {
                 var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/remove';
-                $http.put(route, {teachers: teacher}).success(function (data) {
-                    $scope.class.teachers = data.teachers;
+                $http.put(route, { participants: {teachers: teacher}}).success(function (data) {
+                    $scope.class = data;
                 }).error(function (data, status) {
                     console.error('Error on put' + route + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
@@ -95,7 +97,7 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.inviteStudent = function () {
                 if ($scope.student.name && $scope.student.name.trim() !== '') {
                     var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
-                    $http.put(route, {students: $scope.student.name}).success(function (data) {
+                    $http.put(route, { participants: {students: $scope.student.name}}).success(function (data) {
                         $scope.class = data;
                     }).error(function (data, status) {
                         console.error('Error on put' + route + ' ' +
@@ -112,7 +114,7 @@ angular.module('classApp', ['ngStorage', 'services'])
                 } else {
                     route = CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id + '/remove';
                 }
-                $http.put(route, {students: student}).success(function (data) {
+                $http.put(route, { participants: {students: student}}).success(function (data) {
                     $scope.class = data;
                 }).error(function (data, status) {
                     console.error('Error on put' + route + ' ' +
@@ -128,8 +130,8 @@ angular.module('classApp', ['ngStorage', 'services'])
                     }
                 });
                 var route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
-                $http.put(route, {students: students}).success(function (data) {
-                    $scope.class.students = data.students;
+                $http.put(route, { participants: {students: students}}).success(function (data) {
+                    $scope.class = data;
                 }).error(function (data, status) {
                     console.error('Error on put', route, status);
                 });

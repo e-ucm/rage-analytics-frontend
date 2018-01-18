@@ -115,10 +115,10 @@
                             th Teacher
                             th Remove
                     tbody
-                        tr(ng-if='class.teachers.length == 0')
+                        tr(ng-if='class.participants.teachers.length == 0')
                             td(colspan=6)
                                 div.alert.alert-warning(style='margin-bottom: 0px') No students found
-                        tr(ng-repeat='teacher in class.teachers')
+                        tr(ng-repeat='teacher in class.participants.teachers')
                             td
                                 label {{teacher}}
                             td
@@ -147,10 +147,10 @@
                             th Student
                             th Remove
                     tbody
-                        tr(ng-if='class.students.length == 0')
+                        tr(ng-if='class.participants.students.length == 0')
                             td(colspan=6)
                                 div.alert.alert-warning(style='margin-bottom: 0px') No students found
-                        tr(ng-repeat='student in class.students')
+                        tr(ng-repeat='student in class.participants.students')
                             td
                                 label {{student}}
                             td
