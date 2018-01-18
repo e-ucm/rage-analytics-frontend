@@ -68,7 +68,11 @@ angular.module('gameApp', ['ngStorage', 'services', 'ngFileUpload'])
             $scope.public = 'btn-default';
 
             $scope.publicGame = function () {
-                $scope.game.$update();
+                $http.put(CONSTANTS.PROXY + '/games/' + $scope.game._id, {public: $scope.game.public}).success(function (data) {
+                }).error(function (data, status) {
+                    $scope.game.public = !$scope.game.public;
+                    console.error('Error on post /games/' + $scope.game._id + ' ' + JSON.stringify(data) + ', status: ' + status);
+                });
             };
 
             $scope.changeGameLink = function () {
