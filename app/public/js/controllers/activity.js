@@ -107,10 +107,10 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }
 
                 if (userName) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'out.name:' +
                         userName + '\')))';
                 } else if ($scope.player) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'out.name:' +
                         $scope.player.name + '\')))';
                 }
 
