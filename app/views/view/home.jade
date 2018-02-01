@@ -117,6 +117,8 @@
                     thead
                         tr
                             th Name
+                            th Course
+                            th(ng-if='isTeacher()')
                             th Created
                             th(ng-if='isTeacher()') Delete
                     tbody
@@ -127,6 +129,18 @@
                             td(ng-controller='AppCtrl')
                                 span.glyphicon.glyphicon-stats.right10
                                 a(ng-href='#', ng-click='goToClass(class)') {{class.name}}
+                            td(ng-if='showSelectBox(class) && !editBox(class)')
+                                select.form-control(ng-model='courseId.id')
+                                    option(ng-repeat='course in courses' value='{{ course._id }}') {{ course.title }}
+                            td(ng-if='!showSelectBox(class) && !editBox(class)') {{coursesTitles[class.courseId]}}
+                            td(ng-if='editBox(class)')
+                                input.form-control(placeholder='New Course Name' type='text' ng-model='newCourse.newName')
+                            td(ng-if='isTeacher() && !showSelectBox(class)')
+                                a(ng-click='editCourseClass(class)')
+                                    span.glyphicon.glyphicon-pencil
+                            td(ng-if='isTeacher() && showSelectBox(class)')
+                                a(ng-click='acceptCourseClass(class)')
+                                    span.glyphicon.glyphicon-ok
                             td {{class._id | prettyDateId }}
                             td(ng-if='isTeacher()')
                                 a(ng-click='deleteClass(class)')
