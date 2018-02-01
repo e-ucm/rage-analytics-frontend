@@ -61,6 +61,14 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
     }
 ]);
 
+services.factory('Courses', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/courses', {}, {
+            all: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/courses'}
+        });
+    }
+]);
+
 var loadingStatus = {};
 
 services.factory('Activities', ['$resource', 'CONSTANTS',
