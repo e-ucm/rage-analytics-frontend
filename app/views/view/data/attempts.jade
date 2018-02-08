@@ -1,0 +1,74 @@
+//-
+    Copyright 2016 e-UCM (http://www.e-ucm.es/)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    This project has received funding from the European Union’s Horizon
+    2020 research and innovation programme under grant agreement No 644187.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 (link is external)
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+.container-fluid.theme-showcase
+    h1 Attempts
+    .row(ng-if='isTeacher()')
+        hr
+        .col-xs-12
+            h4 All Attempts
+            .row
+                .col-md-12
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Type
+                                th Username
+                                th Animal Name
+                                th See attempts
+                        tbody
+                            tr(ng-if='!attempts || attempts.length === 0')
+                                td(colspan=4)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No attempts found
+                        tbody(ng-repeat='gameplay in attempts')
+                            tr
+                                td
+                                    span.glyphicon(ng-class='(gameplay.playerType === "identified") ? "glyphicon-user" : "glyphicon-sunglasses"')
+                                td
+                                    label {{gameplay.playerName}}
+                                td
+                                    label {{gameplay.animalName}}
+                                td
+                                    a.btn.btn-primary(type='button', ng-click='gameplayShown[gameplay._id] = !gameplayShown[gameplay._id]')
+                                        .glyphicon(ng-class='gameplayShown[gameplay._id] ? "glyphicon-remove-sign" : "glyphicon-plus"')
+                            tr.attemptRow(ng-show='gameplayShown[gameplay._id]')
+                                td(colspan=4)
+                                    .panel.panel-primary
+                                        .panel-heading {{ gameplay.playerName }} attempts
+                                        .panel-body
+                                            table.table.table-hover
+                                                thead
+                                                    tr
+                                                        th Number
+                                                        th Start
+                                                        th End
+                                                        th View Stats
+                                                tbody
+                                                    tr(ng-if='gameplay.attempts.length === 0')
+                                                        td(colspan=4)
+                                                            div.alert.alert-warning(style='margin-bottom: 0px') No attempts for this player
+                                                tbody(ng-repeat='attempt in gameplay.attempts')
+                                                    tr
+                                                        td
+                                                            label {{attempt.number}}
+                                                        td
+                                                            label {{attempt.start}}
+                                                        td
+                                                            label {{attempt.end}}
+                                                        td
+                                                            a.btn.btn-primary(type='button', ng-click='goToAttemptGraph(attempt)')
+                                                                .glyphicon.glyphicon-stats
