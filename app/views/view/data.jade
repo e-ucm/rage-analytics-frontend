@@ -48,6 +48,8 @@
                             include data/realtime/realtime
                         #students.tab-pane
                             include data/students
+                        #attempts.tab-pane
+                            include data/attempts
                         #teachers.tab-pane
                             include data/teachers
                         #config.tab-pane
@@ -58,7 +60,7 @@
                             include data/dev-visualization
                         #game-analytics.tab-pane
                             include data/game-analytics
-    .panel.panel-default(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' lite='true' activity='{{ selectedActivity }}' style='width=100%')
+    .panel.panel-default(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' lite='false' activity='{{ selectedActivity }}' style='width=100%')
         .panel-body(ng-if='!game || !version || !activity')
             img(src='loading.svg')
         .panel-heading(ng-if='game && version && activity' style='font-size: 2.5em')
