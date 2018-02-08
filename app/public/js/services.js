@@ -76,12 +76,16 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
         var Activity = $resource(CONSTANTS.PROXY + '/activities/:activityId', {
             activityId: '@_id',
             versionId: '@versionId',
-            gameId: '@gameId'
+            gameId: '@gameId',
+            username: '@username'
         }, {
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/my' },
             forClass: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/activities/my' },
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },
-            update: { method: 'PUT' }
+            update: { method: 'PUT' },
+            attempts: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/:activityId/attempts'},
+            myAttempts: { method: 'GET', url: CONSTANTS.PROXY + '/activities/:activityId/attempts/my'},
+            userAttempts: { method: 'GET', url: CONSTANTS.PROXY + '/activities/:activityId/attempts/:username'}
         });
 
         Object.defineProperty(Activity.prototype, 'loading', {
@@ -109,7 +113,7 @@ services.factory('Role', ['$localStorage',
     function ($localStorage) {
         return {
             isUser: function () {
-                return $localStorage && $localStorage.user;
+                return ($localStorage !== undefined) && ($localStorage.user !== undefined);
             },
             isAdmin: function () {
                 return $localStorage.user && $localStorage.user.roles && $localStorage.user.roles.indexOf('admin') !== -1;
