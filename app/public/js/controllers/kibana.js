@@ -362,6 +362,11 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
             '{"name":"_score","type":"number","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false}]'
         }, null, '      ');
 
+        $scope.exampleObject;
+        $http.get(CONSTANTS.PROXY + '/kibana/object/' + $scope.game._id).success(function (data) {
+            $scope.exampleObject = data;
+        });
+
         $scope.exampleVisualization = JSON.stringify({
             title: 'UsersScore',
             visState: '{\"title\":\"Users score\",\"type\":\"histogram\",\"params\":{' +
@@ -397,6 +402,24 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
                     }, 500);
                 }).error(function (data, status) {
                     console.error('Error on post /kibana/templates/index/' + $scope.game._id + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+        };
+
+        $scope.addIndexObject = function () {
+            var object = JSON.parse(document.getElementById('exampleObject').value);
+            if (object) {
+                $http.post(CONSTANTS.PROXY + '/kibana/object/' + $scope.game._id, object).success(function (data) {
+                    $.notify('<strong>Object saved successfully</strong>.', {
+                        offset: { x: 10, y: 65 }
+                    });
+                }).error(function (data, status) {
+                    $.notify('<strong>Error while saving object</strong>', {
+                        offset: { x: 10, y: 65 },
+                        type: 'danger'
+                    });
+                    console.error('Error on post /kibana/object/' + $scope.game._id + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
                 });
             }
