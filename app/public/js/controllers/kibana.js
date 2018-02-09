@@ -363,8 +363,8 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
         }, null, '      ');
 
         $scope.exampleObject;
-        $http.get(CONSTANTS.PROXY + '/kibana/object/' + $scope.game._id).success(function (data) {
-            $scope.exampleObject = data;
+        $http.get(CONSTANTS.PROXY + '/kibana/object/' + $scope.version._id).success(function (data) {
+            $scope.exampleObject = JSON.stringify(data, null, 2);
         });
 
         $scope.exampleVisualization = JSON.stringify({
@@ -410,7 +410,7 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
         $scope.addIndexObject = function () {
             var object = JSON.parse(document.getElementById('exampleObject').value);
             if (object) {
-                $http.post(CONSTANTS.PROXY + '/kibana/object/' + $scope.game._id, object).success(function (data) {
+                $http.post(CONSTANTS.PROXY + '/kibana/object/' + $scope.version._id, object).success(function (data) {
                     $.notify('<strong>Object saved successfully</strong>.', {
                         offset: { x: 10, y: 65 }
                     });
@@ -419,7 +419,7 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
                         offset: { x: 10, y: 65 },
                         type: 'danger'
                     });
-                    console.error('Error on post /kibana/object/' + $scope.game._id + ' ' +
+                    console.error('Error on post /kibana/object/' + $scope.version._id + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
                 });
             }
