@@ -34,12 +34,28 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
         };
     })
     .controller('ActivityCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Activities', 'Classes', '_',
-        'Results', 'Versions', '$sce', '$interval', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, $sce, $interval, CONSTANTS) {
+        'Results', 'Versions', '$sce', '$interval', 'Role', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, $sce, $interval, Role, CONSTANTS) {
 
             var refresh;
             var onSetActivity = function() {
                 $scope.refreshResults = function () {
+                    if (Role.isUser()) {
+                        /*$scope.activity.$myAttempts(function (myAttempts) {
+                            $scope.myAttempts = myAttempts;
+                        });*/
+                        if (!$scope.gameplaysShown) {
+                            $scope.gameplaysShown = {};
+                        }
+                        if (Role.isTeacher()) {
+                            Activities.attempts({activityId: $scope.activity._id}, function (attempts) {
+                                $scope.attempts = attempts;
+                            });
+                            /*$scope.activity.$attempts(function (attempts) {
+                                $scope.attemps = attempts;
+                            });*/
+                        }
+                    }
                     var rawResults = Results.query({
                             id: $scope.activity._id
                         },
@@ -80,9 +96,8 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.activity = JSON.parse($attrs.activity);
                 Activities.get({activityId: $scope.activity._id}).$promise.then(function(a) {
                     $scope.activity = a;
+                    onSetActivity();
                 });
-
-                onSetActivity();
             });
 
             $scope.student = {};
