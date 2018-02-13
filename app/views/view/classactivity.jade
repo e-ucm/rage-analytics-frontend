@@ -56,7 +56,7 @@
                             td
                                 a(ng-href='#', ng-click='goToGame(getGameById(activity.gameId))') {{ getGameById(activity.gameId).title }}
                             td {{activity._id | prettyDateId }}
-                            td(ng-if='isTeacher()', ng-controller='ActivityCtrl' activity='{{ activity }}')
+                            td(ng-if='isTeacher()', ng-controller='ActivityCtrl' lite activity='{{ activity }}')
                                 button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
                                 button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
                                 button.btn-info(ng-if='activityState() == 1') Loading

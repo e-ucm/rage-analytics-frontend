@@ -16,7 +16,7 @@
     limitations under the License.
  
 link(rel="stylesheet", href="css/realtime.css")
-.container-fluid.theme-showcase.height100(ng-if='selectedActivity' ng-controller="ActivityCtrl" activityid='{{selectedActivity._id}}' role="tabpanel" style="position:relative")
+.container-fluid.theme-showcase.height100(role="tabpanel" style="position:relative")
     .row(ng-if="isTeacher()")
         h1(ng-if="results.length > 0") Alerts & Warnings
         .row(ng-show="player")
