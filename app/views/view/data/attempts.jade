@@ -36,8 +36,8 @@
                                 th Attempts
                         tbody
                             tr(ng-if='!attempts || attempts.length === 0')
-                                td(colspan=4)
-                                    div.alert.alert-warning(style='margin-bottom: 0px') No attempts found
+                                td(colspan=8)
+                                    div.alert.alert-info(style='margin-bottom: 0px') No attempts found
                         tbody(ng-repeat='gameplay in attempts')
                             tr
                                 td.text-center
