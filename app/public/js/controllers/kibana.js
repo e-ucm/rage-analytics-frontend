@@ -362,7 +362,7 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
             '{"name":"_score","type":"number","count":0,"scripted":false,"indexed":false,"analyzed":false,"doc_values":false}]'
         }, null, '      ');
 
-        $scope.exampleObject;
+        $scope.exampleObject = '';
         $http.get(CONSTANTS.PROXY + '/kibana/object/' + $scope.version._id).success(function (data) {
             $scope.exampleObject = JSON.stringify(data, null, 2);
         });
