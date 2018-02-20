@@ -44,8 +44,8 @@ angular.module('classesApp', ['ngStorage', 'services'])
             var getCourses = function () {
                 $scope.courses = Courses.all().$promise.then(function(courses) {
                     $scope.courses = courses;
-                    $scope.courses.unshift({_id: 'NEW', title:'New Course'});
-                    $scope.courses.unshift({title:'No Course'});
+                    $scope.courses.unshift({_id: 'NEW', title: 'New Course'});
+                    $scope.courses.unshift({title: 'No Course'});
                     refreshCoursesTitles();
                 });
             };
@@ -54,11 +54,11 @@ angular.module('classesApp', ['ngStorage', 'services'])
             getCourses();
             $scope.loading = false;
 
-            var refreshCoursesTitles = function(){
-                if($scope.courses && $scope.classes ) {
+            var refreshCoursesTitles = function() {
+                if ($scope.courses && $scope.classes) {
                     $scope.classes.forEach(function (cl) {
                         $scope.coursesTitles[cl.courseId] = 'No Course';
-                        if(cl.courseId) {
+                        if (cl.courseId) {
                             for (var i = 0; $scope.courses.length; i++) {
                                 if ($scope.courses[i]._id === cl.courseId) {
                                     $scope.coursesTitles[cl.courseId] = $scope.courses[i].title;
@@ -86,7 +86,7 @@ angular.module('classesApp', ['ngStorage', 'services'])
             $scope.showSelectBox = function(classObj) {
                 return $scope.editCourse[classObj._id];
             };
-            
+
             $scope.editCourseClass = function (classObj) {
                 Object.keys($scope.editCourse).forEach(function(key) {
                     $scope.editCourse[key] = false;
@@ -97,10 +97,10 @@ angular.module('classesApp', ['ngStorage', 'services'])
 
             $scope.acceptCourseClass = function (classObj) {
                 var courseId = $scope.courseId.id;
-                if(courseId === 'NEW') {
-                    if ($scope.newCourse.newName){
+                if (courseId === 'NEW') {
+                    if ($scope.newCourse.newName) {
                         $http.post(CONSTANTS.PROXY + '/courses', {title: $scope.newCourse.newName})
-                            .success(function(data){
+                            .success(function(data) {
                                 $http.put(CONSTANTS.PROXY + '/classes/' + classObj._id, {courseId: data._id})
                                     .success(function () {
                                         getClasses();
@@ -109,8 +109,8 @@ angular.module('classesApp', ['ngStorage', 'services'])
                                         JSON.stringify(data) + ', status: ' + status);
                                 });
                             }).error(function (data, status) {
-                            console.error('Error on put /classes/' + classObj._id + ' ' +
-                                JSON.stringify(data) + ', status: ' + status);
+                                console.error('Error on put /classes/' + classObj._id + ' ' +
+                                    JSON.stringify(data) + ', status: ' + status);
                             }).finally(function () {
                                 $scope.editBoxCourse[classObj._id] = false;
                                 $scope.editCourse[classObj._id] = false;
@@ -122,7 +122,7 @@ angular.module('classesApp', ['ngStorage', 'services'])
                     }
                 } else {
                     var reqObj;
-                    if(!courseId){
+                    if (!courseId) {
                         courseId = '';
                     }
                     reqObj = {courseId: courseId};
@@ -136,7 +136,7 @@ angular.module('classesApp', ['ngStorage', 'services'])
                     });
                 }
             };
-            
+
             $scope.deleteClass = function (classObj) {
                 classObj.$remove().then(function() {
                     $timeout(function() {
