@@ -20,7 +20,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-    'ngRoute', 'toolbarApp', 'signupApp', 'loginApp', 'loginPluginApp', 'classApp', 'classesApp','activitiesApp',
+    'ngRoute', 'toolbarApp', 'signupApp', 'loginApp', 'loginPluginApp', 'classApp', 'participantsApp', 'classesApp', 'activitiesApp',
     'activityApp', 'gameApp', 'analysisApp', 'kibanaApp', 'gamesApp', 'activityApp', 'analyticsApp', 'devVisualizatorApp',
     'services', 'xeditable', 'env-vars', 'ui.router'
 ]).run(function (editableOptions, $localStorage, $cookies) {
