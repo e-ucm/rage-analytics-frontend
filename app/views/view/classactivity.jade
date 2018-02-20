@@ -119,14 +119,15 @@
                         h3
                             label Class Teachers
                     .panel-body
-                        p An activity will inherit all the class teachers when created
-                        .panel.panel-primary
-                            .panel-heading Add teacher to class
-                            .panel-body
-                                label Username:
-                                    input.form-control(type='text' ng-model='$scope.teacher.name')
-                                a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("teacher")')
-                                    span.glyphicon.glyphicon-plus.right10
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p An activity will inherit all the class teachers when created
+                            .panel.panel-primary
+                                .panel-heading Add teacher to class
+                                .panel-body
+                                    label Username:
+                                        input.form-control(type='text' ng-model='$scope.teacher.name')
+                                    a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("teacher")')
+                                        span.glyphicon.glyphicon-plus.right10
                         table.table.table-hover
                             thead
                                 tr
@@ -154,14 +155,15 @@
                         h3
                             label Class Assistants
                     .panel-body
-                        p An activity will inherit all the class assistants when created
-                        .panel.panel-primary
-                            .panel-heading Add assistant to class
-                            .panel-body
-                                label Username:
-                                    input.form-control(type='text' ng-model='$scope.assistant.name')
-                                a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("assistant")')
-                                    span.glyphicon.glyphicon-plus.right10
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p An activity will inherit all the class assistants when created
+                            .panel.panel-primary
+                                .panel-heading Add assistant to class
+                                .panel-body
+                                    label Username:
+                                        input.form-control(type='text' ng-model='$scope.assistant.name')
+                                    a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("assistant")')
+                                        span.glyphicon.glyphicon-plus.right10
                         table.table.table-hover
                             thead
                                 tr
@@ -189,18 +191,19 @@
                         h3
                             label Class Students
                     .panel-body
-                        p An activity will inherit all the class students when created
-                        .panel.panel-primary
-                            .panel-heading Add students to class
-                            .panel-body
-                                label Add students to class from file:
-                                    input#inputFile.file(type='file' file-reader="$scope.fileContent")
-                                button.btn.btn-primary(ng-click='$scope.addCsvClass()')  Add class
-                                hr
-                                label Username:
-                                    input.form-control(type='text' ng-model='$scope.student.name')
-                                a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("student")')
-                                    span.glyphicon.glyphicon-plus.right10
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p An activity will inherit all the class students when created
+                            .panel.panel-primary
+                                .panel-heading Add students to class
+                                .panel-body
+                                    label Add students to class from file:
+                                        input#inputFile.file(type='file' file-reader="$scope.fileContent")
+                                    button.btn.btn-primary(ng-click='$scope.addCsvClass()')  Add class
+                                    hr
+                                    label Username:
+                                        input.form-control(type='text' ng-model='$scope.student.name')
+                                    a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("student")')
+                                        span.glyphicon.glyphicon-plus.right10
                         table.table.table-hover
                             thead
                                 tr
@@ -229,14 +232,15 @@
                         h3
                             label Class Groups
                     .panel-body
-                        p The groups help you to configure your users activities easely
-                        .panel.panel-success
-                            .panel-heading Add group to class
-                            .panel-body
-                                label Group name:
-                                    input.form-control(type='text' ng-model='$scope.group.name')
-                                a.btn.btn-success(type='button', ng-click='$scope.createGroup()')
-                                    span.glyphicon.glyphicon-plus.right10
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p The groups help you to configure your users activities easely
+                            .panel.panel-success
+                                .panel-heading Add group to class
+                                .panel-body
+                                    label Group name:
+                                        input.form-control(type='text' ng-model='$scope.group.name')
+                                    a.btn.btn-success(type='button', ng-click='$scope.createGroup()')
+                                        span.glyphicon.glyphicon-plus.right10
                         table.table.table-hover
                             thead
                                 tr
@@ -263,14 +267,15 @@
                         h3
                             label Class Groupings
                     .panel-body
-                        p The groupings help you to configure your users activities grouping groups of participants
-                        .panel.panel-warning
-                            .panel-heading Add grouping to class
-                            .panel-body
-                                label Grouping name:
-                                    input.form-control(type='text' ng-model='$scope.grouping.name')
-                                a.btn.btn-warning(type='button', ng-click='$scope.createGrouping()')
-                                    span.glyphicon.glyphicon-plus.right10
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p The groupings help you to configure your users activities grouping groups of participants
+                            .panel.panel-warning
+                                .panel-heading Add grouping to class
+                                .panel-body
+                                    label Grouping name:
+                                        input.form-control(type='text' ng-model='$scope.grouping.name')
+                                    a.btn.btn-warning(type='button', ng-click='$scope.createGrouping()')
+                                        span.glyphicon.glyphicon-plus.right10
                         table.table.table-hover
                             thead
                                 tr
