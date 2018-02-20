@@ -18,9 +18,9 @@
 
 'use strict';
 
-angular.module('classApp', ['ngStorage', 'services'])
-    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Classes', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, Classes, CONSTANTS) {
+angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 'ui.bootstrap'])
+    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', '$uibModal', 'Classes', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, $uibModal, Classes, CONSTANTS) {
             var onSetClass = function() {
                 if (!$scope.class) {
                     throw new Error('No class for ClassCtrl');
@@ -49,91 +49,38 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.student = {};
             $scope.teacher = {};
 
+            $scope.open = function (size) {
+                var modalInstance = $uibModal.open({
+                    animation: this.animationsEnabled,
+                    templateUrl: 'participantsModal',
+                    controller: 'ModalInstanceCtrl',
+                    size: size,
+                    controllerAs: '$scope',
+                    resolve: {
+                        items: function () {
+                            return {
+                                username: $scope.username,
+                                classId: $scope.class._id,
+                                classes: Classes,
+                                http: $http,
+                                constants: CONSTANTS
+                            };
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                    console.log('HOLA');
+                }, function () {
+                    console.log('Modal dismissed at: ' + new Date());
+                });
+            };
+
             // Class
 
             $scope.changeName = function () {
                 $scope.class.$update(function() {
                     $rootScope.$broadcast('refreshClasses');
-                });
-            };
-
-            // Teachers
-
-            $scope.isRemovable = function (dev) {
-                var teachers = $scope.class.participants.teachers;
-                if (teachers && teachers.length === 1) {
-                    return false;
-                }
-                if ($scope.username === dev) {
-                    return false;
-                }
-                return true;
-            };
-
-            $scope.inviteTeacher = function () {
-                if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
-                    var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
-                    $http.put(route, { participants: {teachers: $scope.teacher.name}}).success(function (data) {
-                        $scope.class = data;
-                    }).error(function (data, status) {
-                        console.error('Error on put' + route + ' ' +
-                            JSON.stringify(data) + ', status: ' + status);
-                    });
-                }
-            };
-
-            $scope.ejectTeacher = function (teacher) {
-                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/remove';
-                $http.put(route, { participants: {teachers: teacher}}).success(function (data) {
-                    $scope.class = data;
-                }).error(function (data, status) {
-                    console.error('Error on put' + route + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
-            // Students
-
-            $scope.inviteStudent = function () {
-                if ($scope.student.name && $scope.student.name.trim() !== '') {
-                    var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
-                    $http.put(route, { participants: {students: $scope.student.name}}).success(function (data) {
-                        $scope.class = data;
-                    }).error(function (data, status) {
-                        console.error('Error on put' + route + ' ' +
-                            JSON.stringify(data) + ', status: ' + status);
-                    });
-                }
-            };
-
-
-            $scope.ejectStudent = function (student, fromClass) {
-                var route = '';
-                if (fromClass) {
-                    route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id + '/remove';
-                } else {
-                    route = CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id + '/remove';
-                }
-                $http.put(route, { participants: {students: student}}).success(function (data) {
-                    $scope.class = data;
-                }).error(function (data, status) {
-                    console.error('Error on put' + route + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
-            $scope.addCsvClass = function () {
-                var students = [];
-                $scope.fileContent.contents.trim().split(',').forEach(function (student) {
-                    if (student) {
-                        students.push(student);
-                    }
-                });
-                var route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
-                $http.put(route, { participants: {students: students}}).success(function (data) {
-                    $scope.class = data;
-                }).error(function (data, status) {
-                    console.error('Error on put', route, status);
                 });
             };
 
@@ -160,3 +107,4 @@ angular.module('classApp', ['ngStorage', 'services'])
             };
         }
     ]);
+
