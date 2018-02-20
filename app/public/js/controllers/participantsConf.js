@@ -65,7 +65,7 @@ angular.module('participantsApp', [])
             };
 
             $ctrl.selectGroup = function (group) {
-                if ($ctrl.selectedGroup === group) {
+                if ($ctrl.selectedGroup && $ctrl.selectedGroup._id === group._id) {
                     $ctrl.selectedGroup = undefined;
                 } else {
                     $ctrl.selectedGroup = group;
@@ -85,7 +85,7 @@ angular.module('participantsApp', [])
             };
 
             $ctrl.selectGrouping = function (grouping) {
-                if ($ctrl.selectedGrouping === grouping) {
+                if ($ctrl.selectedGrouping && $ctrl.selectedGrouping._id === grouping._id) {
                     $ctrl.selectedGrouping = undefined;
                 } else {
                     $ctrl.selectedGrouping = grouping;
@@ -258,6 +258,7 @@ angular.module('participantsApp', [])
                     }
                     $http.put(route, participants).success(function (data) {
                         $ctrl.selectedGroup = data;
+                        updateGroups();
                     }).error(function (data, status) {
                         console.error('Error on put' + route + ' ' +
                             JSON.stringify(data) + ', status: ' + status);
@@ -299,6 +300,7 @@ angular.module('participantsApp', [])
                     }
                     $http.put(route, {groups: [group._id]}).success(function (data) {
                         $ctrl.selectedGrouping = data;
+                        updateGroupings();
                     }).error(function (data, status) {
                         console.error('Error on put' + route + ' ' +
                             JSON.stringify(data) + ', status: ' + status);
