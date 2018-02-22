@@ -23,7 +23,8 @@
             a(href='{{ game.link }}') {{ game.link }}
         .col-xs-12
             | Tracking code:
-            kbd.left10 {{ version.trackingCode }}
+            kbd.left10(ng-if='isDeveloper()') {{ version.trackingCode }}
+            kbd.left10(ng-if='isTeacher()') {{ activity.trackingCode }}
     .row(ng-if='isDeveloper()')
         hr
         .col-xs-12

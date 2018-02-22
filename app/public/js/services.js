@@ -25,7 +25,18 @@ services.factory('Games', ['$resource', 'CONSTANTS',
         return $resource(CONSTANTS.PROXY + '/games/:gameId', { gameId: '@_id' }, {
             my: { method: 'GET', isArray: true , url: CONSTANTS.PROXY + '/games/my' },
             public: { method: 'GET', isArray: true , url: CONSTANTS.PROXY + '/games/public' },
-            update: { method: 'PUT' }
+            update: {
+                method: 'PUT',
+                transformRequest: function (data, headersGetter) {
+                    if (data._id !== undefined) {
+                        delete data._id;
+                    }
+                    if (data.created !== undefined) {
+                        delete data.created;
+                    }
+                    return angular.toJson(data);
+                }
+            }
         });
     }
 ]);
@@ -45,7 +56,21 @@ services.factory('Versions', ['$resource', 'CONSTANTS',
             gameId: '@gameId'
         }, {
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions' },
-            update: { method: 'POST' } // TODO Update this to PUT or update all the others to POST
+            update: {
+                method: 'POST', // TODO Update this to PUT or update all the others to POST
+                transformRequest: function (data, headersGetter) {
+                    if (data._id !== undefined) {
+                        delete data._id;
+                    }
+                    if (data.created !== undefined) {
+                        delete data.created;
+                    }
+                    if (data.trackingCode !== undefined) {
+                        delete data.trackingCode;
+                    }
+                    return angular.toJson(data);
+                }
+            }
         });
     }
 ]);
@@ -56,7 +81,18 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
             classId: '@_id'
         }, {
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/my' },
-            update: { method: 'PUT' }
+            update: {
+                method: 'PUT',
+                transformRequest: function (data, headersGetter) {
+                    if (data._id !== undefined) {
+                        delete data._id;
+                    }
+                    if (data.created !== undefined) {
+                        delete data.created;
+                    }
+                    return angular.toJson(data);
+                }
+            }
         });
     }
 ]);
@@ -64,7 +100,16 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
 services.factory('Courses', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
         return $resource(CONSTANTS.PROXY + '/courses', {}, {
-            all: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/courses'}
+            all: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/courses'},
+            update: {
+                method: 'PUT',
+                transformRequest: function (data, headersGetter) {
+                    if (data._id !== undefined) {
+                        delete data._id;
+                    }
+                    return angular.toJson(data);
+                }
+            }
         });
     }
 ]);
@@ -76,12 +121,65 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
         var Activity = $resource(CONSTANTS.PROXY + '/activities/:activityId', {
             activityId: '@_id',
             versionId: '@versionId',
-            gameId: '@gameId'
+            gameId: '@gameId',
+            username: '@username'
         }, {
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/my' },
             forClass: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/activities/my' },
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },
-            update: { method: 'PUT' }
+            update: {
+                method: 'PUT',
+                transformRequest: function (data, headersGetter) {
+                    if (data._id !== undefined) {
+                        delete data._id;
+                    }
+                    if (data.classId !== undefined) {
+                        delete data.classId;
+                    }
+                    if (data.gameId !== undefined) {
+                        delete data.gameId;
+                    }
+                    if (data.versionId !== undefined) {
+                        delete data.versionId;
+                    }
+                    if (data.start !== undefined) {
+                        delete data.versionId;
+                    }
+                    if (data.end !== undefined) {
+                        delete data.versionId;
+                    }
+                    if (data.open !== undefined) {
+                        delete data.open;
+                    }
+                    if (data.created !== undefined) {
+                        delete data.created;
+                    }
+                    if (data.trackingCode !== undefined) {
+                        delete data.trackingCode;
+                    }
+                    return angular.toJson(data);
+                }
+            },
+            event: {
+                method: 'POST',
+                url: CONSTANTS.PROXY + '/activities/:activityId/event/:event',
+                transformRequest: function (data, headersGetter) {
+                    loadingStatus[data._id] = true;
+                    return angular.toJson({_id: data._id, event: data.event});
+                },
+                transformResponse: function (data, headersGetter) {
+                    var object = angular.fromJson(data);
+                    console.info(data);
+                    console.info(object);
+                    if (object._id !== undefined) {
+                        loadingStatus[object._id] = false;
+                    }
+                    return object;
+                }
+            },
+            attempts: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/:activityId/attempts'},
+            myAttempts: { method: 'GET', url: CONSTANTS.PROXY + '/activities/:activityId/attempts/my'},
+            userAttempts: { method: 'GET', url: CONSTANTS.PROXY + '/activities/:activityId/attempts/:username'}
         });
 
         Object.defineProperty(Activity.prototype, 'loading', {
@@ -109,7 +207,7 @@ services.factory('Role', ['$localStorage',
     function ($localStorage) {
         return {
             isUser: function () {
-                return $localStorage && $localStorage.user;
+                return ($localStorage !== undefined) && ($localStorage.user !== undefined);
             },
             isAdmin: function () {
                 return $localStorage.user && $localStorage.user.roles && $localStorage.user.roles.indexOf('admin') !== -1;

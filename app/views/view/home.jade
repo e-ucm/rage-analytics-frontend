@@ -50,7 +50,7 @@
                         tr(ng-if='activities.length == 0')
                             td(colspan=6)
                                 div.alert.alert-info(style='margin-bottom: 0px') No activities found
-                        tr(ng-repeat='localactivity in activities', ng-controller='ActivityCtrl' activity='{{ localactivity }}')
+                        tr(ng-repeat='localactivity in activities', ng-controller='ActivityCtrl' lite activity='{{ localactivity }}')
                             td
                                 span.glyphicon.glyphicon-stats.right10
                                 a(ng-href="#" ng-click='goToActivity(localactivity)') {{ localactivity.name }}

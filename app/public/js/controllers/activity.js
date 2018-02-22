@@ -34,12 +34,22 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
         };
     })
     .controller('ActivityCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Activities', 'Classes', '_',
-        'Results', 'Versions', '$sce', '$interval', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, $sce, $interval, CONSTANTS) {
+        'Results', 'Versions', '$sce', '$interval', 'Role', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, $sce, $interval, Role, CONSTANTS) {
 
             var refresh;
             var onSetActivity = function() {
                 $scope.refreshResults = function () {
+                    if (Role.isUser()) {
+                        if (!$scope.gameplaysShown) {
+                            $scope.gameplaysShown = {};
+                        }
+                        if (Role.isTeacher()) {
+                            Activities.attempts({activityId: $scope.activity._id}, function (attempts) {
+                                $scope.attempts = attempts;
+                            });
+                        }
+                    }
                     var rawResults = Results.query({
                             id: $scope.activity._id
                         },
@@ -80,9 +90,8 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.activity = JSON.parse($attrs.activity);
                 Activities.get({activityId: $scope.activity._id}).$promise.then(function(a) {
                     $scope.activity = a;
+                    onSetActivity();
                 });
-
-                onSetActivity();
             });
 
             $scope.student = {};
@@ -98,20 +107,35 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
 
-            var dashboardLink = function (userName) {
+            var dashboardLink = function (userName, attempt) {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
                     $scope.activity._id + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
+                var filter = {};
 
                 if (userName) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
-                        userName + '\')))';
+                    filter.name = userName;
                 } else if ($scope.player) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'name:' +
-                        $scope.player.name + '\')))';
+                    filter.name = $scope.player.name;
+                }
+
+                if (attempt) {
+                    filter.session = attempt;
+                } else if ($scope.attempt) {
+                    filter.session = $scope.attempt.number;
+                }
+
+                if (filter.length > 0) {
+                    var props = [];
+                    for (var key in filter) {
+                        if (filter.hasOwnProperty(key)) {
+                            props.push(key + ': ' + filter[key]);
+                        }
+                    }
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'' + props.join(',') + '\')))';
                 }
 
                 if (url.startsWith('localhost')) {
@@ -159,11 +183,33 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.viewAll = function () {
                 $scope.player = null;
+                $scope.attempt = null;
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
             $scope.viewPlayer = function (result) {
                 $scope.player = result;
+                $scope.attempt = null;
+                $scope.iframeDashboardUrl = dashboardLink();
+            };
+
+            $scope.viewAttempt = function (gameplay, attempt) {
+                if ($scope.results) {
+                    var lookForName = gameplay.playerType === 'anonymous' ? gameplay.animalName : gameplay.playerName;
+                    for (var i = 0; i < $scope.results.length; i++) {
+                        if ($scope.results[i].name === lookForName) {
+                            $scope.player = $scope.results[i];
+                            break;
+                        }
+                    }
+                }
+                // This code manually changes the tab, this might be solved with tab('show') in newer versions
+                // as mentioned in https://github.com/twbs/bootstrap/issues/23594
+                $('.active[data-toggle=\'tab\']').toggleClass('active').toggleClass('show');
+                $('span[href=\'#realtime\'][data-toggle=\'tab\']').toggleClass('active').toggleClass('show');
+                $('.tab-pane.active').toggleClass('active').toggleClass('show');
+                $('#realtime').toggleClass('active').toggleClass('show');
+                $scope.attempt = attempt;
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
@@ -315,32 +361,29 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
             $scope.$on('refreshActivity', function(evt, activity) {
-                $scope.activity = activity;
-                console.log('Activity updated');
+                if ($scope.activity._id === activity._id) {
+                    $scope.activity = activity;
+                    console.log('Activity updated');
+                }
             });
+
+            var finishEvent = function(activity) {
+                $scope.activity = activity;
+                $rootScope.$broadcast('refreshActivity', $scope.activity);
+            };
 
             $scope.startActivity = function () {
                 if (!$scope.activity || $scope.activity.loading) {
                     return;
                 }
 
-                $scope.activity.loading = true;
-                $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/start').success(function (s) {
-                    $scope.activity.loading = false;
-                    $scope.activity.start = s.start;
-                    $scope.activity.end = s.end;
-                    $rootScope.$broadcast('refreshActivity', $scope.activity);
-                }).error(function (data, status) {
-                    console.error('Error on get /activities/' + $scope.activity._id + '/event/start ' +
-                        JSON.stringify(data) + ', status: ' + status);
-
+                $scope.activity.$event({event: 'start'}).$promise.then(finishEvent).fail(function (error) {
+                    console.error(error);
                     $.notify('<strong>Error while opening the activity:</strong><br>If the session was recently closed it ' +
                         'might need to be cleaned by the system. <br>Please try again in a few seconds.', {
                         offset: { x: 10, y: 65 },
                         type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
                     });
-
-                    $scope.activity.loading = false;
                     $rootScope.$broadcast('refreshActivity', $scope.activity);
                 });
             };
@@ -350,22 +393,12 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     return;
                 }
 
-                $scope.activity.loading = true;
-                $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/end').success(function (s) {
-                    $scope.activity.loading = false;
-                    $scope.activity.start = s.start;
-                    $scope.activity.end = s.end;
-                    $rootScope.$broadcast('refreshActivity', $scope.activity);
-                }).error(function (data, status) {
-                    console.error('Error on get /activities/' + $scope.activity._id + '/event/end ' +
-                        JSON.stringify(data) + ', status: ' + status);
-
+                $scope.activity.$event({event: 'end'}).$promise.then(finishEvent).fail(function (error) {
+                    console.error(error);
                     $.notify('<strong>Error while closing the activity:</strong><br>Please try again in a few seconds.', {
                         offset: { x: 10, y: 65 },
                         type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
                     });
-
-                    $scope.activity.loading = false;
                     $rootScope.$broadcast('refreshActivity', $scope.activity);
                 });
             };
