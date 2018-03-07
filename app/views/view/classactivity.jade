@@ -96,64 +96,252 @@
                     .col-md-10(ng-if='lti.key')
                         label Launch URL:
                             kbd.label-success  {{ lti.launch }}
+    .col-md-4(ng-if='isTeacher()')
         .panel.panel-default
             .panel-heading
                 h3
-                    label Class teachers
+                    label Configure your class participants
             .panel-body
-                p An activity will inherit all the class teachers when created
-                .panel.panel-primary
-                    .panel-heading Add teacher to class
-                    .panel-body
-                        label Username:
-                            input.form-control(type='text' ng-model='teacher.name')
-                        a.btn.btn-primary(type='button', ng-click='inviteTeacher(true)')
-                            span.glyphicon.glyphicon-plus.right10
+                button.btn.btn-primary(ng-click="open('lg')") Configure
+                    span.right20
+                    span.glyphicon.glyphicon-user
+        .panel.panel-default
+            .panel-heading
+                h3
+                    label List of current participants
+                label.label-success(ng-if='isUsingGroups()') Using a subclass (Groups selected)
+                label.label-warning(ng-if='isUsingGroupings()') Using a subclass (Groupings selected)
+            .panel-body
                 table.table.table-hover
                     thead
                         tr
-                            th Teacher
-                            th Remove
+                            th User
+                            th Role
                     tbody
-                        tr(ng-if='class.participants.teachers.length == 0')
-                            td(colspan=6)
-                                div.alert.alert-warning(style='margin-bottom: 0px') No students found
-                        tr(ng-repeat='teacher in class.participants.teachers')
+                        tr(ng-repeat='teacher in participants.teachers')
                             td
                                 label {{teacher}}
                             td
-                                a(ng-if='isRemovable(teacher)' ng-click='ejectTeacher(teacher, true)')
-                                    span.glyphicon.glyphicon-remove-sign
-        .panel.panel-default
-            .panel-heading
-                h3
-                    label Class Students
-            .panel-body
-                p An activity will inherit all the class students when created
-                .panel.panel-primary
-                    .panel-heading Add students to class
-                    .panel-body
-                        label Add students to class from file:
-                            input#inputFile.file(type='file' file-reader="fileContent")
-                        button.btn.btn-primary(ng-click='addCsvClass(true)')  Add class
-                        hr
-                        label Username:
-                            input.form-control(type='text' ng-model='student.name')
-                        a.btn.btn-primary(type='button', ng-click='inviteStudent(true)')
-                            span.glyphicon.glyphicon-plus.right10
-                table.table.table-hover
-                    thead
-                        tr
-                            th Student
-                            th Remove
-                    tbody
-                        tr(ng-if='class.participants.students.length == 0')
-                            td(colspan=6)
-                                div.alert.alert-warning(style='margin-bottom: 0px') No students found
-                        tr(ng-repeat='student in class.participants.students')
+                                label teacher
+                        tr(ng-repeat='assistant in participants.assistants')
+                            td
+                                label {{assistant}}
+                            td
+                                label assistant
+                        tr(ng-repeat='student in participants.students')
                             td
                                 label {{student}}
                             td
-                                a(ng-click='ejectStudent(student, true)')
-                                    span.glyphicon.glyphicon-remove-sign
+                                label student
+
+    // PARTICIPANTS MODAL
+    script#participantsModal(type="text/ng-template")
+        div.modal-header.row
+            .modal-title
+                .col-md-6
+                    h1 Configure Participants
+                .col-md-12(ng-if='!$scope.unlockedGroups && !$scope.unlockedGroupings')
+                    label.alert-info *If you want restrict the default access to the class with groups o groupings, please click on a star icon and check the groups or groupings
+                .col-md-12(ng-if='$scope.unlockedGroups')
+                    label.alert-success You are using groups (if you want use all participants, please, click star icon in groups area)
+                .col-md-12(ng-if='$scope.unlockedGroupings')
+                    label.alert-warning You are using groupings (if you want use all participants, please, click star icon in groupings area)
+        div.modal-body.row
+            .col-md-6
+                .panel.panel-default
+                    .panel-heading
+                        h3
+                            label Class Teachers
+                    .panel-body
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p An activity will inherit all the class teachers when created
+                            .panel.panel-primary
+                                .panel-heading Add teacher to class
+                                .panel-body
+                                    label Username:
+                                        input.form-control(type='text' ng-model='$scope.teacher.name')
+                                    a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("teacher")')
+                                        span.glyphicon.glyphicon-plus.right10
+                        table.table.table-hover
+                            thead
+                                tr
+                                    th Teacher
+                                    th(ng-show='$scope.selectedGroup') Add or Remove
+                                    th(ng-show='!$scope.selectedGroup') Remove
+                            tbody
+                                tr(ng-if='$scope.class.participants.teachers.length == 0')
+                                    td(colspan=6)
+                                        div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                                tr(ng-repeat='teacher in $scope.class.participants.teachers')
+                                    td(ng-class='$scope.getUserThClass(teacher, "teachers")')
+                                        label {{teacher}}
+                                    td(ng-show='$scope.selectedGroup && !$scope.isInSelectedGroup(teacher, "teachers")' ng-class='$scope.isInSelectedGroup(teacher, "teachers") ? "bg-success" : ""')
+                                        a(ng-click='$scope.modifyGroup(teacher, "teacher", true)')
+                                            span.glyphicon.glyphicon-plus
+                                    td(ng-show='$scope.isInSelectedGroup(teacher, "teachers")' ng-class='$scope.isInSelectedGroup(teacher, "teachers") ? "bg-success" : ""')
+                                        a(ng-click='$scope.modifyGroup(teacher, "teacher", false)')
+                                            span.glyphicon.glyphicon-minus
+                                    td(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping' ng-class='$scope.isInSelectedGroup(teacher, "teachers") ? "bg-success" : ""')
+                                        a(ng-if='$scope.isRemovable(teacher)' ng-click='$scope.ejectUser(teacher, "teacher")')
+                                            span.glyphicon.glyphicon-remove-sign
+                .panel.panel-default
+                    .panel-heading
+                        h3
+                            label Class Assistants
+                    .panel-body
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p An activity will inherit all the class assistants when created
+                            .panel.panel-primary
+                                .panel-heading Add assistant to class
+                                .panel-body
+                                    label Username:
+                                        input.form-control(type='text' ng-model='$scope.assistant.name')
+                                    a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("assistant")')
+                                        span.glyphicon.glyphicon-plus.right10
+                        table.table.table-hover
+                            thead
+                                tr
+                                    th Assistant
+                                    th(ng-show='$scope.selectedGroup') Add or Remove
+                                    th(ng-show='!$scope.selectedGroup') Remove
+                            tbody
+                                tr(ng-if='$scope.class.participants.assistants.length == 0')
+                                    td(colspan=6)
+                                        div.alert.alert-warning(style='margin-bottom: 0px') No assistants found
+                                tr(ng-repeat='assistant in $scope.class.participants.assistants')
+                                    td(ng-class='$scope.getUserThClass(assistant, "assistants")')
+                                        label {{assistant}}
+                                    td(ng-show='$scope.selectedGroup && !$scope.isInSelectedGroup(assistant, "assistants")' ng-class='$scope.isInSelectedGroup(assistant, "assistants") ? "bg-success" : ""')
+                                        a(ng-click='$scope.modifyGroup(assistant, "assistant", true)')
+                                            span.glyphicon.glyphicon-plus
+                                    td(ng-show='$scope.isInSelectedGroup(assistant, "assistants")' ng-class='$scope.isInSelectedGroup(assistant, "assistants") ? "bg-success" : ""')
+                                        a(ng-click='$scope.modifyGroup(assistant, "assistant", false)')
+                                            span.glyphicon.glyphicon-minus
+                                    td(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping' ng-class='$scope.isInSelectedGroup(assistant, "assistants") ? "bg-success" : ""')
+                                        a(ng-click='$scope.ejectUser(assistant, "assistant")')
+                                            span.glyphicon.glyphicon-remove-sign
+                .panel.panel-default
+                    .panel-heading
+                        h3
+                            label Class Students
+                    .panel-body
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p An activity will inherit all the class students when created
+                            .panel.panel-primary
+                                .panel-heading Add students to class
+                                .panel-body
+                                    label Add students to class from file:
+                                        input#inputFile.file(type='file' file-reader="$scope.fileContent")
+                                    button.btn.btn-primary(ng-click='$scope.addCsvClass()')  Add class
+                                    hr
+                                    label Username:
+                                        input.form-control(type='text' ng-model='$scope.student.name')
+                                    a.btn.btn-primary(type='button', ng-click='$scope.inviteUser("student")')
+                                        span.glyphicon.glyphicon-plus.right10
+                        table.table.table-hover
+                            thead
+                                tr
+                                    th Student
+                                    th(ng-show='$scope.selectedGroup') Add or Remove
+                                    th(ng-show='!$scope.selectedGroup') Remove
+                            tbody
+                                tr(ng-if='$scope.class.participants.students.length == 0')
+                                    td(colspan=6)
+                                        div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                                tr(ng-repeat='student in $scope.class.participants.students')
+                                    td(ng-class='$scope.getUserThClass(student, "students")')
+                                        label {{student}}
+                                    td(ng-show='$scope.selectedGroup && !$scope.isInSelectedGroup(student, "students")' ng-class='$scope.isInSelectedGroup(student, "students") ? "bg-success" : ""')
+                                        a(ng-click='$scope.modifyGroup(student, "student", true)')
+                                            span.glyphicon.glyphicon-plus
+                                    td(ng-show='$scope.isInSelectedGroup(student, "students")' ng-class='$scope.isInSelectedGroup(student, "students") ? "bg-success" : ""')
+                                        a(ng-click='$scope.modifyGroup(student, "student", false)')
+                                            span.glyphicon.glyphicon-minus
+                                    td(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping' ng-class='$scope.isInSelectedGroup(student, "students") ? "bg-success" : ""')
+                                        a(ng-click='$scope.ejectUser(student, "student")')
+                                            span.glyphicon.glyphicon-remove-sign
+            .col-md-6
+                .panel.panel-default
+                    .panel-heading
+                        .row
+                            .col-md-9
+                                h3
+                                    label Class Groups
+                            .col-md-3
+                                a.btn.btn-default(type='button', ng-click='$scope.unlockGroups()' ng-class='$scope.unlockedGroups ? "btn-success" : "btn-default"')
+                                    span.glyphicon(ng-class='$scope.unlockedGroups ? "glyphicon-star" : "glyphicon-star-empty"')
+                    .panel-body
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p The groups help you to configure your users activities easely
+                            .panel.panel-success
+                                .panel-heading Add group to class
+                                .panel-body
+                                    label Group name:
+                                        input.form-control(type='text' ng-model='$scope.group.name')
+                                    a.btn.btn-success(type='button', ng-click='$scope.createGroup()')
+                                        span.glyphicon.glyphicon-plus.right10
+                        table.table.table-hover
+                            thead
+                                tr
+                                    th Group
+                                    th(ng-if='$scope.unlockedGroups') Use this groups in the class
+                                    th Remove
+                            tbody
+                                tr(ng-if='$scope.classGroups.length == 0')
+                                    td(colspan=6)
+                                        div.alert.alert-warning(style='margin-bottom: 0px') No groups created yet
+                                tr(ng-repeat='group in $scope.classGroups')
+                                    td(ng-class='$scope.getGroupThClass(group)')
+                                        a.btn(ng-click='$scope.selectGroup(group)') {{group.name}}
+                                    td(ng-if='$scope.unlockedGroups')
+                                        a.btn(ng-click='$scope.checkGroup(group)')
+                                            span.glyphicon(ng-class='$scope.class.groups.indexOf(group._id)===-1 ? "glyphicon-unchecked" : "glyphicon-saved"')
+                                    td(ng-show='$scope.selectedGrouping && !$scope.isInSelectedGrouping(group._id, "group")' ng-class='$scope.getGroupThClass(group)')
+                                        a.btn(ng-click='$scope.modifyGrouping(group, true)')
+                                            span.glyphicon.glyphicon-plus
+                                    td(ng-show='$scope.selectedGrouping && $scope.isInSelectedGrouping(group._id, "group")' ng-class='$scope.getGroupThClass(group)')
+                                        a.btn(ng-click='$scope.modifyGrouping(group, false)')
+                                            span.glyphicon.glyphicon-minus
+                                    td(ng-show='!$scope.selectedGrouping' ng-class='$scope.getGroupThClass(group)')
+                                        a.btn(ng-click='$scope.removeGroup(group)')
+                                            span.glyphicon.glyphicon-remove-sign
+                .panel.panel-default
+                    .panel-heading
+                        .row
+                            .col-md-9
+                                h3
+                                    label Class Groupings
+                            .col-md-3
+                                a.btn(type='button', ng-click='$scope.unlockGroupings()' ng-class='$scope.unlockedGroupings ? "btn-warning" : "btn-default"')
+                                    span.glyphicon(ng-class='$scope.unlockedGroupings ? "glyphicon-star" : "glyphicon-star-empty"')
+                    .panel-body
+                        div(ng-show='!$scope.selectedGroup && !$scope.selectedGrouping')
+                            p The groupings help you to configure your users activities grouping groups of participants
+                            .panel.panel-warning
+                                .panel-heading Add grouping to class
+                                .panel-body
+                                    label Grouping name:
+                                        input.form-control(type='text' ng-model='$scope.grouping.name')
+                                    a.btn.btn-warning(type='button', ng-click='$scope.createGrouping()')
+                                        span.glyphicon.glyphicon-plus.right10
+                        table.table.table-hover
+                            thead
+                                tr
+                                    th Grouping
+                                    th(ng-if='$scope.unlockedGroupings') Use this groupings in the class
+                                    th Remove
+                            tbody
+                                tr(ng-if='$scope.classGroupings.length == 0')
+                                    td(colspan=6)
+                                        div.alert.alert-warning(style='margin-bottom: 0px') No groups created yet
+                                tr(ng-class='$scope.selectedGrouping._id === grouping._id ? "bg-warning" : ""' ng-repeat='grouping in $scope.classGroupings')
+                                    td
+                                        a.btn(ng-click='$scope.selectGrouping(grouping)') {{grouping.name}}
+                                    td(ng-if='$scope.unlockedGroupings')
+                                        a.btn(ng-click='$scope.checkGrouping(grouping)')
+                                            span.glyphicon(ng-class='$scope.class.groupings.indexOf(grouping._id)===-1 ? "glyphicon-unchecked" : "glyphicon-saved"')
+                                    td
+                                        a(ng-click='$scope.removeGrouping(grouping)')
+                                            span.glyphicon.glyphicon-remove-sign
+
 
