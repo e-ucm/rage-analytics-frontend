@@ -123,7 +123,7 @@ angular.module('classesApp', ['ngStorage', 'services'])
                 } else {
                     var reqObj;
                     if (!courseId) {
-                        courseId = '';
+                        courseId = null;
                     }
                     reqObj = {courseId: courseId};
                     $http.put(CONSTANTS.PROXY + '/classes/' + classObj._id, reqObj)
