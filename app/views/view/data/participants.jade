@@ -1,0 +1,182 @@
+//- 
+    Copyright 2016 e-UCM (http://www.e-ucm.es/)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    This project has received funding from the European Union’s Horizon
+    2020 research and innovation programme under grant agreement No 644187.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 (link is external)
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+.container-fluid.theme-showcase
+    h1 Participants
+    .row
+        .col-md-12
+            .checkbox
+                label
+                    input(type="checkbox" ng-change='allowAnonymous()' ng-model='activity.allowAnonymous')
+                    | Allow anonymous users
+            br
+    div.modal-header.row
+        .modal-title
+            .col-md-12(ng-if='!unlockedGroups && !unlockedGroupings')
+                label.alert-info *If you want restrict the default access to the class with groups o groupings, please click on a star icon and check the groups or groupings
+            .col-md-12(ng-if='unlockedGroups')
+                label.alert-success You are using groups (if you want use all participants, please, click star icon in groups area)
+            .col-md-12(ng-if='unlockedGroupings')
+                label.alert-warning You are using groupings (if you want use all participants, please, click star icon in groupings area)
+    div.modal-body.row
+        .col-md-6
+            .panel.panel-default
+                .panel-heading
+                    h3
+                        label Class Teachers
+                .panel-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Teacher
+                                th(ng-show='selectedGroup') Add or Remove
+                                th(ng-show='selectedGroup') Remove
+                        tbody
+                            tr(ng-if='class.participants.teachers.length == 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                            tr(ng-repeat='teacher in class.participants.teachers')
+                                td(ng-class='getUserThClass(teacher, "teachers")')
+                                    label {{teacher}}
+                                td(ng-show='selectedGroup && !isInSelectedGroup(teacher, "teachers")' ng-class='isInSelectedGroup(teacher, "teachers") ? "bg-success" : ""')
+                                    a(ng-click='modifyGroup(teacher, "teacher", true)')
+                                        span.glyphicon.glyphicon-plus
+                                td(ng-show='isInSelectedGroup(teacher, "teachers")' ng-class='isInSelectedGroup(teacher, "teachers") ? "bg-success" : ""')
+                                    a(ng-click='modifyGroup(teacher, "teacher", false)')
+                                        span.glyphicon.glyphicon-minus
+                                td(ng-show='!selectedGroup && !selectedGrouping' ng-class='isInSelectedGroup(teacher, "teachers") ? "bg-success" : ""')
+                                    a(ng-if='isRemovable(teacher)' ng-click='ejectUser(teacher, "teacher")')
+                                        span.glyphicon.glyphicon-remove-sign
+            .panel.panel-default
+                .panel-heading
+                    h3
+                        label Class Assistants
+                .panel-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Assistant
+                                th(ng-show='selectedGroup') Add or Remove
+                                th(ng-show='!selectedGroup') Remove
+                        tbody
+                            tr(ng-if='class.participants.assistants.length == 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No assistants found
+                            tr(ng-repeat='assistant in class.participants.assistants')
+                                td(ng-class='getUserThClass(assistant, "assistants")')
+                                    label {{assistant}}
+                                td(ng-show='!selectedGroup && !isInSelectedGroup(assistant, "assistants")' ng-class='isInSelectedGroup(assistant, "assistants") ? "bg-success" : ""')
+                                    a(ng-click='modifyGroup(assistant, "assistant", true)')
+                                        span.glyphicon.glyphicon-plus
+                                td(ng-show='isInSelectedGroup(assistant, "assistants")' ng-class='isInSelectedGroup(assistant, "assistants") ? "bg-success" : ""')
+                                    a(ng-click='modifyGroup(assistant, "assistant", false)')
+                                        span.glyphicon.glyphicon-minus
+                                td(ng-show='!selectedGroup && !selectedGrouping' ng-class='isInSelectedGroup(assistant, "assistants") ? "bg-success" : ""')
+                                    a(ng-click='ejectUser(assistant, "assistant")')
+                                        span.glyphicon.glyphicon-remove-sign
+            .panel.panel-default
+                .panel-heading
+                    h3
+                        label Class Students
+                .panel-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Student
+                                th(ng-show='selectedGroup') Add or Remove
+                                th(ng-show='!selectedGroup') Remove
+                        tbody
+                            tr(ng-if='class.participants.students.length == 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No students found
+                            tr(ng-repeat='student in class.participants.students')
+                                td(ng-class='getUserThClass(student, "students")')
+                                    label {{student}}
+                                td(ng-show='selectedGroup && !isInSelectedGroup(student, "students")' ng-class='isInSelectedGroup(student, "students") ? "bg-success" : ""')
+                                    a(ng-click='modifyGroup(student, "student", true)')
+                                        span.glyphicon.glyphicon-plus
+                                td(ng-show='isInSelectedGroup(student, "students")' ng-class='isInSelectedGroup(student, "students") ? "bg-success" : ""')
+                                    a(ng-click='modifyGroup(student, "student", false)')
+                                        span.glyphicon.glyphicon-minus
+                                td(ng-show='!selectedGroup && !selectedGrouping' ng-class='isInSelectedGroup(student, "students") ? "bg-success" : ""')
+                                    a(ng-click='ejectUser(student, "student")')
+                                        span.glyphicon.glyphicon-remove-sign
+        .col-md-6
+            .panel.panel-default
+                .panel-heading
+                    .row
+                        .col-md-9
+                            h3
+                                label Class Groups
+                        .col-md-3
+                            a.btn.btn-default(type='button', ng-click='unlockGroups()' ng-class='unlockedGroups ? "btn-success" : "btn-default"')
+                                span.glyphicon(ng-class='unlockedGroups ? "glyphicon-star" : "glyphicon-star-empty"')
+                .panel-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Group
+                                th(ng-if='unlockedGroups') Use this groups in the class
+                                th Remove
+                        tbody
+                            tr(ng-if='classGroups.length == 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No groups created yet
+                            tr(ng-repeat='group in classGroups')
+                                td(ng-class='getGroupThClass(group)')
+                                    a.btn(ng-click='selectGroup(group)') {{group.name}}
+                                td(ng-if='unlockedGroups')
+                                    a.btn(ng-click='checkGroup(group)')
+                                        span.glyphicon(ng-class='activity.groups.indexOf(group._id)===-1 ? "glyphicon-unchecked" : "glyphicon-saved"')
+                                td(ng-show='selectedGrouping && !isInSelectedGrouping(group._id, "group")' ng-class='getGroupThClass(group)')
+                                    a.btn(ng-click='modifyGrouping(group, true)')
+                                        span.glyphicon.glyphicon-plus
+                                td(ng-show='selectedGrouping && isInSelectedGrouping(group._id, "group")' ng-class='getGroupThClass(group)')
+                                    a.btn(ng-click='modifyGrouping(group, false)')
+                                        span.glyphicon.glyphicon-minus
+                                td(ng-show='!selectedGrouping' ng-class='getGroupThClass(group)')
+                                    a.btn(ng-click='removeGroup(group)')
+                                        span.glyphicon.glyphicon-remove-sign
+            .panel.panel-default
+                .panel-heading
+                    .row
+                        .col-md-9
+                            h3
+                                label Class Groupings
+                        .col-md-3
+                            a.btn(type='button', ng-click='unlockGroupings()' ng-class='unlockedGroupings ? "btn-warning" : "btn-default"')
+                                span.glyphicon(ng-class='unlockedGroupings ? "glyphicon-star" : "glyphicon-star-empty"')
+                .panel-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Grouping
+                                th(ng-if='unlockedGroupings') Use this groupings in the class
+                                th Remove
+                        tbody
+                            tr(ng-if='classGroupings.length == 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No groups created yet
+                            tr(ng-class='selectedGrouping._id === grouping._id ? "bg-warning" : ""' ng-repeat='grouping in classGroupings')
+                                td
+                                    a.btn(ng-click='selectGrouping(grouping)') {{grouping.name}}
+                                td(ng-if='unlockedGroupings')
+                                    a.btn(ng-click='checkGrouping(grouping)')
+                                        span.glyphicon(ng-class='activity.groupings.indexOf(grouping._id)===-1 ? "glyphicon-unchecked" : "glyphicon-saved"')
+                                td
+                                    a(ng-click='removeGrouping(grouping)')
+                                        span.glyphicon.glyphicon-remove-sign

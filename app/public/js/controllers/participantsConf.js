@@ -292,7 +292,7 @@ angular.module('participantsApp', [])
                         students.push(student);
                     }
                 });
-                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.selectedClass._id;
+                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.class._id;
                 $http.put(route, {participants: {students: students}}).success(function (data) {
                     $ctrl.class = data;
                 }).error(function (data, status) {
