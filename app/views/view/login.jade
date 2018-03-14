@@ -31,6 +31,10 @@
             alert.alert-danger {{errorResponse}}
             hr
             input.btn.btn-primary.btn-block(ng-if='hasSaml()' type='button' value='Sign In with {{saml.name}}' ng-click='loginSaml()')
+            br
+            button.btn.btn-warning.btn-block(ng-if='hasBeaconing()' type='button' ng-click='loginBeaconing()') Login with
+                br
+                img(src='beaconingicon.png' width='33%')
    .row-fluid(ng-if='isUser()')
       .alert.alert-success(role='alert')
          | You are already logged
