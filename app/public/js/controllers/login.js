@@ -52,21 +52,35 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
             $scope.loginSaml = function () {
                 var location = CONSTANTS.APIPATH + '/login/' + $scope.saml.pluginId + '?callback=' + encodeURIComponent(
                         $window.location.origin + $window.location.pathname + 'byplugin');
-                $location.url(location);
+                 $window.location.href = location;
+            };
+
+            $scope.loginBeaconing = function () {
+                var location = CONSTANTS.APIPATH + '/login/beaconing?callback=' + encodeURIComponent(
+                        $window.location.origin + $window.location.pathname + 'byplugin');
+                 $window.location.href = location;
             };
 
             $scope.saml = null;
+            $scope.beaconing = null;
             $http.get(CONSTANTS.APIPATH + '/loginplugins').success(function (results) {
 
                 for (var i = 0; i < results.data.length; ++i) {
                     if (results.data[i].pluginId === 'samlnl') {
                         $scope.saml = results.data[i];
-                        return;
+                    }
+
+                    if (results.data[i].pluginId === 'beaconing') {
+                        $scope.beaconing = results.data[i];
                     }
                 }
             });
 
             $scope.hasSaml = function() {
                 return $scope.saml !== null;
+            };
+
+            $scope.hasBeaconing = function() {
+                return $scope.beaconing !== null;
             };
         }]);
