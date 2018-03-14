@@ -11,4 +11,9 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-.row(ng-controller='LoginPluginCtrl' ng-init="setupUser(#{user})")
+
+extends ../page
+
+block loginplugin
+    p login by plugin
+    #login(ng-controller='LoginPluginCtrl' ng-init="setupUser(#{user})")
