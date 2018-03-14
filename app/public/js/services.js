@@ -143,16 +143,19 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
                         delete data.versionId;
                     }
                     if (data.start !== undefined) {
-                        delete data.versionId;
+                        delete data.start;
                     }
                     if (data.end !== undefined) {
-                        delete data.versionId;
+                        delete data.end;
                     }
                     if (data.open !== undefined) {
                         delete data.open;
                     }
                     if (data.created !== undefined) {
                         delete data.created;
+                    }
+                    if (data.rootId !== undefined) {
+                        delete data.rootId;
                     }
                     if (data.trackingCode !== undefined) {
                         delete data.trackingCode;
