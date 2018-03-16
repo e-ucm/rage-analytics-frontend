@@ -36,9 +36,17 @@ angular.module('participantsApp', [])
             $ctrl.selectedGroup = undefined;
             $ctrl.selectedGrouping = undefined;
 
+            $ctrl.unlockedGroups = false;
+            $ctrl.unlockedGroupings = false;
+
             $ctrl.$onInit = function () {
                 Classes.get({classId: $ctrl.classId}).$promise.then(function (data) {
                     $ctrl.class = data;
+                    if (data.groupings && data.groupings.length > 0) {
+                        $ctrl.unlockGroupings();
+                    } else if (data.groups && data.groups.length > 0) {
+                        $ctrl.unlockGroups();
+                    }
                 });
                 updateGroups();
                 updateGroupings();
@@ -58,6 +66,80 @@ angular.module('participantsApp', [])
                 var route = CONSTANTS.PROXY + '/classes/' + $ctrl.classId + '/groupings';
                 $http.get(route).success(function (data) {
                     $ctrl.classGroupings = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $ctrl.unlockGroups = function() {
+                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.class._id + '/remove';
+                if ($ctrl.unlockedGroupings) {
+                    $http.put(route, {groupings: $ctrl.class.groupings}).success(function (data) {
+                        $ctrl.class = data;
+                        $ctrl.unlockedGroupings = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+                if ($ctrl.unlockedGroups) {
+                    $http.put(route, {groups: $ctrl.class.groups}).success(function (data) {
+                        $ctrl.class = data;
+                        $ctrl.unlockedGroups = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                } else {
+                    $ctrl.unlockedGroups = true;
+                }
+            };
+
+            $ctrl.unlockGroupings = function() {
+                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.class._id + '/remove';
+                if ($ctrl.unlockedGroups) {
+                    $http.put(route, {groups: $ctrl.class.groups}).success(function (data) {
+                        $ctrl.class = data;
+                        $ctrl.unlockedGroups = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+                if ($ctrl.unlockedGroupings) {
+                    $http.put(route, {groupings: $ctrl.class.groupings}).success(function (data) {
+                        $ctrl.class = data;
+                        $ctrl.unlockedGroupings = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                } else {
+                    $ctrl.unlockedGroupings = true;
+                }
+            };
+
+            $ctrl.checkGroup = function (group) {
+                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.class._id;
+                if ($ctrl.class.groups && $ctrl.class.groups.indexOf(group._id) !== -1) {
+                    route += '/remove';
+                }
+                $http.put(route, {groups: [group._id]}).success(function (data) {
+                    $ctrl.class = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            $ctrl.checkGrouping = function (grouping) {
+                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.class._id;
+                if ($ctrl.class.groupings && $ctrl.class.groupings.indexOf(grouping._id) !== -1) {
+                    route += '/remove';
+                }
+                $http.put(route, {groupings: [grouping._id]}).success(function (data) {
+                    $ctrl.class = data;
                 }).error(function (data, status) {
                     console.error('Error on put' + route + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
@@ -210,7 +292,8 @@ angular.module('participantsApp', [])
                         students.push(student);
                     }
                 });
-                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.selectedClass._id;
+
+                var route = CONSTANTS.PROXY + '/classes/' + $ctrl.class._id;
                 $http.put(route, {participants: {students: students}}).success(function (data) {
                     $ctrl.class = data;
                 }).error(function (data, status) {

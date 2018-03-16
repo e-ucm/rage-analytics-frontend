@@ -19,12 +19,19 @@
 'use strict';
 
 angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 'ui.bootstrap'])
-    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', '$uibModal', 'Classes', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, $uibModal, Classes, CONSTANTS) {
+    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', '$uibModal', 'Classes', 'Groups', 'Groupings', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, $uibModal, Classes, Groups, Groupings, CONSTANTS) {
+            var groupsReady = false;
+            var groupingsReady = false;
+            var classReady = false;
             var onSetClass = function() {
                 if (!$scope.class) {
                     throw new Error('No class for ClassCtrl');
                 } else {
+                    classReady = true;
+                    if (groupsReady && groupingsReady && classReady) {
+                        onReadyParticipants();
+                    }
                     $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.class._id).success(function (data) {
                         if (data && data.length > 0) {
                             $scope.lti.key = data[0]._id;
@@ -34,8 +41,76 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 }
             };
 
-            $attrs.$observe('classid', function() {
+            var onReadyGroups = function() {
+                groupsReady = true;
+                if (groupsReady && groupingsReady && classReady) {
+                    onReadyParticipants();
+                }
+            };
+
+            var onReadyGroupings = function() {
+                groupingsReady = true;
+                if (groupsReady && groupingsReady && classReady) {
+                    onReadyParticipants();
+                }
+            };
+
+            var onReadyParticipants = function() {
+                $scope.participants = {teachers: [], assistants: [], students: []};
+                if ($scope.isUsingGroupings()) {
+                    $scope.class.groupings.forEach(function(groupingId) {
+                        addParticipantsFromGroupingId(groupingId);
+                    });
+                } else if ($scope.isUsingGroups()) {
+                    $scope.class.groups.forEach(function(groupId) {
+                        addParticipantsFromGroupId(groupId);
+                    });
+                } else {
+                    $scope.participants = $scope.class.participants;
+                }
+            };
+
+            var getClassInfo = function() {
+                groupsReady = false;
+                groupingsReady = false;
+                classReady = false;
                 $scope.class = Classes.get({classId: $attrs.classid}, onSetClass);
+                $scope.groups = Groups.get({classId: $attrs.classid}, onReadyGroups);
+                $scope.groupings = Groupings.get({classId: $attrs.classid}, onReadyGroupings);
+            };
+
+            var addParticipantsFromGroupingId = function(groupingId) {
+                for (var i = 0; i < $scope.groupings.length; i++) {
+                    if (groupingId === $scope.groupings[i]._id) {
+                        for (var j = 0; j < $scope.groupings[i].groups.length; j++) {
+                            addParticipantsFromGroupId($scope.groupings[i].groups[j]);
+                        }
+                        break;
+                    }
+                }
+            };
+
+            var addParticipantsFromGroupId = function(groupId) {
+                for (var i = 0; i < $scope.groups.length; i++) {
+                    if (groupId === $scope.groups[i]._id) {
+                        pushUsrFromGroupToParticipants($scope.groups[i], 'teachers');
+                        pushUsrFromGroupToParticipants($scope.groups[i], 'assistants');
+                        pushUsrFromGroupToParticipants($scope.groups[i], 'students');
+                        return;
+                    }
+                }
+            };
+
+            var pushUsrFromGroupToParticipants = function(group, role) {
+                group.participants[role].forEach(function (usr) {
+                    if ($scope.participants[role].indexOf(usr) === -1) {
+                        $scope.participants[role].push(usr);
+                    }
+                });
+            };
+
+            $attrs.$observe('classid', function() {
+                getClassInfo();
             });
 
             $attrs.$observe('forclass', function() {
@@ -70,9 +145,8 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 });
 
                 modalInstance.result.then(function () {
-                    console.log('HOLA');
                 }, function () {
-                    console.log('Modal dismissed at: ' + new Date());
+                    getClassInfo();
                 });
             };
 
@@ -82,6 +156,14 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 $scope.class.$update(function() {
                     $rootScope.$broadcast('refreshClasses');
                 });
+            };
+
+            $scope.isUsingGroupings = function () {
+                return $scope.class.groupings && $scope.class.groupings.length > 0;
+            };
+
+            $scope.isUsingGroups = function () {
+                return !$scope.isUsingGroupings() && $scope.class.groups && $scope.class.groups.length > 0;
             };
 
             // LTI

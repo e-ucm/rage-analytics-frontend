@@ -198,6 +198,22 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
     }
 ]);
 
+services.factory('Groups', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/classes/:classId/groups', {classId: '@_id'}, {
+            get: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/groups'}
+        });
+    }
+]);
+
+services.factory('Groupings', ['$resource', 'CONSTANTS',
+    function ($resource, CONSTANTS) {
+        return $resource(CONSTANTS.PROXY + '/classes/:classId/groupings', {classId: '@_id'}, {
+            get: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/groupings'}
+        });
+    }
+]);
+
 services.factory('Results', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
         return $resource(CONSTANTS.PROXY + '/activities/:id/results/:resultId', {
