@@ -21,13 +21,9 @@ ul.nav
             span.glyphicon.glyphicon-info-sign.right20
             | Information
     li(ng-if='isTeacher()')
-        span.left-menu-item(href="#teachers", role="tab", data-toggle="tab", ng-click="view = 'teachers'")
-            span.glyphicon.glyphicon-briefcase.right20
-            | Teachers
-    li(ng-if='isTeacher()')
-        span.left-menu-item(href="#students", role="tab", data-toggle="tab", ng-click="view = 'students'")
+        span.left-menu-item(href="#participants", role="tab", data-toggle="tab", ng-click="view = 'participants'")
             span.glyphicon.glyphicon-apple.right20
-            | Students
+            | Participants
     li
         span.left-menu-item(href="#attempts", role="tab", data-toggle="tab", ng-click="view = 'attempts'")
             span.glyphicon.glyphicon-tasks.right20
