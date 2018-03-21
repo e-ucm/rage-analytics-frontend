@@ -291,7 +291,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }
                 if ($scope.unlockedGroups) {
                     $http.put(route, {groups: $scope.activity.groups}).success(function (data) {
-                        $scope.class = data;
+                        $scope.activity = data;
                         $scope.unlockedGroups = false;
                     }).error(function (data, status) {
                         console.error('Error on put' + route + ' ' +
@@ -315,7 +315,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }
                 if ($scope.unlockedGroupings) {
                     $scope.put(route, {groupings: $scope.activity.groupings}).success(function (data) {
-                        $scope.class = data;
+                        $scope.activity = data;
                         $scope.unlockedGroupings = false;
                     }).error(function (data, status) {
                         console.error('Error on put' + route + ' ' +
