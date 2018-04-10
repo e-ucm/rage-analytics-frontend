@@ -29,3 +29,8 @@
             li(class="next")
                 a(href="#kibanaVisualization" role="tab" data-toggle="tab" ng-click="selectedConfigView = 'kibanaVisualization'") Next
                     span.glyphicon.glyphicon-arrow-right
+    .row
+        hr
+        h1 Index Object
+        textarea#exampleObject(rows='6' ng-model='exampleObject')
+        button.btn.btn-primary.top15(ng-click='addIndexObject()') Use as index object
