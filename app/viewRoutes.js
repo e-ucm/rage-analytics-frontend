@@ -31,7 +31,7 @@ var getBasePath = function(req) {
 };
 
 router.get('/loginbyplugin', function (req, res) {
-    console.log("loginbyplugin");
+    console.log('loginbyplugin');
     res.render('view/loginplugin', {user: JSON.stringify(req.query), basePath: getBasePath(req)});
 });
 

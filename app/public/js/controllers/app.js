@@ -283,7 +283,7 @@ angular.module('myApp', [
                     $scope.selectedGame = Games.get({gameId: activity.gameId});
                 });
             }
-        } else if(!$window.location.pathname.endsWith('loginbyplugin')){
+        } else if (!$window.location.pathname.endsWith('loginbyplugin')) {
             $location.url('login');
         }
     }

@@ -52,7 +52,7 @@ angular.module('loginApp', ['ngStorage', 'ngCookies'])
             $scope.loginSaml = function () {
                 var location = CONSTANTS.APIPATH + '/login/' + $scope.saml.pluginId + '?callback=' + encodeURIComponent(
                         $window.location.origin + $window.location.pathname + 'byplugin');
-                $location.url(location);
+                $window.location.href = location;
             };
 
             $scope.saml = null;

@@ -35,7 +35,8 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
     })
     .controller('ActivityCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Activities', 'Classes', '_',
         'Results', 'Versions', 'Groups', 'Groupings', '$sce', '$interval', 'Role', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, Groups, Groupings, $sce, $interval, Role, CONSTANTS) {
+        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results,
+                  Versions, Groups, Groupings, $sce, $interval, Role, CONSTANTS) {
 
             var refresh;
             var groupsReady = false;
@@ -421,7 +422,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                         JSON.stringify(data) + ', status: ' + status);
                 });
             };
-            
+
             // Name
 
             $scope.changeActivityName = function () {
