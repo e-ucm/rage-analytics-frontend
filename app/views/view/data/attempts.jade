@@ -29,24 +29,38 @@
                                 th Type
                                 th Username
                                 th Animal Name
-                                th See attempts
+                                th Created
+                                th Last start
+                                th Last end
+                                th Last
+                                th Attempts
                         tbody
                             tr(ng-if='!attempts || attempts.length === 0')
                                 td(colspan=4)
                                     div.alert.alert-warning(style='margin-bottom: 0px') No attempts found
                         tbody(ng-repeat='gameplay in attempts')
                             tr
-                                td
+                                td.text-center
                                     span.glyphicon(ng-class='(gameplay.playerType === "identified") ? "glyphicon-user" : "glyphicon-sunglasses"')
                                 td
-                                    label {{gameplay.playerName}}
+                                    label(tooltip="gameplay.playerName" tooltip-placement="left") {{gameplay.playerType === 'anonymous' ? 'Anonymous' : gameplay.playerName }}
                                 td
                                     label {{gameplay.animalName}}
                                 td
-                                    a.btn.btn-primary(type='button', ng-click='gameplayShown[gameplay._id] = !gameplayShown[gameplay._id]')
-                                        .glyphicon(ng-class='gameplayShown[gameplay._id] ? "glyphicon-remove-sign" : "glyphicon-plus"')
-                            tr.attemptRow(ng-show='gameplayShown[gameplay._id]')
-                                td(colspan=4)
+                                    label {{ gameplay.firstSessionStarted | prettyDate }}
+                                td
+                                    label {{ gameplay.attempts[gameplay.sessions-1].start | prettyDate }}
+                                td
+                                    label {{ gameplay.attempts[gameplay.sessions-1].end | prettyDate }}
+                                td
+                                    a.btn.btn-primary(type='button' ng-click='viewAttempt(gameplay, gameplay.attempts[gameplay.sessions-1])')
+                                        .glyphicon.glyphicon-stats
+                                td
+                                    a.btn.btn-primary(type='button', ng-click='gameplaysShown[gameplay._id] = !gameplaysShown[gameplay._id]')
+                                        label {{gameplay.sessions}}&nbsp;&nbsp;
+                                        .glyphicon(ng-class='gameplaysShown[gameplay._id] ? "glyphicon-remove-sign" : "glyphicon-plus"')
+                            tr.attemptRow(ng-show='gameplaysShown[gameplay._id]')
+                                td(colspan=8)
                                     .panel.panel-primary
                                         .panel-heading {{ gameplay.playerName }} attempts
                                         .panel-body
@@ -64,11 +78,11 @@
                                                 tbody(ng-repeat='attempt in gameplay.attempts')
                                                     tr
                                                         td
-                                                            label {{attempt.number}}
+                                                            label {{ attempt.number }}
                                                         td
-                                                            label {{attempt.start}}
+                                                            label {{ attempt.start | prettyDate }}
                                                         td
-                                                            label {{attempt.end}}
+                                                            label {{ attempt.end | prettyDate }}
                                                         td
-                                                            a.btn.btn-primary(type='button', ng-click='goToAttemptGraph(attempt)')
+                                                            a.btn.btn-primary(type='button' ng-click='viewAttempt(gameplay, attempt)')
                                                                 .glyphicon.glyphicon-stats

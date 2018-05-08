@@ -92,7 +92,6 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 var classId = $scope.classId ? $scope.classId : $scope.activity.classId;
                 var gameId = $scope.gameId ? $scope.gameId : $scope.activity.gameId;
                 var versionId = $scope.versionId;
-                console.log(gameId);
 
                 $scope.activityCreatedError = '';
                 if (!gameId) {
@@ -182,9 +181,9 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                                                     $scope.goToActivity(activity);
                                                     $rootScope.$broadcast('refreshActivities');
                                                 }).error(function (data, status) {
-                                                console.error('Error on post /kibana/dashboard/activity/' + activity._id + ' ' +
-                                                    JSON.stringify(data) + ', status: ' + status);
-                                            });
+                                                    console.error('Error on post /kibana/dashboard/activity/' + activity._id + ' ' +
+                                                        JSON.stringify(data) + ', status: ' + status);
+                                                });
                                         }
                                     }).error(function (data, status) {
                                         console.error('Error on post /kibana/visualization/activity/' + visualizationId + '/' + activity._id + ' ' +

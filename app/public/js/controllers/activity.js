@@ -41,9 +41,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             var onSetActivity = function() {
                 $scope.refreshResults = function () {
                     if (Role.isUser()) {
-                        /*$scope.activity.$myAttempts(function (myAttempts) {
-                            $scope.myAttempts = myAttempts;
-                        });*/
                         if (!$scope.gameplaysShown) {
                             $scope.gameplaysShown = {};
                         }
@@ -51,9 +48,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                             Activities.attempts({activityId: $scope.activity._id}, function (attempts) {
                                 $scope.attempts = attempts;
                             });
-                            /*$scope.activity.$attempts(function (attempts) {
-                                $scope.attemps = attempts;
-                            });*/
                         }
                     }
                     var rawResults = Results.query({
@@ -113,20 +107,35 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
 
-            var dashboardLink = function (userName) {
+            var dashboardLink = function (userName, attempt) {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
                     $scope.activity._id + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
+                var filter = {};
 
                 if (userName) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'out.name:' +
-                        userName + '\')))';
+                    filter.name = userName;
                 } else if ($scope.player) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'out.name:' +
-                        $scope.player.name + '\')))';
+                    filter.name = $scope.player.name;
+                }
+
+                if (attempt) {
+                    filter.session = attempt;
+                } else if ($scope.attempt) {
+                    filter.session = $scope.attempt.number;
+                }
+
+                if (filter.length > 0) {
+                    var props = [];
+                    for (var key in filter) {
+                        if (filter.hasOwnProperty(key)) {
+                            props.push(key + ': ' + filter[key]);
+                        }
+                    }
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'' + props.join(',') + '\')))';
                 }
 
                 if (url.startsWith('localhost')) {
@@ -174,11 +183,33 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.viewAll = function () {
                 $scope.player = null;
+                $scope.attempt = null;
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
             $scope.viewPlayer = function (result) {
                 $scope.player = result;
+                $scope.attempt = null;
+                $scope.iframeDashboardUrl = dashboardLink();
+            };
+
+            $scope.viewAttempt = function (gameplay, attempt) {
+                if ($scope.results) {
+                    var lookForName = gameplay.playerType === 'anonymous' ? gameplay.animalName : gameplay.playerName;
+                    for (var i = 0; i < $scope.results.length; i++) {
+                        if ($scope.results[i].name === lookForName) {
+                            $scope.player = $scope.results[i];
+                            break;
+                        }
+                    }
+                }
+                // This code manually changes the tab, this might be solved with tab('show') in newer versions
+                // as mentioned in https://github.com/twbs/bootstrap/issues/23594
+                $('.active[data-toggle=\'tab\']').toggleClass('active').toggleClass('show');
+                $('span[href=\'#realtime\'][data-toggle=\'tab\']').toggleClass('active').toggleClass('show');
+                $('.tab-pane.active').toggleClass('active').toggleClass('show');
+                $('#realtime').toggleClass('active').toggleClass('show');
+                $scope.attempt = attempt;
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
