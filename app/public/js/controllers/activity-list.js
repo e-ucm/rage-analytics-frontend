@@ -127,7 +127,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 activity.versionId = versionId;
                 activity.classId = classId;
 
-                if ($('#offline').is(":checked")) {
+                if ($('#offline').is(':checked')) {
                     activity.offline = true;
                     activity.allowAnonymous = true;
                 } else {
