@@ -139,6 +139,22 @@ angular.module('myApp', [
             return Role.isTeacher();
         };
 
+        $scope.isOfflineActivity = function () {
+            return $scope.isOfflineActivityParam($scope.selectedActivity);
+        };
+
+        $scope.isOnlineActivity = function () {
+            return $scope.isOnlineActivityParam($scope.selectedActivity);
+        };
+
+        $scope.isOfflineActivityParam = function (activity) {
+            return activity && activity.offline;
+        };
+
+        $scope.isOnlineActivityParam = function (activity) {
+            return activity && !activity.offline;
+        };
+
         $scope.isDeveloper = function () {
             return Role.isDeveloper();
         };

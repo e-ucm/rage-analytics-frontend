@@ -126,6 +126,14 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 activity.gameId = gameId;
                 activity.versionId = versionId;
                 activity.classId = classId;
+
+                if ($('#offline').is(":checked")) {
+                    activity.offline = true;
+                    activity.allowAnonymous = true;
+                } else {
+                    activity.offline = false;
+                    activity.allowAnonymous = false;
+                }
                 activity.$save().then(function() {
                     $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + gameId)
                         .success(function (data) {
