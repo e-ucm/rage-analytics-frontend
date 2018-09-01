@@ -19,7 +19,7 @@
 'use strict';
 
 angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
-    .factory('_', ['$window', function($window) {
+    .factory('_', ['$window', function ($window) {
         return $window._;
     }])
     .config(['$locationProvider',
@@ -33,6 +33,20 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
+    .directive('fileModel', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var model = $parse(attrs.fileModel);
+                var modelSetter = model.assign;
+                element.bind('change', function () {
+                    scope.$apply(function () {
+                        modelSetter(scope, element[0].files[0]);
+                    });
+                });
+            }
+        };
+    }])
     .controller('ActivityCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Activities', 'Classes', '_',
         'Results', 'Versions', 'Groups', 'Groupings', '$sce', '$interval', 'Role', 'CONSTANTS',
         function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results,
@@ -43,8 +57,8 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             var groupingsReady = false;
             var classReady = false;
             $scope.class = {};
-            var onSetActivity = function() {
-                Classes.get({classId: $scope.activity.classId}).$promise.then(function(c) {
+            var onSetActivity = function () {
+                Classes.get({classId: $scope.activity.classId}).$promise.then(function (c) {
                     classReady = true;
                     $scope.class = c;
                     if ($scope.activity.groupings && $scope.activity.groupings.length > 0) {
@@ -93,7 +107,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
             var updateGroups = function () {
-                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id  + '/groups';
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/groups';
                 $http.get(route).success(function (data) {
                     $scope.classGroups = data;
                 }).error(function (data, status) {
@@ -112,24 +126,26 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 });
             };
 
-            $scope.$on('$destroy', function() {
+            $scope.$on('$destroy', function () {
                 if (refresh) {
                     $interval.cancel(refresh);
                 }
             });
 
-            $attrs.$observe('activityid', function() {
+            $attrs.$observe('activityid', function () {
                 $scope.activity = Activities.get({activityId: $attrs.activityid}, onSetActivity);
+                updateOfflineTraces();
             });
 
-            $attrs.$observe('activity', function() {
+            $attrs.$observe('activity', function () {
                 groupsReady = false;
                 groupingsReady = false;
                 classReady = false;
                 $scope.activity = JSON.parse($attrs.activity);
-                Activities.get({activityId: $scope.activity._id}).$promise.then(function(a) {
+                Activities.get({activityId: $scope.activity._id}).$promise.then(function (a) {
                     $scope.activity = a;
                     onSetActivity();
+                    updateOfflineTraces();
                 });
             });
 
@@ -252,6 +268,68 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
+
+            function updateOfflineTraces() {
+                if ($scope.activity) {
+                    $http.get(CONSTANTS.PROXY + '/offlinetraces/' + $scope.activity._id, {
+                        transformRequest: angular.identity,
+                        headers: {
+                            'Content-Type': undefined,
+                            enctype: 'multipart/form-data'
+                        }
+                    }).then(function successCallback(response) {
+                        // This callback will be called asynchronously
+                        // when the response is available
+
+                        // Check if the version has an analysis uploaded
+
+                        $scope.offlinetraces = response.data;
+                        console.log('offline tracess!!');
+                        console.info($scope.offlinetraces);
+                    }, function errorCallback(response) {
+                        // Called asynchronously if an error occurs
+                        // or server returns response with an error status.
+                        console.error('Error on get /offlinetraces/' + $scope.activity._id + ' ' +
+                            JSON.stringify(response, null, '  '));
+
+                        // Check if the version has an analysis uploaded
+                    });
+                }
+            }
+
+            function upload(file) {
+                var formData = new FormData();
+                formData.append('offlinetraces', file);
+                $http.post(CONSTANTS.PROXY + '/offlinetraces/' + $scope.activity._id, formData, {
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined,
+                        enctype: 'multipart/form-data'
+                    }
+                }).then(function successCallback(response) {
+                    // This callback will be called asynchronously
+                    // when the response is available
+
+                    // Check if the version has an analysis uploaded
+                    updateOfflineTraces();
+                }, function errorCallback(response) {
+                    // Called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    console.error('Error on post /offlinetraces/' + $scope.activity._id + ' ' +
+                        JSON.stringify(response, null, '  '));
+
+                    // Check if the version has an analysis uploaded
+                });
+            }
+
+            $scope.myFile = undefined;
+            $scope.uploadTracesFile = function () {
+                if ($scope.myFile) {
+                    console.log('upload 3 ' + $scope.myFile);
+                    upload($scope.myFile);
+                }
+            };
+
             // Anonymous
 
             $scope.anonymous = 'btn-default';
@@ -278,7 +356,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 return !$scope.isUsingGroupings() && $scope.activity.groups && $scope.activity.groups.length > 0;
             };
 
-            $scope.unlockGroups = function() {
+            $scope.unlockGroups = function () {
                 var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
                 if ($scope.unlockedGroupings) {
                     $http.put(route, {groupings: $scope.activity.groupings}).success(function (data) {
@@ -302,7 +380,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }
             };
 
-            $scope.unlockGroupings = function() {
+            $scope.unlockGroupings = function () {
                 var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
                 if ($scope.unlockedGroups) {
                     $http.put(route, {groups: $scope.activity.groups}).success(function (data) {
@@ -356,7 +434,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.selectedGroup = undefined;
             };
 
-            $scope.getGroupThClass = function(group) {
+            $scope.getGroupThClass = function (group) {
                 if ($scope.selectedGroup && $scope.selectedGroup._id === group._id) {
                     return 'bg-success';
                 }
@@ -366,7 +444,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 return '';
             };
 
-            $scope.getUserThClass = function(usr, role) {
+            $scope.getUserThClass = function (usr, role) {
                 if ($scope.selectedGroup && $scope.isInSelectedGroup(usr, role)) {
                     return 'bg-success';
                 }
@@ -426,7 +504,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             // Name
 
             $scope.changeActivityName = function () {
-                $scope.activity.$update(function() {
+                $scope.activity.$update(function () {
                     $rootScope.$broadcast('refreshClasses');
                 });
             };
@@ -450,14 +528,15 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 return $scope.activity.start && !$scope.activity.end ? 2 : 0;
             };
 
-            $scope.$on('refreshActivity', function(evt, activity) {
+            $scope.$on('refreshActivity', function (evt, activity) {
                 if ($scope.activity._id === activity._id) {
                     $scope.activity = activity;
+                    updateOfflineTraces();
                     console.log('Activity updated');
                 }
             });
 
-            var finishEvent = function(activity) {
+            var finishEvent = function (activity) {
                 $scope.activity = activity;
                 $rootScope.$broadcast('refreshActivity', $scope.activity);
             };
@@ -471,7 +550,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     console.error(error);
                     $.notify('<strong>Error while opening the activity:</strong><br>If the session was recently closed it ' +
                         'might need to be cleaned by the system. <br>Please try again in a few seconds.', {
-                        offset: { x: 10, y: 65 },
+                        offset: {x: 10, y: 65},
                         type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
                     });
                     $rootScope.$broadcast('refreshActivity', $scope.activity);
@@ -486,7 +565,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.activity.$event({event: 'end'}).$promise.then(finishEvent).fail(function (error) {
                     console.error(error);
                     $.notify('<strong>Error while closing the activity:</strong><br>Please try again in a few seconds.', {
-                        offset: { x: 10, y: 65 },
+                        offset: {x: 10, y: 65},
                         type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
                     });
                     $rootScope.$broadcast('refreshActivity', $scope.activity);
