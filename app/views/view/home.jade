@@ -60,10 +60,11 @@
                                 a(ng-href='#', ng-click='goToClass(getClassById(localactivity.classId))') {{ getClassById(localactivity.classId).name }}
                             td {{localactivity._id | prettyDateId }}
                             td(ng-if='isTeacher()')
-                                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
-                                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
-                                button.btn-info(ng-if='activityState() == 1') Loading
+                                button.btn-success(ng-if='activityState() == 2 && isOnlineActivityParam(localactivity)' ng-click='endActivity()') Opened
+                                button.btn-warning(ng-if='activityState() == 0 && isOnlineActivityParam(localactivity)' ng-click='startActivity()') Closed
+                                button.btn-info(ng-if='activityState() == 1 && isOnlineActivityParam(localactivity)') Loading
                                     span.fa.fa-refresh.fa-spin
+                                p.btn-info(ng-if='isOfflineActivityParam(localactivity)') Offline Activity
                             td(ng-if='isTeacher()')
                                 a(ng-click='deleteActivity(localactivity)')
                                     span.glyphicon.glyphicon-remove-sign

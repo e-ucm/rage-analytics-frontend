@@ -32,10 +32,11 @@
                         a(href="#", editable-text="activity.name" onaftersave="changeActivityName()")  Activity {{ activity.name }}
                     a(ng-if='isStudent()') Activity {{ activity.name }}
                 span(ng-if='isTeacher()' style='float: right; margin-top: 5px; font-size: 0.70em;')
-                    button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
-                    button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
-                    button.btn-info(ng-if='activityState() == 1') Loading&nbsp;
+                    button.btn-success(ng-if='activityState() == 2 && isOnlineActivityParam(activity)' ng-click='endActivity()') Opened
+                    button.btn-warning(ng-if='activityState() == 0 && isOnlineActivityParam(activity)' ng-click='startActivity()') Closed
+                    button.btn-info(ng-if='activityState() == 1 && isOnlineActivityParam(activity)') Loading
                         span.fa.fa-refresh.fa-spin
+                    p.btn-info(ng-if='isOfflineActivityParam(activity)') Offline Activity
         .panel-body.tabled(ng-if='game && version' style='padding-top: 0px')
             block dataMenu
                 .row.row-tabled
