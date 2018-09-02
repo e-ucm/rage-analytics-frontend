@@ -21,12 +21,15 @@
                         h4(class="modal-title") What type of activity do you want to create?
                     div(class="modal-body")
                         .container
-                            .row
-                                input(id= "online" type="radio", name="symbol" value="online" checked)
-                                = " online"
-                            .row
-                                input(id= "offline" type="radio", name="symbol" value="offline")
-                                = " offline"
+                            .row.form-group
+                                button.btn-default.role-button.col-sm-2(ng-click='offline = false' ng-class="{'active': offline==='false'}")
+                                    i.fa.fa-cloud.fa-5x
+                                    br
+                                    label online
+                                button.btn-primary.role-button.col-sm-2(ng-click='offline = true' ng-class="{'active': offline==='true'}")
+                                    i.fa.fa-code.fa-5x
+                                    br
+                                    label Offline
                         div(class="modal-footer")
                         button(type="button" class="btn btn-default" data-dismiss="modal") Close
                         button(type="button" ng-click="createActivity()" class="btn btn-primary") Submit

@@ -19,6 +19,26 @@
     .theme-showcase(ng-if='!isDeveloper()').col-md-12
         //- Activities
         .panel.panel-default(ng-controller='ActivityListCtrl', ng-init='init()')
+            #normalModal(class="modal fade")
+                div(class="modal-dialog")
+                    div(class="modal-content")
+                        div(class="modal-header")
+                            button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+                            h4(class="modal-title") What type of activity do you want to create?
+                        div(class="modal-body")
+                            .container
+                                .row.form-group
+                                    button.btn-default.role-button.col-sm-2(ng-click='offline = false' ng-class="{'active': offline==='false'}")
+                                        i.fa.fa-cloud.fa-5x
+                                        br
+                                        label online
+                                    button.btn-primary.role-button.col-sm-2(ng-click='offline = true' ng-class="{'active': offline==='true'}")
+                                        i.fa.fa-code.fa-5x
+                                        br
+                                        label Offline
+                            div(class="modal-footer")
+                            button(type="button" class="btn btn-default" data-dismiss="modal") Close
+                            button(type="button" ng-click="createActivity()" class="btn btn-primary") Submit
             .panel-heading My Activities
             .panel-body
                 .panel.panel-primary(ng-if='isTeacher()')
@@ -32,7 +52,7 @@
                         label Class:
                             select.form-control(ng-model='activity.classId')
                                 option(ng-repeat='class in classes' value='{{ class._id }}') {{ class.name }}
-                        a.btn.btn-primary(type='button', ng-click='createActivity()')
+                        a.btn.btn-primary(type='button' data-toggle="modal" href="#normalModal" class="btn btn-default")
                             span.glyphicon.glyphicon-plus.right10
                             | New activity
                         p.btn-danger {{activityCreatedError}}

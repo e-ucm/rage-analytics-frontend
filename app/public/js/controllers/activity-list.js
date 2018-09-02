@@ -120,6 +120,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
 
             };
 
+            $scope.offline = false;
             var doCreateActivity = function(activityName, gameId, versionId, classId) {
                 var activity = new Activities();
                 activity.name = activityName;
@@ -127,7 +128,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 activity.versionId = versionId;
                 activity.classId = classId;
 
-                if ($('#offline').is(':checked')) {
+                if ($scope.offline) {
                     activity.offline = true;
                     activity.allowAnonymous = true;
                 } else {
