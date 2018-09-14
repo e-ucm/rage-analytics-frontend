@@ -20,7 +20,7 @@
 
 angular.module('activitiesApp', ['ngStorage', 'services'])
     .controller('ActivityListCtrl', ['$rootScope', '$scope', '$attrs', '$interpolate', '$http', 'Activities', 'Games', 'Versions', 'Classes', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $interpolate, $http,  Activities, Games, Versions, Classes, CONSTANTS) {
+        function ($rootScope, $scope, $attrs, $interpolate, $http, Activities, Games, Versions, Classes, CONSTANTS) {
 
             $scope.activityOpenedError = '';
             $scope.activityCreatedError = '';
@@ -49,19 +49,19 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 loadAll();
             }
 
-            $attrs.$observe('classid', function() {
+            $attrs.$observe('classid', function () {
                 if ($attrs.classid) {
                     loadByClass($attrs.classid);
                 }
             });
 
-            $attrs.$observe('gameid', function() {
+            $attrs.$observe('gameid', function () {
                 if ($attrs.gameid && $attrs.versionid) {
                     loadByGameAndVersion($attrs.gameid, $attrs.versionid);
                 }
             });
 
-            $attrs.$observe('versionid', function() {
+            $attrs.$observe('versionid', function () {
                 if ($attrs.gameid && $attrs.versionid) {
                     loadByGameAndVersion($attrs.gameid, $attrs.versionid);
                 }
@@ -69,21 +69,29 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
 
             $scope.$on('refreshClasses', function () {
                 Classes.my().$promise
-                    .then(function(classes) { $scope.classes = classes; })
-                    .then(function() {
-                        Activities.my().$promise.then(function(activities) {
+                    .then(function (classes) {
+                        $scope.classes = classes;
+                    })
+                    .then(function () {
+                        Activities.my().$promise.then(function (activities) {
                             $scope.activities = activities;
                         });
                     });
             });
 
             $scope.$on('refreshGames', function () {
-                Games.public().$promise.then(function(games) { $scope.games = games; });
-                Activities.my().$promise.then(function(activities) { $scope.activities = activities; });
+                Games.public().$promise.then(function (games) {
+                    $scope.games = games;
+                });
+                Activities.my().$promise.then(function (activities) {
+                    $scope.activities = activities;
+                });
             });
 
             $scope.$on('refreshActivities', function () {
-                Activities.my().$promise.then(function(activities) { $scope.activities = activities; });
+                Activities.my().$promise.then(function (activities) {
+                    $scope.activities = activities;
+                });
             });
 
 
@@ -107,7 +115,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 }
 
                 if (!versionId) {
-                    Versions.forGame({gameId: gameId}).$promise.then(function(versions) {
+                    Versions.forGame({gameId: gameId}).$promise.then(function (versions) {
                         if (versions && versions.length > 0 && versions[0]._id) {
                             doCreateActivity(activityName, gameId, versions[0]._id, classId);
                         } else {
@@ -121,7 +129,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
             };
 
             $scope.offline = false;
-            var doCreateActivity = function(activityName, gameId, versionId, classId) {
+            var doCreateActivity = function (activityName, gameId, versionId, classId) {
                 var activity = new Activities();
                 activity.name = activityName;
                 activity.gameId = gameId;
@@ -135,7 +143,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                     activity.offline = false;
                     activity.allowAnonymous = false;
                 }
-                activity.$save().then(function() {
+                activity.$save().then(function () {
                     $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + gameId)
                         .success(function (data) {
                             var panels = [];
@@ -190,9 +198,9 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                                                     $scope.goToActivity(activity);
                                                     $rootScope.$broadcast('refreshActivities');
                                                 }).error(function (data, status) {
-                                                    console.error('Error on post /kibana/dashboard/activity/' + activity._id + ' ' +
-                                                        JSON.stringify(data) + ', status: ' + status);
-                                                });
+                                                console.error('Error on post /kibana/dashboard/activity/' + activity._id + ' ' +
+                                                    JSON.stringify(data) + ', status: ' + status);
+                                            });
                                         }
                                     }).error(function (data, status) {
                                         console.error('Error on post /kibana/visualization/activity/' + visualizationId + '/' + activity._id + ' ' +
@@ -212,13 +220,13 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
 
             $scope.deleteActivity = function (activityObj) {
                 if (activityObj) {
-                    activityObj.$remove().then(function() {
+                    activityObj.$remove().then(function () {
                         $rootScope.$broadcast('refreshActivities');
                     });
                 }
             };
 
-            $scope.getClassById = function(_id) {
+            $scope.getClassById = function (_id) {
                 var r = null;
                 if ($scope.classes) {
                     $scope.classes.forEach(function (c) {
@@ -230,7 +238,7 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                 return r;
             };
 
-            $scope.getGameById = function(_id) {
+            $scope.getGameById = function (_id) {
                 var r = null;
                 if ($scope.games) {
                     $scope.games.forEach(function (g) {
