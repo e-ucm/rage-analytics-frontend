@@ -38,7 +38,7 @@
                                         label Offline
                             div(class="modal-footer")
                             button(type="button" class="btn btn-default" data-dismiss="modal") Close
-                            button(type="button" ng-click="createActivity()" class="btn btn-primary") Submit
+                            button(type="button" ng-click="createActivity()" data-dismiss="modal" class="btn btn-primary") Submit
             .panel-heading My Activities
             .panel-body
                 .panel.panel-primary(ng-if='isTeacher()')
