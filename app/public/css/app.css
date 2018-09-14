@@ -4,6 +4,21 @@ html, body {
     height:100vh;
 }
 
+.modal-dialog-full {
+    width: 98%;
+    height: 92%;
+    padding: 0;
+}
+
+.modal-content-full {
+    margin-bottom: 10px;
+}
+
+.btn-space {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .left-menu {
     padding-left: 0px;
     padding-right: 0px;
