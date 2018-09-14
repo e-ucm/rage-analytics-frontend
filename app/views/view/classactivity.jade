@@ -12,6 +12,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 .container.theme-showcase(ng-if='selectedClass' ng-controller='ClassCtrl' ng-attr-classid='{{ selectedClass._id }}')
+    #dashboardModal(class="modal fade")
+        div.modal-dialog-full(class="modal-dialog")
+            div.modal-content-full(class="modal-content")
+                div(class="modal-header")
+                    button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+                    h4(class="modal-title") Class dashboard displaying activities visualizations
+                div(class="modal-body ")
+                    iframe#dashboardIframe.no-border(ng-src = "{{dashboardLink}}" scrolling="no" width="100%" height="100%")
+                    script(src='./js/iresizer.js')
     div(ng-controller='ActivityListCtrl', ng-attr-classid='{{ class._id }}' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
         #normalModal(class="modal fade")
             div(class="modal-dialog")
@@ -32,12 +41,16 @@
                                     label Offline
                         div(class="modal-footer")
                         button(type="button" class="btn btn-default" data-dismiss="modal") Close
-                        button(type="button" ng-click="createActivity()" class="btn btn-primary") Submit
+                        button(type="button" ng-click="createActivity()" data-dismiss="modal" class="btn btn-primary") Submit
         .panel.panel-default
             .panel-heading
-                h1(ng-if='isTeacher()')
-                    a(href="#", editable-text="class.name" onaftersave="changeName()") Class {{ class.name }}
-                h1(ng-if='!isTeacher()') Class {{ class.name }}
+                .row
+                    h1(ng-if='isTeacher()')
+                        a.btn-space(href="#", editable-text="class.name" onaftersave="changeName()") Class {{ class.name }}
+                        button.btn.btn-primary.btn-space(data-toggle="modal" href="#dashboardModal") Dashboard
+                        button.btn.btn-primary.btn-space
+                            i.fa.fa-external-link(ng-click='popDashboard()')
+                    h1(ng-if='!isTeacher()') Class {{ class.name }}
 
             .panel-body
                 .panel.panel-primary(ng-if='isTeacher()')
@@ -48,10 +61,11 @@
                         label Game:
                             select.form-control(ng-model='activity.gameId')
                                 option(ng-repeat='game in games' value='{{ game._id }}') {{ game.title }}
-                        a.btn.btn-primary(type='button', data-toggle="modal" href="#normalModal" class="btn btn-default")
+                        a.btn.btn-primary.btn-space(type='button', data-toggle="modal" href="#normalModal" class="btn btn-default")
                             span.glyphicon.glyphicon-plus.right10
                             | New activity
                         p.btn-danger {{activityCreatedError}}
+                p.btn-danger {{activityOpenedError}}
                 p.btn-danger {{activityOpenedError}}
                 table.table.table-hover
                     thead
@@ -359,4 +373,4 @@
                                             span.glyphicon(ng-class='$scope.class.groupings.indexOf(grouping._id)===-1 ? "glyphicon-unchecked" : "glyphicon-saved"')
                                     td
                                         a(ng-click='$scope.removeGrouping(grouping)')
-span.glyphicon.glyphicon-remove-sign
+                                            span.glyphicon.glyphicon-remove-sign
