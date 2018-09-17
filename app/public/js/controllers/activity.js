@@ -34,36 +34,82 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
         };
     })
     .controller('ActivityCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Activities', 'Classes', '_',
-        'Results', 'Versions', '$sce', '$interval', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results, Versions, $sce, $interval, CONSTANTS) {
+        'Results', 'Versions', 'Groups', 'Groupings', '$sce', '$interval', 'Role', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, Activities, Classes, _, Results,
+                  Versions, Groups, Groupings, $sce, $interval, Role, CONSTANTS) {
 
             var refresh;
+            var groupsReady = false;
+            var groupingsReady = false;
+            var classReady = false;
+            $scope.class = {};
             var onSetActivity = function() {
-                $scope.refreshResults = function () {
-                    var rawResults = Results.query({
-                            id: $scope.activity._id
-                        },
-                        function () {
-                            calculateResults(rawResults);
-                        });
-                };
-
-                if (!$attrs.lite) {
-                    $scope.iframeDashboardUrl = dashboardLink();
-                    $scope.studentIframe = dashboardLink($scope.$storage.user.username);
-
-                    $scope.version = Versions.get({
-                        gameId: $scope.activity.gameId,
-                        versionId: $scope.activity.versionId
-                    }, function () {
-                        $scope.refreshResults();
-                        if (!$scope.activity.end) {
-                            refresh = $interval(function () {
-                                $scope.refreshResults();
-                            }, 10000);
+                Classes.get({classId: $scope.activity.classId}).$promise.then(function(c) {
+                    classReady = true;
+                    $scope.class = c;
+                    if ($scope.activity.groupings && $scope.activity.groupings.length > 0) {
+                        $scope.unlockGroupings();
+                    } else if ($scope.activity.groups && $scope.activity.groups.length > 0) {
+                        $scope.unlockGroups();
+                    }
+                    updateGroups();
+                    updateGroupings();
+                    $scope.refreshResults = function () {
+                        if (Role.isUser()) {
+                            if (!$scope.gameplaysShown) {
+                                $scope.gameplaysShown = {};
+                            }
+                            if (Role.isTeacher()) {
+                                Activities.attempts({activityId: $scope.activity._id}, function (attempts) {
+                                    $scope.attempts = attempts;
+                                });
+                            }
                         }
-                    });
-                }
+                        var rawResults = Results.query({
+                                id: $scope.activity._id
+                            },
+                            function () {
+                                calculateResults(rawResults);
+                            });
+                    };
+
+                    if (!$attrs.lite) {
+                        $scope.iframeDashboardUrl = dashboardLink();
+                        $scope.studentIframe = dashboardLink($scope.$storage.user.username);
+
+                        $scope.version = Versions.get({
+                            gameId: $scope.activity.gameId,
+                            versionId: $scope.activity.versionId
+                        }, function () {
+                            $scope.refreshResults();
+                            if (!$scope.activity.end) {
+                                refresh = $interval(function () {
+                                    $scope.refreshResults();
+                                }, 10000);
+                            }
+                        });
+                    }
+                });
+            };
+
+            var updateGroups = function () {
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id  + '/groups';
+                $http.get(route).success(function (data) {
+                    $scope.classGroups = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            var updateGroupings = function () {
+                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/groupings';
+                $http.get(route).success(function (data) {
+                    $scope.classGroupings = data;
+                }).error(function (data, status) {
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
             };
 
             $scope.$on('$destroy', function() {
@@ -77,12 +123,14 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             });
 
             $attrs.$observe('activity', function() {
+                groupsReady = false;
+                groupingsReady = false;
+                classReady = false;
                 $scope.activity = JSON.parse($attrs.activity);
                 Activities.get({activityId: $scope.activity._id}).$promise.then(function(a) {
                     $scope.activity = a;
+                    onSetActivity();
                 });
-
-                onSetActivity();
             });
 
             $scope.student = {};
@@ -98,20 +146,35 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
 
-            var dashboardLink = function (userName) {
+            var dashboardLink = function (userName, attempt) {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
                     $scope.activity._id + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
+                var filter = {};
 
                 if (userName) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'out.name:' +
-                        userName + '\')))';
+                    filter.name = userName;
                 } else if ($scope.player) {
-                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'out.name:' +
-                        $scope.player.name + '\')))';
+                    filter.name = $scope.player.name;
+                }
+
+                if (attempt) {
+                    filter.session = attempt;
+                } else if ($scope.attempt) {
+                    filter.session = $scope.attempt.number;
+                }
+
+                if (filter.length > 0) {
+                    var props = [];
+                    for (var key in filter) {
+                        if (filter.hasOwnProperty(key)) {
+                            props.push(key + ': ' + filter[key]);
+                        }
+                    }
+                    url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'' + props.join(',') + '\')))';
                 }
 
                 if (url.startsWith('localhost')) {
@@ -159,11 +222,33 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.viewAll = function () {
                 $scope.player = null;
+                $scope.attempt = null;
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
             $scope.viewPlayer = function (result) {
                 $scope.player = result;
+                $scope.attempt = null;
+                $scope.iframeDashboardUrl = dashboardLink();
+            };
+
+            $scope.viewAttempt = function (gameplay, attempt) {
+                if ($scope.results) {
+                    var lookForName = gameplay.playerType === 'anonymous' ? gameplay.animalName : gameplay.playerName;
+                    for (var i = 0; i < $scope.results.length; i++) {
+                        if ($scope.results[i].name === lookForName) {
+                            $scope.player = $scope.results[i];
+                            break;
+                        }
+                    }
+                }
+                // This code manually changes the tab, this might be solved with tab('show') in newer versions
+                // as mentioned in https://github.com/twbs/bootstrap/issues/23594
+                $('.active[data-toggle=\'tab\']').toggleClass('active').toggleClass('show');
+                $('span[href=\'#realtime\'][data-toggle=\'tab\']').toggleClass('active').toggleClass('show');
+                $('.tab-pane.active').toggleClass('active').toggleClass('show');
+                $('#realtime').toggleClass('active').toggleClass('show');
+                $scope.attempt = attempt;
                 $scope.iframeDashboardUrl = dashboardLink();
             };
 
@@ -175,117 +260,168 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 $scope.activity.$update();
             };
 
-            // Teachers
-
-            $scope.isRemovable = function (dev) {
-                var teachers = $scope.activity.teachers;
-                if (teachers && teachers.length === 1) {
-                    return false;
-                }
-                if ($scope.username === dev) {
-                    return false;
-                }
-                return true;
-            };
-
-            $scope.inviteTeacher = function () {
-                if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
-                    $scope.activity.teachers.push($scope.teacher.name);
-                    $scope.activity.$update(function() {
-                        $scope.teacher.name = '';
-                    });
-                }
-            };
-
-            $scope.ejectTeacher = function (teacher) {
-                var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
-                $http.put(route, {teachers: teacher}).success(function (data) {
-                    $scope.activity.teachers = data.teachers;
-                }).error(function (data, status) {
-                    console.error('Error on put' + route + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
             // Students
+            $scope.classGroups = [];
+            $scope.classGroupings = [];
 
-            $scope.inviteStudent = function () {
-                if ($scope.student.name && $scope.student.name.trim() !== '') {
-                    var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id;
-                    $http.put(route, {students: $scope.student.name}).success(function (data) {
-                        $scope.student.name = '';
-                        $scope.activity.students = data.students;
+            $scope.selectedGroup = undefined;
+            $scope.selectedGrouping = undefined;
+
+            $scope.unlockedGroups = false;
+            $scope.unlockedGroupings = false;
+
+            $scope.isUsingGroupings = function () {
+                return $scope.activity.groupings && $scope.activity.groupings.length > 0;
+            };
+
+            $scope.isUsingGroups = function () {
+                return !$scope.isUsingGroupings() && $scope.activity.groups && $scope.activity.groups.length > 0;
+            };
+
+            $scope.unlockGroups = function() {
+                var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
+                if ($scope.unlockedGroupings) {
+                    $http.put(route, {groupings: $scope.activity.groupings}).success(function (data) {
+                        $scope.activity = data;
+                        $scope.unlockedGroupings = false;
                     }).error(function (data, status) {
                         console.error('Error on put' + route + ' ' +
                             JSON.stringify(data) + ', status: ' + status);
                     });
                 }
-
+                if ($scope.unlockedGroups) {
+                    $http.put(route, {groups: $scope.activity.groups}).success(function (data) {
+                        $scope.activity = data;
+                        $scope.unlockedGroups = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                } else {
+                    $scope.unlockedGroups = true;
+                }
             };
 
-            $scope.ejectStudent = function (student) {
+            $scope.unlockGroupings = function() {
                 var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
-                $http.put(route, {students: student}).success(function (data) {
-                    $scope.activity.students = data.students;
+                if ($scope.unlockedGroups) {
+                    $http.put(route, {groups: $scope.activity.groups}).success(function (data) {
+                        $scope.activity = data;
+                        $scope.unlockedGroups = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                }
+                if ($scope.unlockedGroupings) {
+                    $scope.put(route, {groupings: $scope.activity.groupings}).success(function (data) {
+                        $scope.activity = data;
+                        $scope.unlockedGroupings = false;
+                    }).error(function (data, status) {
+                        console.error('Error on put' + route + ' ' +
+                            JSON.stringify(data) + ', status: ' + status);
+                    });
+                } else {
+                    $scope.unlockedGroupings = true;
+                }
+            };
+
+            $scope.selectGroup = function (group) {
+                if ($scope.selectedGroup && $scope.selectedGroup._id === group._id) {
+                    $scope.selectedGroup = undefined;
+                } else {
+                    $scope.selectedGroup = group;
+                }
+
+                $scope.selectedGrouping = undefined;
+            };
+
+            $scope.isInSelectedGroup = function (usr, role, group) {
+                if (group) {
+                    return group.participants[role].indexOf(usr) !== -1;
+                }
+                if ($scope.selectedGroup) {
+                    return $scope.selectedGroup.participants[role].indexOf(usr) !== -1;
+                }
+                return false;
+            };
+
+            $scope.selectGrouping = function (grouping) {
+                if ($scope.selectedGrouping && $scope.selectedGrouping._id === grouping._id) {
+                    $scope.selectedGrouping = undefined;
+                } else {
+                    $scope.selectedGrouping = grouping;
+                }
+
+                $scope.selectedGroup = undefined;
+            };
+
+            $scope.getGroupThClass = function(group) {
+                if ($scope.selectedGroup && $scope.selectedGroup._id === group._id) {
+                    return 'bg-success';
+                }
+                if ($scope.selectedGrouping && $scope.isInSelectedGrouping(group._id, 'group')) {
+                    return 'bg-warning';
+                }
+                return '';
+            };
+
+            $scope.getUserThClass = function(usr, role) {
+                if ($scope.selectedGroup && $scope.isInSelectedGroup(usr, role)) {
+                    return 'bg-success';
+                }
+                if ($scope.selectedGrouping && $scope.isInSelectedGrouping(usr, role)) {
+                    return 'bg-warning';
+                }
+                return '';
+            };
+
+            $scope.isInSelectedGrouping = function (id, role) {
+                if ($scope.selectedGrouping) {
+                    if (role === 'group') {
+                        return $scope.selectedGrouping.groups.indexOf(id) !== -1;
+                    }
+
+                    for (var i = 0; i < $scope.selectedGrouping.groups.length; i++) {
+                        for (var j = 0; j < $scope.classGroups.length; j++) {
+                            if ($scope.classGroups[j]._id === $scope.selectedGrouping.groups[i]) {
+                                if ($scope.isInSelectedGroup(id, role, $scope.classGroups[j])) {
+                                    return true;
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+                return false;
+            };
+
+            $scope.checkGroup = function (group) {
+                var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id;
+                if ($scope.activity.groups && $scope.activity.groups.indexOf(group._id) !== -1) {
+                    route += '/remove';
+                }
+                $http.put(route, {groups: [group._id]}).success(function (data) {
+                    $scope.activity = data;
                 }).error(function (data, status) {
                     console.error('Error on put' + route + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
                 });
             };
 
-            $scope.updateActivityToClass = function () {
-                Classes.get({classId: $scope.activity.classId}).$promise.then(function(c) {
-                    angular.extend($scope.activity.students, c.students);
-                    $scope.activity.$update();
-                });
-            };
-
-            $scope.resetActivityToClass = function () {
-
-                Classes.get({classId: $scope.activity.classId}).$promise.then(function(c) {
-
-                    var toRemove = _.difference($scope.activity.students, c.students);
-                    $scope.activity.students = _.intersection($scope.activity.students, c.students);
-                    var then = function() {
-                        angular.extend($scope.activity.students, c.students);
-                        $scope.activity.$update();
-                    };
-                    if (toRemove.length > 0) {
-                        removeStudentsFromActivity(toRemove, then);
-                    } else {
-                        then();
-                    }
-                });
-            };
-
-            var removeStudentsFromActivity = function (students, then) {
-                if (students.length > 0) {
-                    var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/remove';
-                    $http.put(route, {students: students}).success(function (data) {
-                        $scope.activity.students = data.students;
-                        then();
-                    }).error(function (data, status) {
-                        console.error('Error on put' + route + ' ' +
-                            JSON.stringify(data) + ', status: ' + status);
-                    });
-                }
-            };
-
-            $scope.addCsvActivity = function () {
-                var students = [];
-                $scope.fileContent.contents.trim().split(',').forEach(function (student) {
-                    if (student) {
-                        students.push(student);
-                    }
-                });
+            $scope.checkGrouping = function (grouping) {
                 var route = CONSTANTS.PROXY + '/activities/' + $scope.activity._id;
-                $http.put(route, {students: students}).success(function (data) {
-                    $scope.activity.students = data.students;
+                if ($scope.activity.groupings && $scope.activity.groupings.indexOf(grouping._id) !== -1) {
+                    route += '/remove';
+                }
+                $http.put(route, {groupings: [grouping._id]}).success(function (data) {
+                    $scope.activity = data;
                 }).error(function (data, status) {
-                    console.error('Error on put', route, status);
+                    console.error('Error on put' + route + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
                 });
             };
-
 
             // Name
 
@@ -315,32 +451,29 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
             $scope.$on('refreshActivity', function(evt, activity) {
-                $scope.activity = activity;
-                console.log('Activity updated');
+                if ($scope.activity._id === activity._id) {
+                    $scope.activity = activity;
+                    console.log('Activity updated');
+                }
             });
+
+            var finishEvent = function(activity) {
+                $scope.activity = activity;
+                $rootScope.$broadcast('refreshActivity', $scope.activity);
+            };
 
             $scope.startActivity = function () {
                 if (!$scope.activity || $scope.activity.loading) {
                     return;
                 }
 
-                $scope.activity.loading = true;
-                $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/start').success(function (s) {
-                    $scope.activity.loading = false;
-                    $scope.activity.start = s.start;
-                    $scope.activity.end = s.end;
-                    $rootScope.$broadcast('refreshActivity', $scope.activity);
-                }).error(function (data, status) {
-                    console.error('Error on get /activities/' + $scope.activity._id + '/event/start ' +
-                        JSON.stringify(data) + ', status: ' + status);
-
+                $scope.activity.$event({event: 'start'}).$promise.then(finishEvent).fail(function (error) {
+                    console.error(error);
                     $.notify('<strong>Error while opening the activity:</strong><br>If the session was recently closed it ' +
                         'might need to be cleaned by the system. <br>Please try again in a few seconds.', {
                         offset: { x: 10, y: 65 },
                         type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
                     });
-
-                    $scope.activity.loading = false;
                     $rootScope.$broadcast('refreshActivity', $scope.activity);
                 });
             };
@@ -350,22 +483,12 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     return;
                 }
 
-                $scope.activity.loading = true;
-                $http.post(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/event/end').success(function (s) {
-                    $scope.activity.loading = false;
-                    $scope.activity.start = s.start;
-                    $scope.activity.end = s.end;
-                    $rootScope.$broadcast('refreshActivity', $scope.activity);
-                }).error(function (data, status) {
-                    console.error('Error on get /activities/' + $scope.activity._id + '/event/end ' +
-                        JSON.stringify(data) + ', status: ' + status);
-
+                $scope.activity.$event({event: 'end'}).$promise.then(finishEvent).fail(function (error) {
+                    console.error(error);
                     $.notify('<strong>Error while closing the activity:</strong><br>Please try again in a few seconds.', {
                         offset: { x: 10, y: 65 },
                         type: 'danger'// jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
                     });
-
-                    $scope.activity.loading = false;
                     $rootScope.$broadcast('refreshActivity', $scope.activity);
                 });
             };

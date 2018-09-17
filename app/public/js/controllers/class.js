@@ -18,14 +18,20 @@
 
 'use strict';
 
-angular.module('classApp', ['ngStorage', 'services'])
-    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', 'Classes', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, Classes, CONSTANTS) {
-
+angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 'ui.bootstrap'])
+    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', '$uibModal', 'Classes', 'Groups', 'Groupings', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $location, $http, $uibModal, Classes, Groups, Groupings, CONSTANTS) {
+            var groupsReady = false;
+            var groupingsReady = false;
+            var classReady = false;
             var onSetClass = function() {
                 if (!$scope.class) {
                     throw new Error('No class for ClassCtrl');
                 } else {
+                    classReady = true;
+                    if (groupsReady && groupingsReady && classReady) {
+                        onReadyParticipants();
+                    }
                     $http.get(CONSTANTS.PROXY + '/lti/keyid/' + $scope.class._id).success(function (data) {
                         if (data && data.length > 0) {
                             $scope.lti.key = data[0]._id;
@@ -35,8 +41,76 @@ angular.module('classApp', ['ngStorage', 'services'])
                 }
             };
 
-            $attrs.$observe('classid', function() {
+            var onReadyGroups = function() {
+                groupsReady = true;
+                if (groupsReady && groupingsReady && classReady) {
+                    onReadyParticipants();
+                }
+            };
+
+            var onReadyGroupings = function() {
+                groupingsReady = true;
+                if (groupsReady && groupingsReady && classReady) {
+                    onReadyParticipants();
+                }
+            };
+
+            var onReadyParticipants = function() {
+                $scope.participants = {teachers: [], assistants: [], students: []};
+                if ($scope.isUsingGroupings()) {
+                    $scope.class.groupings.forEach(function(groupingId) {
+                        addParticipantsFromGroupingId(groupingId);
+                    });
+                } else if ($scope.isUsingGroups()) {
+                    $scope.class.groups.forEach(function(groupId) {
+                        addParticipantsFromGroupId(groupId);
+                    });
+                } else {
+                    $scope.participants = $scope.class.participants;
+                }
+            };
+
+            var getClassInfo = function() {
+                groupsReady = false;
+                groupingsReady = false;
+                classReady = false;
                 $scope.class = Classes.get({classId: $attrs.classid}, onSetClass);
+                $scope.groups = Groups.get({classId: $attrs.classid}, onReadyGroups);
+                $scope.groupings = Groupings.get({classId: $attrs.classid}, onReadyGroupings);
+            };
+
+            var addParticipantsFromGroupingId = function(groupingId) {
+                for (var i = 0; i < $scope.groupings.length; i++) {
+                    if (groupingId === $scope.groupings[i]._id) {
+                        for (var j = 0; j < $scope.groupings[i].groups.length; j++) {
+                            addParticipantsFromGroupId($scope.groupings[i].groups[j]);
+                        }
+                        break;
+                    }
+                }
+            };
+
+            var addParticipantsFromGroupId = function(groupId) {
+                for (var i = 0; i < $scope.groups.length; i++) {
+                    if (groupId === $scope.groups[i]._id) {
+                        pushUsrFromGroupToParticipants($scope.groups[i], 'teachers');
+                        pushUsrFromGroupToParticipants($scope.groups[i], 'assistants');
+                        pushUsrFromGroupToParticipants($scope.groups[i], 'students');
+                        return;
+                    }
+                }
+            };
+
+            var pushUsrFromGroupToParticipants = function(group, role) {
+                group.participants[role].forEach(function (usr) {
+                    if ($scope.participants[role].indexOf(usr) === -1) {
+                        $scope.participants[role].push(usr);
+                    }
+                });
+            };
+
+            $attrs.$observe('classid', function() {
+                getClassInfo();
             });
 
             $attrs.$observe('forclass', function() {
@@ -50,6 +124,32 @@ angular.module('classApp', ['ngStorage', 'services'])
             $scope.student = {};
             $scope.teacher = {};
 
+            $scope.open = function (size) {
+                var modalInstance = $uibModal.open({
+                    animation: this.animationsEnabled,
+                    templateUrl: 'participantsModal',
+                    controller: 'ModalInstanceCtrl',
+                    size: size,
+                    controllerAs: '$scope',
+                    resolve: {
+                        items: function () {
+                            return {
+                                username: $scope.username,
+                                classId: $scope.class._id,
+                                classes: Classes,
+                                http: $http,
+                                constants: CONSTANTS
+                            };
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                }, function () {
+                    getClassInfo();
+                });
+            };
+
             // Class
 
             $scope.changeName = function () {
@@ -58,81 +158,12 @@ angular.module('classApp', ['ngStorage', 'services'])
                 });
             };
 
-            // Teachers
-
-            $scope.isRemovable = function (dev) {
-                var teachers = $scope.class.teachers;
-                if (teachers && teachers.length === 1) {
-                    return false;
-                }
-                if ($scope.username === dev) {
-                    return false;
-                }
-                return true;
+            $scope.isUsingGroupings = function () {
+                return $scope.class.groupings && $scope.class.groupings.length > 0;
             };
 
-            $scope.inviteTeacher = function () {
-                if ($scope.teacher.name && $scope.teacher.name.trim() !== '') {
-                    $scope.class.teachers.push($scope.teacher.name);
-                    $scope.class.$update(function () {
-                        $scope.teacher.name = '';
-                    });
-                }
-            };
-
-            $scope.ejectTeacher = function (teacher) {
-                var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id + '/remove';
-                $http.put(route, {teachers: teacher}).success(function (data) {
-                    $scope.class.teachers = data.teachers;
-                }).error(function (data, status) {
-                    console.error('Error on put' + route + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
-            // Students
-
-            $scope.inviteStudent = function () {
-                if ($scope.student.name && $scope.student.name.trim() !== '') {
-                    var route = CONSTANTS.PROXY + '/classes/' + $scope.class._id;
-                    $http.put(route, {students: $scope.student.name}).success(function (data) {
-                        $scope.class = data;
-                    }).error(function (data, status) {
-                        console.error('Error on put' + route + ' ' +
-                            JSON.stringify(data) + ', status: ' + status);
-                    });
-                }
-            };
-
-
-            $scope.ejectStudent = function (student, fromClass) {
-                var route = '';
-                if (fromClass) {
-                    route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id + '/remove';
-                } else {
-                    route = CONSTANTS.PROXY + '/activities/' + $scope.selectedActivity._id + '/remove';
-                }
-                $http.put(route, {students: student}).success(function (data) {
-                    $scope.class = data;
-                }).error(function (data, status) {
-                    console.error('Error on put' + route + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
-            $scope.addCsvClass = function () {
-                var students = [];
-                $scope.fileContent.contents.trim().split(',').forEach(function (student) {
-                    if (student) {
-                        students.push(student);
-                    }
-                });
-                var route = CONSTANTS.PROXY + '/classes/' + $scope.selectedClass._id;
-                $http.put(route, {students: students}).success(function (data) {
-                    $scope.class.students = data.students;
-                }).error(function (data, status) {
-                    console.error('Error on put', route, status);
-                });
+            $scope.isUsingGroups = function () {
+                return !$scope.isUsingGroupings() && $scope.class.groups && $scope.class.groups.length > 0;
             };
 
             // LTI
@@ -158,3 +189,4 @@ angular.module('classApp', ['ngStorage', 'services'])
             };
         }
     ]);
+
