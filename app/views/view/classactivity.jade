@@ -22,26 +22,6 @@
                     iframe#dashboardIframe.no-border(ng-src = "{{dashboardLink}}" scrolling="no" width="100%" height="100%")
                     script(src='./js/iresizer.js')
     div(ng-controller='ActivityListCtrl', ng-attr-classid='{{ class._id }}' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
-        #normalModal(class="modal fade")
-            div(class="modal-dialog")
-                div(class="modal-content")
-                    div(class="modal-header")
-                        button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
-                        h4(class="modal-title") What type of activity do you want to create?
-                    div(class="modal-body")
-                        .container
-                            .row.form-group
-                                button.btn-default.role-button.col-sm-2(ng-click='offline = false' ng-class="{'active': offline==='false'}")
-                                    i.fa.fa-cloud.fa-5x
-                                    br
-                                    label online
-                                button.btn-primary.role-button.col-sm-2(ng-click='offline = true' ng-class="{'active': offline==='true'}")
-                                    i.fa.fa-code.fa-5x
-                                    br
-                                    label Offline
-                        div(class="modal-footer")
-                        button(type="button" class="btn btn-default" data-dismiss="modal") Close
-                        button(type="button" ng-click="createActivity()" data-dismiss="modal" class="btn btn-primary") Submit
         .panel.panel-default
             .panel-heading
                 .row
@@ -61,9 +41,15 @@
                         label Game:
                             select.form-control(ng-model='activity.gameId')
                                 option(ng-repeat='game in games' value='{{ game._id }}') {{ game.title }}
-                        a.btn.btn-primary.btn-space(type='button', data-toggle="modal" href="#normalModal" class="btn btn-default")
+                        a.btn.btn-primary.btn-space(type='button', ng-click="createActivity()" class="btn btn-default")
                             span.glyphicon.glyphicon-plus.right10
                             | New activity
+                        .checkbox(style="display: inline-block")
+                            label
+                                input(type='checkbox' ng-model='type.offline')
+                                span.cr
+                                    i.cr-icon.glyphicon.glyphicon-ok
+                                |    Offline activity
                         p.btn-danger {{activityCreatedError}}
                 p.btn-danger {{activityOpenedError}}
                 p.btn-danger {{activityOpenedError}}
