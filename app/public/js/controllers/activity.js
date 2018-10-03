@@ -281,18 +281,12 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                         // This callback will be called asynchronously
                         // when the response is available
 
-                        // Check if the version has an analysis uploaded
-
                         $scope.offlinetraces = response.data;
-                        console.log('offline tracess!!');
-                        console.info($scope.offlinetraces);
                     }, function errorCallback(response) {
                         // Called asynchronously if an error occurs
                         // or server returns response with an error status.
                         console.error('Error on get /offlinetraces/' + $scope.activity._id + ' ' +
                             JSON.stringify(response, null, '  '));
-
-                        // Check if the version has an analysis uploaded
                     });
                 }
             }
@@ -309,16 +303,12 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }).then(function successCallback(response) {
                     // This callback will be called asynchronously
                     // when the response is available
-
-                    // Check if the version has an analysis uploaded
                     updateOfflineTraces();
                 }, function errorCallback(response) {
                     // Called asynchronously if an error occurs
                     // or server returns response with an error status.
                     console.error('Error on post /offlinetraces/' + $scope.activity._id + ' ' +
                         JSON.stringify(response, null, '  '));
-
-                    // Check if the version has an analysis uploaded
                 });
             }
 
@@ -392,7 +382,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     });
                 }
                 if ($scope.unlockedGroupings) {
-                    $scope.put(route, {groupings: $scope.activity.groupings}).success(function (data) {
+                    $http.put(route, {groupings: $scope.activity.groupings}).success(function (data) {
                         $scope.activity = data;
                         $scope.unlockedGroupings = false;
                     }).error(function (data, status) {
