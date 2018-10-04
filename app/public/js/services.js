@@ -124,6 +124,7 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
             gameId: '@gameId',
             username: '@username'
         }, {
+            save: { method: 'POST', url: CONSTANTS.PROXY + '/activities/bundle' },
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/my' },
             forClass: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/activities/my' },
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },

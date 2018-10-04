@@ -19,8 +19,8 @@
 'use strict';
 
 angular.module('activitiesApp', ['ngStorage', 'services'])
-    .controller('ActivityListCtrl', ['$rootScope', '$scope', '$attrs', '$interpolate', '$http', 'Activities', 'Games', 'Versions', 'Classes', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $interpolate, $http, Activities, Games, Versions, Classes, CONSTANTS) {
+    .controller('ActivityListCtrl', ['$rootScope', '$scope', '$attrs', '$interpolate', '$http', 'Activities', 'Games', 'Versions', 'Classes', 'blockUI', 'CONSTANTS',
+        function ($rootScope, $scope, $attrs, $interpolate, $http, Activities, Games, Versions, Classes, blockUI, CONSTANTS) {
 
             $scope.activityOpenedError = '';
             $scope.activityCreatedError = '';
@@ -145,78 +145,11 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
                     activity.offline = false;
                     activity.allowAnonymous = false;
                 }
+                blockUI.start();
                 activity.$save().then(function () {
-                    $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/tch/' + gameId)
-                        .success(function (data) {
-                            var panels = [];
-                            var uiStates = {};
-
-                            // Add index
-                            $http.post(CONSTANTS.PROXY + '/kibana/index/' + gameId + '/' + activity._id, {})
-                                .success(function (data) {
-
-                                }).error(function (data, status) {
-                                console.error('Error on post /kibana/index/' + gameId + '/' + activity._id + ' ' +
-                                    JSON.stringify(data) + ', status: ' + status);
-                            });
-
-                            // Add dashboard
-                            var numPan = 1;
-                            if (data.length > 0) {
-                                data.forEach(function (visualizationId) {
-                                    $http.post(CONSTANTS.PROXY + '/kibana/visualization/activity/' + gameId +
-                                        '/' + visualizationId + '/' + activity._id, {}).success(function (result) {
-                                        panels.push('{\"id\":\"' + visualizationId + '_' + activity._id +
-                                            '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                            '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
-                                            (numPan + 1 / 2) + '}');
-                                        uiStates['P-' + numPan] = {vis: {legendOpen: false}};
-                                        numPan++;
-
-                                        if (numPan > data.length) {
-                                            var dashboard = {
-                                                title: 'dashboard_' + activity._id,
-                                                hits: 0,
-                                                description: '',
-                                                panelsJSON: '[' + panels.toString() + ']',
-                                                optionsJSON: '{"darkTheme":false}',
-                                                uiStateJSON: JSON.stringify(uiStates),
-                                                version: 1,
-                                                timeRestore: true,
-                                                timeTo: 'now',
-                                                timeFrom: 'now-1h',
-                                                refreshInterval: {
-                                                    display: '5 seconds',
-                                                    pause: false,
-                                                    section: 1,
-                                                    value: 5000
-                                                },
-                                                kibanaSavedObjectMeta: {
-                                                    searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
-                                                }
-                                            };
-                                            $http.post(CONSTANTS.PROXY + '/kibana/dashboard/activity/' + activity._id, dashboard)
-                                                .success(function (data) {
-                                                    $scope.goToActivity(activity);
-                                                    $rootScope.$broadcast('refreshActivities');
-                                                }).error(function (data, status) {
-                                                console.error('Error on post /kibana/dashboard/activity/' + activity._id + ' ' +
-                                                    JSON.stringify(data) + ', status: ' + status);
-                                            });
-                                        }
-                                    }).error(function (data, status) {
-                                        console.error('Error on post /kibana/visualization/activity/' + visualizationId + '/' + activity._id + ' ' +
-                                            JSON.stringify(data) + ', status: ' + status);
-                                    });
-                                });
-                            } else {
-                                $scope.goToActivity(activity);
-                                $rootScope.$broadcast('refreshActivities');
-                            }
-                        }).error(function (data, status) {
-                        console.error('Error on post /kibana/visualization/list/' + gameId + ' ' +
-                            JSON.stringify(data) + ', status: ' + status);
-                    });
+                    $scope.goToActivity(activity);
+                    $rootScope.$broadcast('refreshActivities');
+                    blockUI.stop();
                 });
             };
 

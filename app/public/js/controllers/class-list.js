@@ -20,8 +20,8 @@
 
 angular.module('classesApp', ['ngStorage', 'services'])
     .controller('ClassListCtrl', ['$scope', '$rootScope', '$location', '$http', 'Classes', 'Courses',
-        '$timeout', 'CONSTANTS',
-        function ($scope, $rootScope, $location, $http, Classes, Courses, $timeout, CONSTANTS) {
+        '$timeout', 'blockUI', 'CONSTANTS',
+        function ($scope, $rootScope, $location, $http, Classes, Courses, $timeout, blockUI, CONSTANTS) {
             $scope.activity = {};
             $scope.courseId = {};
             $scope.class = {};
@@ -74,6 +74,7 @@ angular.module('classesApp', ['ngStorage', 'services'])
             $scope.createClass = function () {
                 var c = new Classes();
                 c.name = $scope.class.name ? $scope.class.name : 'New class';
+                blockUI.start();
                 c.$save().then(function () {
                     $rootScope.$broadcast('refreshClasses');
 
@@ -134,6 +135,7 @@ angular.module('classesApp', ['ngStorage', 'services'])
                                             $http.post(CONSTANTS.PROXY + '/kibana/dashboard/class/' + c._id, dashboard)
                                                 .success(function (data) {
                                                     $scope.goToClass(c);
+                                                    blockUI.stop();
                                                 }).error(function (data, status) {
                                                 console.error('Error on post /kibana/dashboard/class/' + c._id + ' ' +
                                                     JSON.stringify(data) + ', status: ' + status);

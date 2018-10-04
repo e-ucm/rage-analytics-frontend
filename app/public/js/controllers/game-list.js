@@ -19,8 +19,8 @@
 'use strict';
 
 angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
-    .controller('GameListCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'CONSTANTS',
-        function ($scope, $rootScope, $http, $window, Games, Versions, Role, CONSTANTS) {
+    .controller('GameListCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'blockUI', 'CONSTANTS',
+        function ($scope, $rootScope, $http, $window, Games, Versions, Role, blockUI, CONSTANTS) {
 
             $scope.game = {};
 
@@ -42,6 +42,7 @@ angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
             $scope.createGame = function () {
                 var game = new Games();
                 game.title = $scope.game.gameTitle ? $scope.game.gameTitle : 'new game';
+                blockUI.start();
                 game.$save().then(function (game) {
                     var version = new Versions();
                     version.gameId = game._id;
@@ -72,6 +73,7 @@ angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
                                                                 visJSON).success(function(data) {
                                                                 $rootScope.$broadcast('refreshGames');
                                                                 $scope.goToGame(data);
+                                                                blockUI.stop();
                                                             }).error(function (data, status) {
                                                                 console.error('Error on post /kibana/visualization/list/' +  game._id + ' ' +
                                                                     JSON.stringify(data) + ', status: ' + status);
