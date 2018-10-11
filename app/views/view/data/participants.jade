@@ -19,9 +19,11 @@
     h1 Participants
     .row
         .col-md-12
-            .checkbox
+            .checkbox(style="display: inline-block")
                 label
                     input(type="checkbox" ng-change='allowAnonymous()' ng-model='activity.allowAnonymous')
+                    span.cr
+                        i.cr-icon.glyphicon.glyphicon-ok
                     | Allow anonymous users
             br
     div.modal-header.row
