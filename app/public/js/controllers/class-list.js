@@ -77,82 +77,8 @@ angular.module('classesApp', ['ngStorage', 'services'])
                 blockUI.start();
                 c.$save().then(function () {
                     $rootScope.$broadcast('refreshClasses');
-
-                    $http.get(CONSTANTS.PROXY + '/kibana/classvis/')
-                        .success(function (data) {
-                            var panels = [];
-                            var uiStates = {};
-
-                            // Add index
-
-                            $http.post(CONSTANTS.PROXY + '/kibana/classindex/' + c._id, {})
-                                .success(function (data) {
-
-                                }).error(function (data, status) {
-                                console.error('Error on post /kibana/classindex/' + c._id + ' ' +
-                                    JSON.stringify(data) + ', status: ' + status);
-                            });
-
-
-                            // Add dashboard
-                            var numPan = 1;
-                            if (data.length > 0) {
-                                data.forEach(function (visualization) {
-                                    $http.post(CONSTANTS.PROXY + '/kibana/visualization/class/' + c._id, visualization).success(function (result) {
-                                        console.log('updated visualization');
-                                        console.info(visualization);
-                                        console.log('result');
-                                        console.info(result);
-                                        panels.push('{\"id\":\"' + result._id +
-                                            '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                            '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
-                                            (numPan + 1 / 2) + '}');
-                                        uiStates['P-' + numPan] = {vis: {legendOpen: false}};
-                                        numPan++;
-
-                                        if (numPan > data.length) {
-                                            var dashboard = {
-                                                title: 'dashboard_' + c._id,
-                                                hits: 0,
-                                                description: '',
-                                                panelsJSON: '[' + panels.toString() + ']',
-                                                optionsJSON: '{"darkTheme":false}',
-                                                uiStateJSON: JSON.stringify(uiStates),
-                                                version: 1,
-                                                timeRestore: true,
-                                                timeTo: 'now',
-                                                timeFrom: 'now-12w',
-                                                refreshInterval: {
-                                                    display: '60 seconds',
-                                                    pause: false,
-                                                    section: 1,
-                                                    value: 60000
-                                                },
-                                                kibanaSavedObjectMeta: {
-                                                    searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
-                                                }
-                                            };
-                                            $http.post(CONSTANTS.PROXY + '/kibana/dashboard/class/' + c._id, dashboard)
-                                                .success(function (data) {
-                                                    $scope.goToClass(c);
-                                                    blockUI.stop();
-                                                }).error(function (data, status) {
-                                                console.error('Error on post /kibana/dashboard/class/' + c._id + ' ' +
-                                                    JSON.stringify(data) + ', status: ' + status);
-                                            });
-                                        }
-                                    }).error(function (data, status) {
-                                        console.error('Error on post /kibana/visualization/class/' + c._id + ' ' +
-                                            JSON.stringify(data) + ', status: ' + status);
-                                    });
-                                });
-                            } else {
-                                $scope.goToClass(c);
-                            }
-                        }).error(function (data, status) {
-                        console.error('Error on get /kibana/classvis/' +
-                            JSON.stringify(data) + ', status: ' + status);
-                    });
+                    $scope.goToClass(c);
+                    blockUI.stop();
                 });
             };
 

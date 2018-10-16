@@ -24,95 +24,28 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
         function ($scope, $location, $http, $window, $localStorage, Games, Versions, Role, CONSTANTS, $sce, QueryParams) {
             $scope.$storage = $localStorage;
 
+            console.log('isDeveloper');
             $scope.isDeveloper = function () {
+                console.log('isDeveloper');
                 return Role.isDeveloper();
             };
 
             var versionId = QueryParams.getQueryParam('version');
             $scope.gameId = QueryParams.getQueryParam('game');
 
-            $scope.showVisualization = function () {
-                versionId = QueryParams.getQueryParam('version');
-                $scope.gameId = QueryParams.getQueryParam('game');
-
-                $http.get(CONSTANTS.PROXY + '/kibana/visualization/list/dev/' + $scope.gameId)
-                    .success(function(data) {
-
-                        var panels = [];
-                        var uiStates = {};
-
-                        // Add index
-                        $http.post(CONSTANTS.PROXY + '/kibana/index/' + $scope.gameId + '/' + versionId, {})
-                            .success(function(data) {
-
-                            }).error(function (data, status) {
-                            console.error('Error on post /kibana/index/' + $scope.gameId + '/' + versionId + ' ' +
-                                JSON.stringify(data) + ', status: ' + status);
-                        });
-
-                        // Add dashboard
-                        var numPan = 1;
-                        data.forEach(function (visualizationId) {
-
-                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/activity/' + $scope.gameId + '/' + visualizationId + '/' + versionId,
-                                {}).success(function(result) {
-                                panels.push('{\"id\":\"' + visualizationId + '_' + versionId +
-                                    '\",\"type\":\"visualization\",\"panelIndex\":' + numPan + ',' +
-                                    '\"size_x\":6,\"size_y\":4,\"col\":' + (1 + (numPan - 1 % 2)) + ',\"row\":' +
-                                    (numPan + 1 / 2) + '}');
-                                uiStates['P-' + numPan] = {vis: {legendOpen: false}};
-                                numPan++;
-
-                                if (numPan > data.length) {
-                                    var dashboard = {
-                                        title: 'dashboard_' + versionId,
-                                        hits: 0,
-                                        description: '',
-                                        panelsJSON: '[' + panels.toString() + ']',
-                                        optionsJSON: '{"darkTheme":false}',
-                                        uiStateJSON: JSON.stringify(uiStates),
-                                        version: 1,
-                                        timeRestore: true,
-                                        timeTo: 'now',
-                                        timeFrom: 'now-7d',
-                                        refreshInterval: {
-                                            display: '10 seconds',
-                                            pause: false,
-                                            section: 1,
-                                            value: 10000
-                                        },
-                                        kibanaSavedObjectMeta: {
-                                            searchSourceJSON: '{"filter":[{"query":{"query_string":{"query":"*","analyze_wildcard":true}}}]}'
-                                        }
-                                    };
-                                    $http.post(CONSTANTS.PROXY + '/kibana/dashboard/activity/' + versionId, dashboard)
-                                        .success(function(data) {
-                                            $scope.dashboardLink = getDashboardLink();
-                                        }).error(function (data, status) {
-                                        console.error('Error on post /kibana/dashboard/activity/' + versionId + ' ' +
-                                            JSON.stringify(data) + ', status: ' + status);
-                                    });
-                                }
-                            }).error(function (data, status) {
-                                console.error('Error on post /kibana/visualization/activity/' + visualizationId + '/' + versionId + ' ' +
-                                    JSON.stringify(data) + ', status: ' + status);
-                            });
-                        });
-                    }).error(function (data, status) {
-                    console.error('Error on post /kibana/visualization/list/' + $scope.gameId + ' ' +
-                        JSON.stringify(data) + ', status: ' + status);
-                });
-            };
-
             var getDashboardLink = function() {
                 var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
-                    QueryParams.getQueryParam('version') + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
+                    versionId + '?embed=true_g=(refreshInterval:(display:\'5%20seconds\',' +
                     'pause:!f,section:1,value:5000),time:(from:now-1h,mode:quick,to:now))';
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
-                document.getElementById('dashboardIframe').contentWindow.location.reload();
                 return $sce.trustAsResourceUrl(url);
+            };
+
+            $scope.initDashboard = function () {
+                $scope.dashboardLink = getDashboardLink();
+                document.getElementById('dashboardIframe').contentWindow.location.reload();
             };
 
         }
