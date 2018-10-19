@@ -110,6 +110,9 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
             };
 
             $attrs.$observe('classid', function() {
+                var myPrefix = $location.$$absUrl.split('/')[5];
+                $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
+                    '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
                 getClassInfo();
             });
 
@@ -171,10 +174,6 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
             $scope.lti.key = '';
             $scope.lti.secret = '';
 
-            var myPrefix = $location.$$path.split('/')[3];
-            $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
-                '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
-
             $scope.createLtiKey = function () {
                 if ($scope.lti.secret) {
                     $http.post(CONSTANTS.PROXY + '/lti', {
@@ -182,6 +181,9 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                         classId: $scope.class._id
                     }).success(function (data) {
                         $scope.lti.key = data._id;
+                        var myPrefix = $location.$$absUrl.split('/')[5];
+                        $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
+                            '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
                     }).error(function (data, status) {
                         console.error('Error on get /lti' + JSON.stringify(data) + ', status: ' + status);
                     });
