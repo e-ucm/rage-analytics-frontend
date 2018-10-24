@@ -66,6 +66,7 @@ angular.module('myApp', [
     function ($localStorage) {
         return {
             request: function (config) {
+                config.headers.Accept = 'application/json';
                 if ($localStorage.user) {
                     config.headers.Authorization = 'Bearer ' + $localStorage.user.token;
                 }
