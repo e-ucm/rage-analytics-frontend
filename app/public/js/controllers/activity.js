@@ -270,7 +270,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
 
             function updateOfflineTraces() {
-                if ($scope.activity) {
+                if ($scope.activity && $scope.activity.offline) {
                     $http.get(CONSTANTS.PROXY + '/offlinetraces/' + $scope.activity._id, {
                         transformRequest: angular.identity,
                         headers: {
