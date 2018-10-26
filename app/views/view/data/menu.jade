@@ -24,7 +24,7 @@ ul.nav
         span.left-menu-item(href="#participants", role="tab", data-toggle="tab", ng-click="view = 'participants'")
             span.glyphicon.glyphicon-apple.right20
             | Participants
-    li(ng-if='isDeveloper() || isOnlineActivity()')
+    li(ng-if='isOnlineActivity()')
         span.left-menu-item(href="#attempts", role="tab", data-toggle="tab", ng-click="view = 'attempts'")
             span.glyphicon.glyphicon-tasks.right20
             | Attempts
