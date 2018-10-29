@@ -172,22 +172,22 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 var filter = {};
 
                 if (userName) {
-                    filter.name = userName;
+                    filter['out.name'] = userName;
                 } else if ($scope.player) {
-                    filter.name = $scope.player.name;
+                    filter['out.name'] = $scope.player.name;
                 }
 
                 if (attempt) {
-                    filter.session = attempt;
+                    filter['out.session'] = attempt;
                 } else if ($scope.attempt) {
-                    filter.session = $scope.attempt.number;
+                    filter['out.session'] = $scope.attempt.number;
                 }
 
-                if (filter.length > 0) {
+                if (Object.keys(filter).length > 0 ) {
                     var props = [];
                     for (var key in filter) {
                         if (filter.hasOwnProperty(key)) {
-                            props.push(key + ': ' + filter[key]);
+                            props.push(key + ':' + filter[key]);
                         }
                     }
                     url += '&_a=(filters:!(),options:(darkTheme:!f),query:(query_string:(analyze_wildcard:!t,query:\'' + props.join(',') + '\')))';
@@ -196,7 +196,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 if (url.startsWith('localhost')) {
                     url = 'http://' + url;
                 }
-
                 return $sce.trustAsResourceUrl(url);
             };
 
@@ -245,7 +244,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             $scope.viewPlayer = function (result) {
                 $scope.player = result;
                 $scope.attempt = null;
-                $scope.iframeDashboardUrl = dashboardLink();
+                $scope.iframeDashboardUrl = dashboardLink(result.name);
             };
 
             $scope.viewAttempt = function (gameplay, attempt) {
@@ -315,7 +314,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             $scope.myFile = undefined;
             $scope.uploadTracesFile = function () {
                 if ($scope.myFile) {
-                    console.log('upload 3 ' + $scope.myFile);
                     upload($scope.myFile);
                 }
             };
@@ -522,7 +520,6 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 if ($scope.activity._id === activity._id) {
                     $scope.activity = activity;
                     updateOfflineTraces();
-                    console.log('Activity updated');
                 }
             });
 
