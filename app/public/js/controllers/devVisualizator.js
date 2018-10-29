@@ -24,9 +24,7 @@ angular.module('devVisualizatorApp', ['ngStorage', 'services'])
         function ($scope, $location, $http, $window, $localStorage, Games, Versions, Role, CONSTANTS, $sce, QueryParams) {
             $scope.$storage = $localStorage;
 
-            console.log('isDeveloper');
             $scope.isDeveloper = function () {
-                console.log('isDeveloper');
                 return Role.isDeveloper();
             };
 
