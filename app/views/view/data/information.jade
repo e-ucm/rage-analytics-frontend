@@ -27,9 +27,9 @@
             kbd.left10(ng-if='isTeacher()') {{ activity.trackingCode }}
     .row(ng-if='isTeacher() && isOfflineActivity()')
         hr
-        .col-xs-12(ng-controller='ActivityCtrl')
+        .col-xs-12
             label Select a CSV traces file:
-            input(type="file" file-model="myFile")
+            input(type="file" file-model="tracesFile")
             button.btn.btn-primary.top5(type='submit', ng-click='uploadTracesFile()') Upload trace file
             .row
                 .col-md-12

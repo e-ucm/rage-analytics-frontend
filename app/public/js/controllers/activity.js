@@ -33,15 +33,15 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             new ColumnProgress(angular.element(element).children('.score-marker')[0], scope.result.score);
         };
     })
-    .directive('fileModel', ['$parse', function ($parse) {
+    .directive('fileModel', ['$parse', '$rootScope', function ($parse, $rootScope) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
                 var model = $parse(attrs.fileModel);
                 var modelSetter = model.assign;
                 element.bind('change', function () {
-                    scope.$apply(function () {
-                        modelSetter(scope, element[0].files[0]);
+                    $rootScope.$apply(function () {
+                        modelSetter($rootScope, element[0].files[0]);
                     });
                 });
             }
@@ -183,7 +183,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     filter['out.session'] = $scope.attempt.number;
                 }
 
-                if (Object.keys(filter).length > 0 ) {
+                if (Object.keys(filter).length > 0) {
                     var props = [];
                     for (var key in filter) {
                         if (filter.hasOwnProperty(key)) {
@@ -311,10 +311,12 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 });
             }
 
-            $scope.myFile = undefined;
+            $rootScope.tracesFile = undefined;
             $scope.uploadTracesFile = function () {
-                if ($scope.myFile) {
-                    upload($scope.myFile);
+                console.log('aaaaaaaaaa');
+                if ($rootScope.tracesFile) {
+                    console.log('bbbbbbbb');
+                    upload($rootScope.tracesFile);
                 }
             };
 
