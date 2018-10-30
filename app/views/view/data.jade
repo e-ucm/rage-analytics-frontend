@@ -43,10 +43,12 @@
                     .col-xs-3.col-md-2.left-menu
                         include data/menu
                     .col-xs-9.col-md-10.tab-content.table-cell
-                        #info.tab-pane.active
-                            include data/information
-                        #realtime.tab-pane
+                        #realtime.tab-pane.active
                             include data/realtime/realtime
+                        #dev-visualization.tab-pane.active
+                            include data/dev-visualization
+                        #info.tab-pane
+                            include data/information
                         #participants.tab-pane
                             include data/participants
                         #attempts.tab-pane
@@ -55,8 +57,6 @@
                             include data/config
                         #analysis.tab-pane
                             include data/analysis
-                        #dev-visualization.tab-pane
-                            include data/dev-visualization
                         #game-analytics.tab-pane
                             include data/game-analytics
     .panel.panel-default(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' activity='{{ selectedActivity }}' style='width=100%')

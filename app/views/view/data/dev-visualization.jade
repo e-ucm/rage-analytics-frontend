@@ -15,7 +15,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-h1(ng-controller='DevVisualizatorCtrl') Developer Visualizations
-    .row(ng-if="isDeveloper()")
+h1(ng-if="isDeveloper()" ng-controller='DevVisualizatorCtrl') Developer Visualizations
+    .row
         iframe#dashboardIframe.no-border.top10(ng-init='initDashboard()' src="{{dashboardLink}}" width="100%")
         script(src='./js/iresizer.js')
