@@ -22,7 +22,7 @@
 angular.module('myApp', [
     'ngRoute', 'toolbarApp', 'signupApp', 'loginApp', 'loginPluginApp', 'classApp', 'participantsApp', 'classesApp', 'activitiesApp',
     'activityApp', 'gameApp', 'analysisApp', 'kibanaApp', 'gamesApp', 'activityApp', 'analyticsApp', 'devVisualizatorApp',
-    'services', 'xeditable', 'env-vars', 'ui.router'
+    'services', 'xeditable', 'env-vars', 'ui.router', 'blockUI'
 ]).run(function (editableOptions, $localStorage, $cookies) {
     editableOptions.theme = 'bs3';
     if ($localStorage.user) {
@@ -66,6 +66,7 @@ angular.module('myApp', [
     function ($localStorage) {
         return {
             request: function (config) {
+                config.headers.Accept = 'application/json';
                 if ($localStorage.user) {
                     config.headers.Authorization = 'Bearer ' + $localStorage.user.token;
                 }
@@ -73,8 +74,8 @@ angular.module('myApp', [
             }
         };
     }
-]).config(['$routeProvider', '$httpProvider', '$locationProvider', '$stateProvider',
-    function ($routeProvider, $httpProvider, $locationProvider, $stateProvider) {
+]).config(['$routeProvider', '$httpProvider', '$locationProvider', '$stateProvider', 'blockUIConfig',
+    function ($routeProvider, $httpProvider, $locationProvider, $stateProvider, blockUIConfig) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
         $locationProvider.html5Mode({enabled: true, requireBase: false});
 
@@ -114,6 +115,9 @@ angular.module('myApp', [
             url: '/game',
             templateUrl: 'view/gameactivity'
         });
+
+        blockUIConfig.autoBlock = false;
+        blockUIConfig.message = 'Please wait...';
     }
 ]).controller('AppCtrl', ['$rootScope', '$scope', '$location', '$http', '$timeout', '$localStorage', '$window',
     'Games', 'Classes', 'Activities', 'Versions', 'Analysis', 'Role', 'CONSTANTS', 'QueryParams',
@@ -137,6 +141,22 @@ angular.module('myApp', [
 
         $scope.isTeacher = function () {
             return Role.isTeacher();
+        };
+
+        $scope.isOfflineActivity = function () {
+            return $scope.isOfflineActivityParam($scope.selectedActivity);
+        };
+
+        $scope.isOnlineActivity = function () {
+            return $scope.isOnlineActivityParam($scope.selectedActivity);
+        };
+
+        $scope.isOfflineActivityParam = function (activity) {
+            return activity && activity.offline;
+        };
+
+        $scope.isOnlineActivityParam = function (activity) {
+            return activity && !activity.offline;
         };
 
         $scope.isDeveloper = function () {

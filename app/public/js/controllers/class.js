@@ -19,12 +19,24 @@
 'use strict';
 
 angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 'ui.bootstrap'])
-    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$location', '$http', '$uibModal', 'Classes', 'Groups', 'Groupings', 'CONSTANTS',
-        function ($rootScope, $scope, $attrs, $location, $http, $uibModal, Classes, Groups, Groupings, CONSTANTS) {
+    .controller('ClassCtrl', ['$rootScope', '$scope', '$attrs', '$sce', '$location', '$http',
+        '$uibModal', 'Classes', 'Groups', 'Groupings', 'CONSTANTS', '$window',
+        function ($rootScope, $scope, $attrs, $sce, $location, $http, $uibModal, Classes, Groups, Groupings, CONSTANTS, $window) {
             var groupsReady = false;
             var groupingsReady = false;
             var classReady = false;
-            var onSetClass = function() {
+
+            $scope.dashboardLink = '';
+
+
+            $scope.$watch('dashboardLink', function (newValue, oldValue) {
+                var iframeObj = document.getElementById('dashboardIframe');
+                if (iframeObj) {
+                    iframeObj.src = newValue;
+                    iframeObj.contentWindow.location.reload();
+                }
+            });
+            var onSetClass = function () {
                 if (!$scope.class) {
                     throw new Error('No class for ClassCtrl');
                 } else {
@@ -38,31 +50,51 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                             $scope.lti.secret = data[0].secret;
                         }
                     });
+                    $scope.dashboardLink = $scope.getDashboardLink();
                 }
             };
 
-            var onReadyGroups = function() {
+            $scope.getDashboardLink = function () {
+                var url = CONSTANTS.KIBANA + '/app/kibana#/dashboard/dashboard_' +
+                    $scope.class._id + '?embed=true_g=(refreshInterval:(display:\'5%60seconds\',' +
+                    'pause:!f,section:1,value:60000),time:(from:now-1000h,mode:quick,to:now))';
+                if (url.startsWith('localhost')) {
+                    url = 'http://' + url;
+                }
+
+                if (url.startsWith('localhost')) {
+                    url = 'http://' + url;
+                }
+
+                return $sce.trustAsResourceUrl(url);
+            };
+
+            $scope.popDashboard = function () {
+                $window.open($scope.getDashboardLink());
+            };
+
+            var onReadyGroups = function () {
                 groupsReady = true;
                 if (groupsReady && groupingsReady && classReady) {
                     onReadyParticipants();
                 }
             };
 
-            var onReadyGroupings = function() {
+            var onReadyGroupings = function () {
                 groupingsReady = true;
                 if (groupsReady && groupingsReady && classReady) {
                     onReadyParticipants();
                 }
             };
 
-            var onReadyParticipants = function() {
+            var onReadyParticipants = function () {
                 $scope.participants = {teachers: [], assistants: [], students: []};
                 if ($scope.isUsingGroupings()) {
-                    $scope.class.groupings.forEach(function(groupingId) {
+                    $scope.class.groupings.forEach(function (groupingId) {
                         addParticipantsFromGroupingId(groupingId);
                     });
                 } else if ($scope.isUsingGroups()) {
-                    $scope.class.groups.forEach(function(groupId) {
+                    $scope.class.groups.forEach(function (groupId) {
                         addParticipantsFromGroupId(groupId);
                     });
                 } else {
@@ -70,7 +102,7 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 }
             };
 
-            var getClassInfo = function() {
+            var getClassInfo = function () {
                 groupsReady = false;
                 groupingsReady = false;
                 classReady = false;
@@ -79,7 +111,7 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 $scope.groupings = Groupings.get({classId: $attrs.classid}, onReadyGroupings);
             };
 
-            var addParticipantsFromGroupingId = function(groupingId) {
+            var addParticipantsFromGroupingId = function (groupingId) {
                 for (var i = 0; i < $scope.groupings.length; i++) {
                     if (groupingId === $scope.groupings[i]._id) {
                         for (var j = 0; j < $scope.groupings[i].groups.length; j++) {
@@ -90,7 +122,7 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 }
             };
 
-            var addParticipantsFromGroupId = function(groupId) {
+            var addParticipantsFromGroupId = function (groupId) {
                 for (var i = 0; i < $scope.groups.length; i++) {
                     if (groupId === $scope.groups[i]._id) {
                         pushUsrFromGroupToParticipants($scope.groups[i], 'teachers');
@@ -101,7 +133,7 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                 }
             };
 
-            var pushUsrFromGroupToParticipants = function(group, role) {
+            var pushUsrFromGroupToParticipants = function (group, role) {
                 group.participants[role].forEach(function (usr) {
                     if ($scope.participants[role].indexOf(usr) === -1) {
                         $scope.participants[role].push(usr);
@@ -110,12 +142,15 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
             };
 
             $attrs.$observe('classid', function() {
+                var myPrefix = $location.$$absUrl.split('/')[5];
+                $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
+                    '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
                 getClassInfo();
             });
 
-            $attrs.$observe('forclass', function() {
+            $attrs.$observe('forclass', function () {
                 $scope.class = JSON.parse($attrs.forclass);
-                Classes.get({classId: $scope.class._id}).$promise.then(function(c) {
+                Classes.get({classId: $scope.class._id}).$promise.then(function (c) {
                     $scope.class = c;
                 });
                 onSetClass();
@@ -153,7 +188,7 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
             // Class
 
             $scope.changeName = function () {
-                $scope.class.$update(function() {
+                $scope.class.$update(function () {
                     $rootScope.$broadcast('refreshClasses');
                 });
             };
@@ -171,10 +206,6 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
             $scope.lti.key = '';
             $scope.lti.secret = '';
 
-            var myPrefix = $location.$$path.split('/')[3];
-            $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
-                '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
-
             $scope.createLtiKey = function () {
                 if ($scope.lti.secret) {
                     $http.post(CONSTANTS.PROXY + '/lti', {
@@ -182,6 +213,9 @@ angular.module('classApp', ['ngStorage', 'services', 'ngAnimate', 'ngSanitize', 
                         classId: $scope.class._id
                     }).success(function (data) {
                         $scope.lti.key = data._id;
+                        var myPrefix = $location.$$absUrl.split('/')[5];
+                        $scope.lti.launch = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port +
+                            '/api/login/launch/' + myPrefix + '/' + CONSTANTS.PREFIX;
                     }).error(function (data, status) {
                         console.error('Error on get /lti' + JSON.stringify(data) + ', status: ' + status);
                     });

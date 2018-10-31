@@ -4,6 +4,21 @@ html, body {
     height:100vh;
 }
 
+.modal-dialog-full {
+    width: 98%;
+    height: 92%;
+    padding: 0;
+}
+
+.modal-content-full {
+    margin-bottom: 10px;
+}
+
+.btn-space {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .left-menu {
     padding-left: 0px;
     padding-right: 0px;
@@ -105,4 +120,45 @@ html, body {
 
 .warning-alert-table tr td:nth-child(3){
     background-color: #ffef8f; text-align: center; cursor: pointer;
+}
+
+.checkbox label:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.checkbox .cr {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    border-radius: .25em;
+    width: 1.3em;
+    height: 1.3em;
+    float: left;
+    margin-right: .5em;
+}
+
+.checkbox .cr .cr-icon {
+    position: absolute;
+    font-size: .8em;
+    line-height: 0;
+    top: 50%;
+    left: 15%;
+}
+
+.checkbox label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox label input[type="checkbox"]+.cr>.cr-icon {
+    opacity: 0;
+}
+
+.checkbox label input[type="checkbox"]:checked+.cr>.cr-icon {
+    opacity: 1;
+}
+
+.checkbox label input[type="checkbox"]:disabled+.cr {
+    opacity: .5;
 }

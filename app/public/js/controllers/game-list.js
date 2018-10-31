@@ -19,8 +19,8 @@
 'use strict';
 
 angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
-    .controller('GameListCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'CONSTANTS',
-        function ($scope, $rootScope, $http, $window, Games, Versions, Role, CONSTANTS) {
+    .controller('GameListCtrl', ['$scope', '$rootScope', '$http', '$window', 'Games', 'Versions', 'Role', 'blockUI', 'CONSTANTS',
+        function ($scope, $rootScope, $http, $window, Games, Versions, Role, blockUI, CONSTANTS) {
 
             $scope.game = {};
 
@@ -42,57 +42,11 @@ angular.module('gamesApp', ['ngStorage', 'services', 'myApp'])
             $scope.createGame = function () {
                 var game = new Games();
                 game.title = $scope.game.gameTitle ? $scope.game.gameTitle : 'new game';
+                blockUI.start();
                 game.$save().then(function (game) {
-                    var version = new Versions();
-                    version.gameId = game._id;
-                    version.$save(function () {
-                        $http.get(CONSTANTS.PROXY + '/kibana/templates/index/defaultIndex')
-                            .success(function(data) {
-                                $http.post(CONSTANTS.PROXY + '/kibana/templates/index/' +  game._id, data._source).success(function (data) {
-                                    $http.get(CONSTANTS.PROXY + '/kibana/templates/_default_')
-                                        .success(function(data) {
-                                            var count = 0;
-                                            var selectedVisualizationTch = [];
-                                            var selectedVisualizationDev = [];
-                                            data.forEach(function (visualization) {
-                                                $http.post(CONSTANTS.PROXY + '/kibana/visualization/game/' +  game._id + '/' + visualization.id, {})
-                                                    .success(function() {
-                                                        if (visualization.isTeacher) {
-                                                            selectedVisualizationTch.push(visualization.id);
-                                                        }
-                                                        if (visualization.isDeveloper) {
-                                                            selectedVisualizationDev.push(visualization.id);
-                                                        }
-                                                        count++;
-                                                        if (count >= data.length) {
-                                                            var visJSON = {};
-                                                            visJSON.visualizationsDev = selectedVisualizationDev;
-                                                            visJSON.visualizationsTch =  selectedVisualizationTch;
-                                                            $http.post(CONSTANTS.PROXY + '/kibana/visualization/list/' + game._id,
-                                                                visJSON).success(function(data) {
-                                                                $rootScope.$broadcast('refreshGames');
-                                                                $scope.goToGame(data);
-                                                            }).error(function (data, status) {
-                                                                console.error('Error on post /kibana/visualization/list/' +  game._id + ' ' +
-                                                                    JSON.stringify(data) + ', status: ' + status);
-                                                            });
-                                                        }
-                                                    }).error(function (data, status) {
-                                                    console.error('Error on post /kibana/visualization/game/' +  game._id + '/' + visualization.id + ' ' +
-                                                        JSON.stringify(data) + ', status: ' + status);
-                                                });
-                                            });
-
-                                        }).error(function (data, status) {
-                                        $scope.defaultList = [];
-                                    });
-                                }).error(function (data, status) {
-                                    console.error('Error on post /kibana/templates/index/' +  game._id + ' ' +
-                                        JSON.stringify(data) + ', status: ' + status);
-                                });
-                            }).error(function (data, status) {
-                        });
-                    });
+                    $rootScope.$broadcast('refreshGames');
+                    $scope.goToGame(game);
+                    blockUI.stop();
                 });
             };
 

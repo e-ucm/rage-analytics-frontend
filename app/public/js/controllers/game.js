@@ -25,9 +25,6 @@ angular.module('gameApp', ['ngStorage', 'services', 'ngFileUpload'])
             var gameId, versionId;
             var load = function(gameId, versionId) {
                 var afterLoad = function() {
-                    if ($scope.game && $scope.version) {
-                        console.log('loaded');
-                    }
                 };
                 Games.get({gameId: gameId}).$promise.then(function(game) {
                     $scope.game = game;

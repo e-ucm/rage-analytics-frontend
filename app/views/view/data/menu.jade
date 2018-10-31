@@ -16,11 +16,21 @@
     limitations under the License.
  
 ul.nav
-    li.active
+    li(ng-if='isTeacher() || isStudent()').active
+        span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
+            span.glyphicon.glyphicon-dashboard.right20
+            | Real Time
+    li(ng-if='isDeveloper()').active
+        span.left-menu-item(href="#dev-visualization", role="tab", data-toggle="tab", ng-click="view = 'dev-visualization'")
+            span.glyphicon.glyphicon-dashboard.right20
+            div.in-line Developer
+                br
+                | Visualizations
+    li
         span.left-menu-item(href="#info", role="tab", data-toggle="tab", ng-click="view = 'info'")
             span.glyphicon.glyphicon-info-sign.right20
             | Information
-    li(ng-if='isTeacher()')
+    li(ng-if='isTeacher() && isOnlineActivity()')
         span.left-menu-item(href="#participants", role="tab", data-toggle="tab", ng-click="view = 'participants'")
             span.glyphicon.glyphicon-apple.right20
             | Participants
@@ -28,10 +38,6 @@ ul.nav
         span.left-menu-item(href="#attempts", role="tab", data-toggle="tab", ng-click="view = 'attempts'")
             span.glyphicon.glyphicon-tasks.right20
             | Attempts
-    li(ng-if='isTeacher() || isStudent()')
-        span.left-menu-item(href="#realtime", role="tab", data-toggle="tab", ng-click="view = 'realtime'")
-            span.glyphicon.glyphicon-dashboard.right20
-            | Real Time
     li(ng-if='isDeveloper() && showLrs' ng-controller='AnalyticsCtrl')
         span.left-menu-item(href="#game-analytics", role="tab", data-toggle="tab", ng-click="view = 'game-analytics'; getStatements()")
             span.fa.fa-bar-chart.right20
@@ -46,10 +52,4 @@ ul.nav
         span.left-menu-item(href="#analysis", role="tab", data-toggle="tab", ng-click="view = 'analysis'")
             span.glyphicon.glyphicon-cog.right20
             | Analytics Setup
-    li(ng-if='isDeveloper()')
-        span.left-menu-item(href="#dev-visualization", role="tab", data-toggle="tab", ng-click="view = 'dev-visualization'")
-            span.glyphicon.glyphicon-dashboard.right20
-            div.in-line Developer
-                br
-                | Visualizations
 

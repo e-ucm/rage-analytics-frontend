@@ -32,9 +32,15 @@
                         label Class:
                             select.form-control(ng-model='activity.classId')
                                 option(ng-repeat='class in classes' value='{{ class._id }}') {{ class.name }}
-                        a.btn.btn-primary(type='button', ng-click='createActivity()')
+                        a.btn.btn-primary(type='button' ng-click="createActivity()" class="btn btn-default")
                             span.glyphicon.glyphicon-plus.right10
                             | New activity
+                        .checkbox(style="display: inline-block")
+                            label
+                                input(type='checkbox' ng-model='type.offline')
+                                span.cr
+                                    i.cr-icon.glyphicon.glyphicon-ok
+                                |    Offline activity
                         p.btn-danger {{activityCreatedError}}
                 p.btn-danger {{activityOpenedError}}
                 table.table.table-hover
@@ -60,10 +66,11 @@
                                 a(ng-href='#', ng-click='goToClass(getClassById(localactivity.classId))') {{ getClassById(localactivity.classId).name }}
                             td {{localactivity._id | prettyDateId }}
                             td(ng-if='isTeacher()')
-                                button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
-                                button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
-                                button.btn-info(ng-if='activityState() == 1') Loading
+                                button.btn-success(ng-if='activityState() == 2 && isOnlineActivityParam(localactivity)' ng-click='endActivity()') Opened
+                                button.btn-warning(ng-if='activityState() == 0 && isOnlineActivityParam(localactivity)' ng-click='startActivity()') Closed
+                                button.btn-info(ng-if='activityState() == 1 && isOnlineActivityParam(localactivity)') Loading
                                     span.fa.fa-refresh.fa-spin
+                                p.btn-info(ng-if='isOfflineActivityParam(localactivity)') Offline Activity
                             td(ng-if='isTeacher()')
                                 a(ng-click='deleteActivity(localactivity)')
                                     span.glyphicon.glyphicon-remove-sign
