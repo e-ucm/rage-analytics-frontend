@@ -32,20 +32,23 @@
                         a(href="#", editable-text="activity.name" onaftersave="changeActivityName()")  Activity {{ activity.name }}
                     a(ng-if='isStudent()') Activity {{ activity.name }}
                 span(ng-if='isTeacher()' style='float: right; margin-top: 5px; font-size: 0.70em;')
-                    button.btn-success(ng-if='activityState() == 2' ng-click='endActivity()') Opened
-                    button.btn-warning(ng-if='activityState() == 0' ng-click='startActivity()') Closed
-                    button.btn-info(ng-if='activityState() == 1') Loading&nbsp;
+                    button.btn-success(ng-if='activityState() == 2 && isOnlineActivityParam(activity)' ng-click='endActivity()') Opened
+                    button.btn-warning(ng-if='activityState() == 0 && isOnlineActivityParam(activity)' ng-click='startActivity()') Closed
+                    button.btn-info(ng-if='activityState() == 1 && isOnlineActivityParam(activity)') Loading
                         span.fa.fa-refresh.fa-spin
+                    p.btn-info(ng-if='isOfflineActivityParam(activity)') Offline Activity
         .panel-body.tabled(ng-if='game && version' style='padding-top: 0px')
             block dataMenu
                 .row.row-tabled
                     .col-xs-3.col-md-2.left-menu
                         include data/menu
                     .col-xs-9.col-md-10.tab-content.table-cell
-                        #info.tab-pane.active
-                            include data/information
-                        #realtime.tab-pane
+                        #realtime.tab-pane.active
                             include data/realtime/realtime
+                        #dev-visualization.tab-pane.active
+                            include data/dev-visualization
+                        #info.tab-pane
+                            include data/information
                         #participants.tab-pane
                             include data/participants
                         #attempts.tab-pane
@@ -54,8 +57,6 @@
                             include data/config
                         #analysis.tab-pane
                             include data/analysis
-                        #dev-visualization.tab-pane
-                            include data/dev-visualization
                         #game-analytics.tab-pane
                             include data/game-analytics
     .panel.panel-default(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' activity='{{ selectedActivity }}' style='width=100%')

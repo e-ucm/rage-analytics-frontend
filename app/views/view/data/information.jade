@@ -17,7 +17,7 @@
 
 .container-fluid.theme-showcase
     h1 Information
-    .row
+    .row(ng-if='!isOfflineActivity()')
         .col-xs-12
             | Game link:
             a(href='{{ game.link }}') {{ game.link }}
@@ -25,6 +25,31 @@
             | Tracking code:
             kbd.left10(ng-if='isDeveloper()') {{ version.trackingCode }}
             kbd.left10(ng-if='isTeacher()') {{ activity.trackingCode }}
+    .row(ng-if='isTeacher() && isOfflineActivity()')
+        hr
+        .col-xs-12
+            label Select a CSV traces file:
+            input(type="file" file-model="tracesFile")
+            button.btn.btn-primary.top5(type='submit', ng-click='uploadTracesFile()') Upload trace file
+            .row
+                .col-md-12
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Trace file
+                                th Time uploaded
+                                th Author
+                        tbody
+                            tr(ng-if='!offlinetraces || offlinetraces.length === 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No trace files found
+                            tr(ng-repeat='tracefile in offlinetraces')
+                                td
+                                    label {{tracefile.name}}
+                                td
+                                    label {{tracefile._id | prettyDateId }}
+                                td
+                                    label {{tracefile.author }}
     .row(ng-if='isDeveloper()')
         hr
         .col-xs-12

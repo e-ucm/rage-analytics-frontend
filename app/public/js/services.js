@@ -23,6 +23,7 @@ var services = angular.module('services', ['ngResource', 'ngStorage']);
 services.factory('Games', ['$resource', 'CONSTANTS',
     function ($resource, CONSTANTS) {
         return $resource(CONSTANTS.PROXY + '/games/:gameId', { gameId: '@_id' }, {
+            save: { method: 'POST', url: CONSTANTS.PROXY + '/games/bundle' },
             my: { method: 'GET', isArray: true , url: CONSTANTS.PROXY + '/games/my' },
             public: { method: 'GET', isArray: true , url: CONSTANTS.PROXY + '/games/public' },
             update: {
@@ -80,6 +81,7 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
         return $resource(CONSTANTS.PROXY + '/classes/:classId', {
             classId: '@_id'
         }, {
+            save: { method: 'POST', url: CONSTANTS.PROXY + '/classes/bundle' },
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/my' },
             update: {
                 method: 'PUT',
@@ -124,6 +126,7 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
             gameId: '@gameId',
             username: '@username'
         }, {
+            save: { method: 'POST', url: CONSTANTS.PROXY + '/activities/bundle' },
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/my' },
             forClass: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/activities/my' },
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },

@@ -19,11 +19,12 @@ h1 Alerts & Warnings Setup
 a(href="#", editable-text="game.link" onaftersave="changeGameLink()") Link: {{ game.link }}
 .row
     .col-md-8
-        .checkbox
+        .checkbox(style="display: inline-block")
             label
                 input(type="checkbox" ng-change='publicGame()' ng-model='game.public')
+                span.cr
+                    i.cr-icon.glyphicon.glyphicon-ok
                 | Public game
-                br
 .row.top10
     .col-sm-12
         h4 Activity information

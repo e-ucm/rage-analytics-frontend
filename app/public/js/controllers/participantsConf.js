@@ -11,7 +11,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR ñDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -350,7 +350,7 @@ angular.module('participantsApp', [])
             };
 
             $ctrl.removeGroup = function (group) {
-                if ($ctrl.group.name && $ctrl.group.name.trim() !== '') {
+                if (group.name && group.name.trim() !== '') {
                     var route = CONSTANTS.PROXY + '/classes/groups/' + group._id;
                     $http.delete(route).success(function (data) {
                         updateGroups();
@@ -392,7 +392,7 @@ angular.module('participantsApp', [])
             };
 
             $ctrl.removeGrouping = function (grouping) {
-                if ($ctrl.grouping.name && $ctrl.grouping.name.trim() !== '') {
+                if (grouping.name && grouping.name.trim() !== '') {
                     var route = CONSTANTS.PROXY + '/classes/groupings/' + grouping._id;
                     $http.delete(route).success(function (data) {
                         updateGroupings();
