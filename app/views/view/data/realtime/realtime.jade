@@ -16,8 +16,8 @@
     limitations under the License.
  
 link(rel="stylesheet" href="css/realtime.css")
-.container-fluid.theme-showcase.height100(ng-if="isTeacher()" role="tabpanel" style="position:relative")
-    .row
+.container-fluid.theme-showcase.height100(role="tabpanel" style="position:relative")
+    .row(ng-if="isTeacher()")
         h1(ng-if="results.length > 0") Alerts & Warnings
         .row(ng-show="player")
             .col-xs-12
