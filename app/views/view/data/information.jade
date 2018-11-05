@@ -24,7 +24,7 @@
         .col-xs-12
             | Tracking code:
             kbd.left10(ng-if='isDeveloper()') {{ version.trackingCode }}
-            kbd.left10(ng-if='isTeacher()') {{ activity.trackingCode }}
+            kbd.left10(ng-if='isTeacher() || isStudent()') {{ activity.trackingCode }}
     .row(ng-if='isTeacher() && isOfflineActivity()')
         hr
         .col-xs-12
