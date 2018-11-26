@@ -287,13 +287,37 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                         console.error('Error on get /offlinetraces/' + $scope.activity._id + ' ' +
                             JSON.stringify(response, null, '  '));
                     });
+
+                    $http.get(CONSTANTS.PROXY + '/offlinetraces/' + $scope.activity._id + '/kahoot', {
+                        transformRequest: angular.identity,
+                        headers: {
+                            'Content-Type': undefined,
+                            enctype: 'multipart/form-data'
+                        }
+                    }).then(function successCallback(response) {
+                        // This callback will be called asynchronously
+                        // when the response is available
+
+                        $scope.offlinetraceskahoot = response.data;
+                    }, function errorCallback(response) {
+                        // Called asynchronously if an error occurs
+                        // or server returns response with an error status.
+                        console.error('Error on get /offlinetraces/' + $scope.activity._id + '/kahoot ' +
+                            JSON.stringify(response, null, '  '));
+                    });
                 }
             }
 
-            function upload(file) {
+            function upload(file, kahoot) {
+                var appended = 'offlinetraces';
+                var url = CONSTANTS.PROXY + '/offlinetraces/' + $scope.activity._id;
+                if (kahoot) {
+                    url += '/kahoot';
+                    appended += 'kahoot';
+                }
                 var formData = new FormData();
-                formData.append('offlinetraces', file);
-                $http.post(CONSTANTS.PROXY + '/offlinetraces/' + $scope.activity._id, formData, {
+                formData.append(appended, file);
+                $http.post(url, formData, {
                     transformRequest: angular.identity,
                     headers: {
                         'Content-Type': undefined,
@@ -306,17 +330,21 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }, function errorCallback(response) {
                     // Called asynchronously if an error occurs
                     // or server returns response with an error status.
-                    console.error('Error on post /offlinetraces/' + $scope.activity._id + ' ' +
+                    console.error('Error on post ' + url + ' ' +
                         JSON.stringify(response, null, '  '));
                 });
             }
 
             $rootScope.tracesFile = undefined;
             $scope.uploadTracesFile = function () {
-                console.log('aaaaaaaaaa');
                 if ($rootScope.tracesFile) {
-                    console.log('bbbbbbbb');
                     upload($rootScope.tracesFile);
+                }
+            };
+
+            $scope.uploadKahootTracesFile = function () {
+                if ($rootScope.kahootTracesFile) {
+                    upload($rootScope.kahootTracesFile, true);
                 }
             };
 
