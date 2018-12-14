@@ -50,6 +50,31 @@
                                     label {{tracefile._id | prettyDateId }}
                                 td
                                     label {{tracefile.author }}
+        hr
+        img.img-circle(src='kahoot.jpg', alt='Kahoot')
+        .col-xs-12
+            label Select a Kahoot traces file (Downloading a Kahoot session into a results.xlsx file):
+            input(type="file" file-model="kahootTracesFile")
+            button.btn.btn-primary.top5(type='submit', ng-click='uploadKahootTracesFile()') Upload Kahoot results file
+            .row
+                .col-md-12
+                    table.table.table-hover
+                        thead
+                            tr
+                                th Trace file
+                                th Time uploaded
+                                th Author
+                        tbody
+                            tr(ng-if='!offlinetraceskahoot || offlinetraceskahoot.length === 0')
+                                td(colspan=6)
+                                    div.alert.alert-warning(style='margin-bottom: 0px') No kahoot trace files found (you can get one by downloading the results.xlsx file from a Kahoot Activity)
+                            tr(ng-repeat='tracefile in offlinetraceskahoot')
+                                td
+                                    label {{tracefile.name}}
+                                td
+                                    label {{tracefile._id | prettyDateId }}
+                                td
+                                    label {{tracefile.author }}
     .row(ng-if='isDeveloper()')
         hr
         .col-xs-12
