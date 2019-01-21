@@ -66,6 +66,8 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     } else if ($scope.activity.groups && $scope.activity.groups.length > 0) {
                         $scope.unlockGroups();
                     }
+                    getWeightsDoc();
+                    getChilgrenActivities();
                     updateGroups();
                     updateGroupings();
                     $scope.refreshResults = function () {
@@ -123,6 +125,23 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }).error(function (data, status) {
                     console.error('Error on put' + route + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
+                });
+            };
+
+            var getWeightsDoc = function () {
+                $http.get(CONSTANTS.PROXY + '/activities/weights/' + $scope.activity._id).success(function (result) {
+                    $scope.weightsObj = result;
+                }).error(function (err) {
+                    console.error(err);
+                });
+            };
+
+            $scope.childrenActivities = [];
+            var getChilgrenActivities = function(){
+                $http.get(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/offspring').success(function (result) {
+                    $scope.childrenActivities = result;
+                }).error(function (err) {
+                    console.error(err);
                 });
             };
 
@@ -624,6 +643,70 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 }).error(function (err) {
                     console.error(err);
                 });
+            };
+
+            $scope.editedWeight = {
+                variable: '',
+                op: '',
+                children:[{
+                    name: '',
+                    multiplier: 0,
+                    id: '',
+                    num : 0
+                }]
+            };
+            
+            $scope.addNewChild = function(){
+                $scope.editedWeight.children.push({
+                    name: '',
+                    multiplier: 0,
+                    id: ''
+                });
+                console.log(JSON.stringify($scope.editedWeight, null,2));
+            };
+
+            $scope.removeChild = function(obj){
+                var index = $scope.editedWeight.children.indexOf(obj);
+                $scope.editedWeight.children.splice(index, 1);
+            };
+
+            $scope.getWeightFormula = function(weight) {
+                var formula = '';
+                var operation = weight.op;
+                weight.children.forEach(function(child){
+                    formula += child.name + '*' + child.value + '(' + child.id + ')' + operation;
+                });
+
+                return formula;
+            };
+
+            $scope.weightsError = '';
+            $scope.registerWeightDocument = function(){
+                $scope.weightsObj.weights.push($scope.editedWeight);
+                $http.post(CONSTANTS.PROXY + '/activities/weights/' + $scope.activity._id, $scope.weightsObj).success(function () {
+                    $scope.weightsObj = {
+                        variable: '',
+                        op: '',
+                        children:[{
+                            name: '',
+                            multiplier: 0,
+                            id: ''
+                        }]
+                    };
+                }).error(function (err) {
+                    console.error(err);
+                    $scope.weightsError = err;
+                });
+            };
+
+            $scope.getActivityNameById = function(id){
+                var name = id;
+                $scope.childrenActivities.forEach(function(activity){
+                   if(activity._id === id){
+                       name = activity.name;
+                   }
+                });
+                return name;
             };
         }
     ]);
