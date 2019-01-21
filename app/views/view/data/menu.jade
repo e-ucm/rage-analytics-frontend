@@ -34,6 +34,10 @@ ul.nav
         span.left-menu-item(href="#participants", role="tab", data-toggle="tab", ng-click="view = 'participants'")
             span.glyphicon.glyphicon-apple.right20
             | Participants
+    li(ng-if='isTeacher()')
+        span.left-menu-item(href="#weights", role="tab", data-toggle="tab", ng-click="view = 'weights'")
+            span.glyphicon.glyphicon-equalizer.right20
+            | Multilevel
     li
         span.left-menu-item(href="#attempts", role="tab", data-toggle="tab", ng-click="view = 'attempts'")
             span.glyphicon.glyphicon-tasks.right20
