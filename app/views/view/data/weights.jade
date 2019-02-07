@@ -16,70 +16,78 @@
     limitations under the License.
 
 .container-fluid.theme-showcase
-    h1 Multilevel Weights
+    h1 Multilevel Configuration
     .row(ng-if='isTeacher()')
-        h3 Configure new weights
+        h2 Parent activity activity.
         .row
             .col-md-3
-                label Select variable name:
+                label Select parent activity:
             .col-md-3
-                input(type="text" ng-model='editedWeight.name')
-        .row
-            label Specifies below how the selected variable will be generated from the child activities:
-        .row
-            .col-md-3
-                label Select operation:
-            .col-md-3
-                select(ng-model='editedWeight.op')
-                    option +
-                    option *
-        div(ng-repeat='part in editedWeight.children')
-            .row
-                .col-md-3
-                    label Select child
-                .col-md-3
-                    select(ng-model='part.id')
-                        option(ng-repeat='child in childrenActivities' value='{{child._id}}') {{child.name}}
-                .col-md-3
-                    button.bg-danger(ng-click='removeChild(part)') Remove child
+                select(ng-model='activity.parentId', ng-change='updateParent()')
+                    option(ng-repeat='a in activities' value='{{a._id.toString()}}') {{a.name}}
+        h2 Weight configuration
+            h3 Configure new weights
             .row
                 .col-md-3
                     label Select variable name:
                 .col-md-3
-                    input(type="text" ng-model='part.name')
+                    input(type="text" ng-model='editedWeight.name')
+            .row
+                label Specifies below how the selected variable will be generated from the child activities:
+            .row
                 .col-md-3
-                    label Select the weight:
+                    label Select operation:
                 .col-md-3
-                    input(type="number" step="0.01" ng-model='part.multiplier')
-        .row
-            .col-md-3
-                button.bg-success(ng-click='addNewChild()') Add new child
-        .row
-            .col-md-3
-                button.bg-success(ng-click='registerWeightDocument()') Save
-            .col-md-9
-                label.alert-danger When you finish configuring press the save button. Keep in mind that once you save this configuration, it cannot be edited.
-        .row
-            label.alert-danger {{weightsError}}
+                    select(ng-model='editedWeight.op')
+                        option +
+                        option *
+            div(ng-repeat='part in editedWeight.children')
+                .row
+                    .col-md-3
+                        label Select child
+                    .col-md-3
+                        select(ng-model='part.id')
+                            option(ng-repeat='child in childrenActivities' value='{{child._id}}') {{child.name}}
+                    .col-md-3
+                        button.bg-danger(ng-click='removeChild(part)') Remove child
+                .row
+                    .col-md-3
+                        label Select variable name:
+                    .col-md-3
+                        input(type="text" ng-model='part.name')
+                    .col-md-3
+                        label Select the weight:
+                    .col-md-3
+                        input(type="number" step="0.01" ng-model='part.multiplier')
+            .row
+                .col-md-3
+                    button.bg-success(ng-click='addNewChild()') Add new child
+            .row
+                .col-md-3
+                    button.bg-success(ng-click='registerWeightDocument()') Save
+                .col-md-9
+                    label.alert-danger When you finish configuring press the save button. Keep in mind that once you save this configuration, it cannot be edited.
+            .row
+                label.alert-danger {{weightsError}}
 
 
-        h3 Configured weights
-        table.table.table-hover(ng-repeat='weight in weightsObj.weights')
-            thead
-                tr
-                    th variable name
-                    th Operation ({{weight.op}})
-            tbody
-                tr
-                    td
-                        label {{weight.name}} =
-                    td(ng-repeat='child in weight.children')
-                        label {{child.name}} * {{child.multiplier}}
-                tr
-                    td
-                        label children
-                    td(ng-repeat='child in weight.children')
-                        label {{getActivityNameById(child.id)}}
+            h3 Configured weights
+            table.table.table-hover(ng-repeat='weight in weightsObj.weights')
+                thead
+                    tr
+                        th variable name
+                        th Operation ({{weight.op}})
+                tbody
+                    tr
+                        td
+                            label {{weight.name}} =
+                        td(ng-repeat='child in weight.children')
+                            label {{child.name}} * {{child.multiplier}}
+                    tr
+                        td
+                            label children
+                        td(ng-repeat='child in weight.children')
+                            label {{getActivityNameById(child.id)}}
 
 
 

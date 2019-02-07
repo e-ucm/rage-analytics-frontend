@@ -28,6 +28,68 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
             $scope.activityCreatedError = '';
             $scope.activity = {};
 
+            var generateActivityTrees = function(activities) {
+                var dictionary = {};
+                for (var i = 0; i < activities.length; i++) {
+                    dictionary[activities[i]._id] = activities[i];
+                }
+
+                for (i = 0; i < activities.length; i++) {
+                    if (activities[i].parentId) {
+                        var parent = dictionary[activities[i].parentId];
+                        if (!parent.children) {
+                            parent.children = [];
+                        }
+                        parent.children.push(activities[i]);
+                    }
+                }
+
+                for (i = 0; i < activities.length; i++) {
+                    getDepth(dictionary, activities[i]);
+                }
+
+                var newlist = generateList(activities, dictionary);
+
+                console.log(newlist);
+
+                return newlist;
+            };
+
+            var getDepth = function(dictionary, activity) {
+                if (!activity.depth) {
+                    if (!activity.parentId || activity._id === activity.rootId) {
+                        activity.depth = 1;
+                    }else {
+                        activity.depth = getDepth(dictionary, dictionary[activity.parentId]) + 1;
+                    }
+                }
+
+                return activity.depth;
+            };
+
+            var generateList = function(activities, dictionary) {
+                var newlist = [];
+                for (var i = 0; i < activities.length; i++) {
+                    if (activities[i].rootId === null) {
+                        newlist.push(activities[i]);
+                    }else if (activities[i].parentId === null) {
+                        newlist.push(activities[i]);
+                        generateListRecursive(activities[i].children, dictionary, newlist);
+                    }
+                }
+
+                return newlist;
+            };
+
+            var generateListRecursive = function(activities, dictionary, newlist) {
+                if (activities) {
+                    for (var i = 0; i < activities.length; i++) {
+                        newlist.push(activities[i]);
+                        generateListRecursive(activities[i].children, dictionary, newlist);
+                    }
+                }
+            };
+
             var loadByClass = function (classId) {
                 $scope.classId = classId;
                 $scope.games = Games.public();
@@ -42,7 +104,11 @@ angular.module('activitiesApp', ['ngStorage', 'services'])
             };
 
             var loadAll = function () {
-                $scope.activities = Activities.my();
+                Activities.my()
+                    .$promise.then(function(activities) {
+                        $scope.activities = generateActivityTrees(activities);
+                    });
+
                 $scope.classes = Classes.my();
                 $scope.games = Games.public();
             };

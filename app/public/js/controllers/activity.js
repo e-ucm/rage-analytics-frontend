@@ -106,6 +106,9 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                         });
                     }
                 });
+
+                $scope.activities = Activities.my();
+
             };
 
             var updateGroups = function () {
@@ -137,7 +140,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
             $scope.childrenActivities = [];
-            var getChilgrenActivities = function(){
+            var getChilgrenActivities = function() {
                 $http.get(CONSTANTS.PROXY + '/activities/' + $scope.activity._id + '/offspring').success(function (result) {
                     $scope.childrenActivities = result;
                 }).error(function (err) {
@@ -373,6 +376,21 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
 
             $scope.allowAnonymous = function () {
                 $scope.activity.$update();
+            };
+
+            $scope.updateParent = function () {
+                $scope.activity.$update(
+                    function(result) {
+                        $.notify('<strong>Parent updated</strong>', {offset: {x: 10, y: 65}});
+                    },
+                    function(error) {
+                        $.notify('<strong>Error changing the parent:</strong><br>' + error.data.message, {
+                            offset: {x: 10, y: 65},
+                            type: 'danger'
+                        });
+                        $rootScope.$broadcast('refreshActivity', $scope.activity);
+                    }
+                );
             };
 
             // Students
@@ -648,15 +666,15 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             $scope.editedWeight = {
                 variable: '',
                 op: '',
-                children:[{
+                children: [{
                     name: '',
                     multiplier: 0,
                     id: '',
-                    num : 0
+                    num: 0
                 }]
             };
-            
-            $scope.addNewChild = function(){
+
+            $scope.addNewChild = function() {
                 $scope.editedWeight.children.push({
                     name: '',
                     multiplier: 0,
@@ -665,7 +683,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 console.log(JSON.stringify($scope.editedWeight, null,2));
             };
 
-            $scope.removeChild = function(obj){
+            $scope.removeChild = function(obj) {
                 var index = $scope.editedWeight.children.indexOf(obj);
                 $scope.editedWeight.children.splice(index, 1);
             };
@@ -673,7 +691,7 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             $scope.getWeightFormula = function(weight) {
                 var formula = '';
                 var operation = weight.op;
-                weight.children.forEach(function(child){
+                weight.children.forEach(function(child) {
                     formula += child.name + '*' + child.value + '(' + child.id + ')' + operation;
                 });
 
@@ -681,13 +699,13 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
             };
 
             $scope.weightsError = '';
-            $scope.registerWeightDocument = function(){
+            $scope.registerWeightDocument = function() {
                 $scope.weightsObj.weights.push($scope.editedWeight);
                 $http.post(CONSTANTS.PROXY + '/activities/weights/' + $scope.activity._id, $scope.weightsObj).success(function () {
                     $scope.weightsObj = {
                         variable: '',
                         op: '',
-                        children:[{
+                        children: [{
                             name: '',
                             multiplier: 0,
                             id: ''
@@ -699,12 +717,12 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                 });
             };
 
-            $scope.getActivityNameById = function(id){
+            $scope.getActivityNameById = function(id) {
                 var name = id;
-                $scope.childrenActivities.forEach(function(activity){
-                   if(activity._id === id){
-                       name = activity.name;
-                   }
+                $scope.childrenActivities.forEach(function(activity) {
+                    if (activity._id === id) {
+                        name = activity.name;
+                    }
                 });
                 return name;
             };
