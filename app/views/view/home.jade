@@ -59,7 +59,9 @@
                         tr(ng-repeat='localactivity in activities', ng-controller='ActivityCtrl' lite activity='{{ localactivity }}')
                             td
                                 span.glyphicon.glyphicon-stats.right10
-                                a(ng-href="#" ng-click='goToActivity(localactivity)') {{ localactivity.name }}
+                                a(ng-href="#" ng-click='goToActivity(localactivity)') 
+                                    span(ng-repeat='n in [].constructor(localactivity.depth) track by $index') ─
+                                    &nbsp;{{ localactivity.name }}
                             td
                                 a(ng-href='#', ng-click='goToGame(getGameById(localactivity.gameId))') {{ getGameById(localactivity.gameId).title }}
                             td
