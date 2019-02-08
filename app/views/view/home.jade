@@ -122,6 +122,12 @@
                         a.btn.btn-primary(type='button', ng-click='createClass()')
                             span.glyphicon.glyphicon-plus.right10
                             | New class
+                        .checkbox(style="display: inline-block")
+                            label
+                                input(type='checkbox' ng-model='class.withActivity')
+                                span.cr
+                                    i.cr-icon.glyphicon.glyphicon-ok
+                                |   Create associated activity
                 table.table.table-hover
                     thead
                         tr

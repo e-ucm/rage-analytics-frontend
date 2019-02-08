@@ -17,9 +17,9 @@
 
 .container(ng-if='selectedGame && selectedVersion' ng-controller='GameCtrl' gameid='{{selectedGame._id}}', versionid='{{selectedVersion._id}}')
     .panel.panel-default(ng-if='isDeveloper()' style='width=100%')
-        .panel-body(ng-if='!game || !version')
+        .panel-body(ng-if= '!activity.classBond && (!game || !version)')
             img(src='loading.svg')
-        .panel-heading(ng-if='game && version' style='font-size: 2.5em')
+        .panel-heading(ng-if='activity.classBond || (game && version)' style='font-size: 2.5em')
             block dataHeader
                 span
                     a(ng-if='!isDeveloper()') Game {{ game.title }} -
@@ -62,9 +62,9 @@
                         #game-analytics.tab-pane
                             include data/game-analytics
     .panel.panel-default(ng-if='!isDeveloper() && selectedActivity' ng-controller='ActivityCtrl' activity='{{ selectedActivity }}' style='width=100%')
-        .panel-body(ng-if='!game || !version || !activity')
+        .panel-body(ng-if='!activity.classBond && (!game || !version || !activity)')
             img(src='loading.svg')
-        .panel-heading(ng-if='game && version && activity' style='font-size: 2.5em')
+        .panel-heading(ng-if='activity && ((game && version) || activity.classBond)' style='font-size: 2.5em')
             block dataHeader
-        .panel-body.tabled(ng-if='game && version && activity' style='padding-top: 0px')
+        .panel-body.tabled(ng-if='activity && ((game && version) || activity.classBond)' style='padding-top: 0px')
             block dataMenu

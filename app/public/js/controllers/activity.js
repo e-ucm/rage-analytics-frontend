@@ -70,40 +70,45 @@ angular.module('activityApp', ['myApp', 'ngStorage', 'services'])
                     getChilgrenActivities();
                     updateGroups();
                     updateGroupings();
-                    $scope.refreshResults = function () {
-                        if (Role.isUser()) {
-                            if (!$scope.gameplaysShown) {
-                                $scope.gameplaysShown = {};
+                    if(!$scope.activity.classBond) {
+                        $scope.refreshResults = function () {
+                            if (Role.isUser()) {
+                                if (!$scope.gameplaysShown) {
+                                    $scope.gameplaysShown = {};
+                                }
+                                if (Role.isTeacher()) {
+                                    Activities.attempts({activityId: $scope.activity._id}, function (attempts) {
+                                        $scope.attempts = attempts;
+                                    });
+                                }
                             }
-                            if (Role.isTeacher()) {
-                                Activities.attempts({activityId: $scope.activity._id}, function (attempts) {
-                                    $scope.attempts = attempts;
+                            var rawResults = Results.query({
+                                    id: $scope.activity._id
+                                },
+                                function () {
+                                    calculateResults(rawResults);
                                 });
-                            }
-                        }
-                        var rawResults = Results.query({
-                                id: $scope.activity._id
-                            },
-                            function () {
-                                calculateResults(rawResults);
-                            });
-                    };
+                        };
+                    }
 
                     if (!$attrs.lite) {
                         $scope.iframeDashboardUrl = dashboardLink();
                         $scope.studentIframe = dashboardLink($scope.$storage.user.username);
 
-                        $scope.version = Versions.get({
-                            gameId: $scope.activity.gameId,
-                            versionId: $scope.activity.versionId
-                        }, function () {
-                            $scope.refreshResults();
-                            if (!$scope.activity.end) {
-                                refresh = $interval(function () {
-                                    $scope.refreshResults();
-                                }, 10000);
-                            }
-                        });
+
+                        if(!$scope.activity.classBond) {
+                            $scope.version = Versions.get({
+                                gameId: $scope.activity.gameId,
+                                versionId: $scope.activity.versionId
+                            }, function () {
+                                $scope.refreshResults();
+                                if (!$scope.activity.end) {
+                                    refresh = $interval(function () {
+                                        $scope.refreshResults();
+                                    }, 10000);
+                                }
+                            });
+                        }
                     }
                 });
 

@@ -92,6 +92,7 @@ services.factory('Classes', ['$resource', 'CONSTANTS',
                     if (data.created !== undefined) {
                         delete data.created;
                     }
+
                     return angular.toJson(data);
                 }
             }
@@ -127,6 +128,7 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
             username: '@username'
         }, {
             save: { method: 'POST', url: CONSTANTS.PROXY + '/activities/bundle' },
+            saveNoBundle: { method: 'POST', url: CONSTANTS.PROXY + '/activities' },
             my: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/activities/my' },
             forClass: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/classes/:classId/activities/my' },
             forGame: { method: 'GET', isArray: true, url: CONSTANTS.PROXY + '/games/:gameId/versions/:versionId/activities/my' },

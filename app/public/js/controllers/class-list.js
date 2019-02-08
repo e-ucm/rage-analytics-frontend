@@ -19,9 +19,9 @@
 'use strict';
 
 angular.module('classesApp', ['ngStorage', 'services'])
-    .controller('ClassListCtrl', ['$scope', '$rootScope', '$location', '$http', 'Classes', 'Courses',
+    .controller('ClassListCtrl', ['$scope', '$rootScope', '$location', '$http', 'Classes', 'Activities', 'Games', 'Courses',
         '$timeout', 'blockUI', 'CONSTANTS',
-        function ($scope, $rootScope, $location, $http, Classes, Courses, $timeout, blockUI, CONSTANTS) {
+        function ($scope, $rootScope, $location, $http, Classes, Activities, Games, Courses, $timeout, blockUI, CONSTANTS) {
             $scope.activity = {};
             $scope.courseId = {};
             $scope.class = {};
@@ -75,10 +75,34 @@ angular.module('classesApp', ['ngStorage', 'services'])
                 var c = new Classes();
                 c.name = $scope.class.name ? $scope.class.name : 'New class';
                 blockUI.start();
-                c.$save().then(function () {
-                    $rootScope.$broadcast('refreshClasses');
-                    $scope.goToClass(c);
-                    blockUI.stop();
+                c.$save().then(function (classData, err) {
+                    console.log(JSON.stringify(classData, null, 2));
+                    if($scope.class.withActivity){
+                        var activity = new Activities();
+                        activity.classId = classData._id;
+                        activity.name = "Multilevel_"+classData.name;
+                        activity.offline = false;
+                        activity.visible = true;
+                        activity.allowAnonymous = false;
+                        activity.classBond = true;
+
+                        activity.$saveNoBundle().then(function (activityData, err) {
+                            console.log(JSON.stringify(activityData, null, 2));
+                            var c = new Classes();
+                            c._id=classData._id;
+                            c.associated = activityData._id;
+                            c.$update().then(function(data, err){
+                                console.log(JSON.stringify(data, null, 2));
+                                $rootScope.$broadcast('refreshActivities');
+                                $rootScope.$broadcast('refreshClasses');
+                                blockUI.stop();
+                            });
+                        });
+                    } else {
+                        $rootScope.$broadcast('refreshClasses');
+                        $scope.goToClass(c);
+                        blockUI.stop();
+                    }
                 });
             };
 
