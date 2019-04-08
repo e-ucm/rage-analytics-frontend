@@ -165,6 +165,9 @@ services.factory('Activities', ['$resource', 'CONSTANTS',
                     if (data.trackingCode !== undefined) {
                         delete data.trackingCode;
                     }
+                    if (data.classBond !== undefined) {
+                        delete data.classBond;
+                    }
                     return angular.toJson(data);
                 }
             },
