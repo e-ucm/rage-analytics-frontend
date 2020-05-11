@@ -29,7 +29,7 @@ var request = require('request');
 var config = require(Path.resolve(__dirname, '../app/config.js'));
 var appData = require(Path.resolve(__dirname, '../app/a-frontend-routes.js')).app;
 
-var baseUsersAPI = config.a2.a2ApiPath;
+var baseUsersAPI = config.a2.a2HomePage + config.a2.a2ApiPath;
 
 request.post(baseUsersAPI + 'login', {
         form: {

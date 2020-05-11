@@ -25,10 +25,13 @@ exports.projectName = '{{projectName}}';
 exports.myHost = '{{myHost}}';
 exports.a2 = {
     a2ApiPath: '{{a2ApiPath}}',
+    a2ProxyPath: '{{a2ProxyPath}}',
+    a2Protocol: '{{a2Protocol}}',
     a2Prefix: '{{a2Prefix}}',
     a2HomePage: '{{a2HomePage}}',
     a2AdminUsername: '{{a2AdminUsername}}',
     a2AdminPassword: '{{a2AdminPassword}}'
 };
+exports.basePath = '{{basePath}}';
 exports.kibanaPrefix = '{{kibanaPrefix}}';
 exports.maxSizeRequest = '{{maxSizeRequest}}';
