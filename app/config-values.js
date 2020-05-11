@@ -76,6 +76,7 @@ function initFromEnv(conf, prefix, links) {
              */
             var values = linkPort.split('://');
             if (values.length === 2) {
+                conf[link + 'Protocol'] = values[0];
                 values = values[1].split(':');
                 if (values.length === 2) {
                     conf[link + 'Host'] = values[0];
@@ -89,11 +90,12 @@ function initFromEnv(conf, prefix, links) {
 exports.defaultValues = {
     projectName: 'Analytics Frontend',
     companyName: 'e-UCM Research Group',
+    a2Protocol: 'http',
     a2Host: 'localhost',
     a2Port: '3000',
     a2Prefix: 'afront',
-    a2HomePage: 'http://localhost:3000/',
-    a2ApiPath: 'http://localhost:3000/api/',
+    a2ApiPath: 'api/',
+    a2ProxyPath: 'api/proxy/',
     a2AdminUsername: 'root',
     kibanaPrefix: 'kibana',
     // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
@@ -118,11 +120,12 @@ exports.defaultValues = {
 exports.testValues = {
     projectName: 'Analytics Frontend (Test)',
     companyName: 'e-UCM Research Group (Test)',
+    a2Protocol: 'http',
     a2Host: 'localhost',
     a2Port: '3000',
     a2Prefix: 'afront',
-    a2HomePage: 'http://localhost:3000/',
-    a2ApiPath: 'http://localhost:3000/api/',
+    a2ApiPath: 'api/',
+    a2ProxyPath: 'api/proxy/',
     a2AdminUsername: 'root',
     a2AdminPassword: 'root',
     kibanaPrefix: 'kibana',
@@ -150,15 +153,10 @@ initFromEnv(exports.testValues, prefix, links);
 
 // Some control instructions
 
-exports.defaultValues.apiPath = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/api';
-exports.testValues.apiPath = exports.defaultValues.apiPath;
-
-exports.defaultValues.a2HomePage = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/';
-exports.defaultValues.a2ApiPath = exports.defaultValues.a2HomePage + 'api/';
-exports.testValues.a2ApiPath = exports.defaultValues.a2ApiPath;
-exports.testValues.a2HomePage = exports.defaultValues.a2HomePage;
+exports.defaultValues.a2HomePage = exports.defaultValues.a2Protocol + '://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/';
 
 exports.testValues.a2AdminUsername = exports.defaultValues.a2AdminUsername;
 exports.testValues.a2AdminPassword = exports.defaultValues.a2AdminPassword;
 
-
+exports.defaultValues.apiPath = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/api';
+exports.testValues.apiPath = exports.defaultValues.apiPath;
