@@ -158,5 +158,8 @@ exports.defaultValues.a2HomePage = exports.defaultValues.a2Protocol + '://' + ex
 exports.testValues.a2AdminUsername = exports.defaultValues.a2AdminUsername;
 exports.testValues.a2AdminPassword = exports.defaultValues.a2AdminPassword;
 
+exports.defaultValues.basePath = process.env.BASE_PATH || exports.defaultValues.a2ProxyPath + exports.defaultValues.a2Prefix + '/';
+exports.testValues.basePath = exports.defaultValues.basePath;
+
 exports.defaultValues.apiPath = 'http://' + exports.defaultValues.a2Host + ':' + exports.defaultValues.a2Port + '/api';
 exports.testValues.apiPath = exports.defaultValues.apiPath;
