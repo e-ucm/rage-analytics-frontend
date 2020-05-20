@@ -20,7 +20,7 @@
                     h4(class="modal-title") Class dashboard displaying activities visualizations
                 div(class="modal-body ")
                     iframe#dashboardIframe.no-border(ng-src = "{{dashboardLink}}" scrolling="no" width="100%" height="100%")
-                    script(src='./js/iresizer.js')
+                    script(src='js/iresizer.js')
     div(ng-controller='ActivityListCtrl', ng-attr-classid='{{ class._id }}' ng-class='(isTeacher() ? "col-md-8" : "col-md-12")')
         .panel.panel-default
             .panel-heading
