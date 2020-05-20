@@ -22,19 +22,24 @@ var express = require('express'),
     router = express.Router();
 
 var getBasePath = function(req) {
+    let host = '/';
 
-    let proto = req.headers['x-forwarded-proto'];
-    let host = proto + '://' + req.headers['x-forwarded-host'];
+    if(req.headers['x-forwarded-host']){
+        let proto = req.headers['x-forwarded-proto'];
+        host = proto + '://' + req.headers['x-forwarded-host'];
 
-    if (req.protocol === 'https') {
-        host =  'https://' + req.headers['x-forwarded-host'];
+        if (req.protocol === 'https') {
+            host =  'https://' + req.headers['x-forwarded-host'];
+        }
+
+        if (host.substr(-1) !== '/'){
+            host += '/';
+        }
+
+        host = host + req.app.config.basePath;
     }
 
-    if (host.substr(-1) !== '/'){
-        host += '/';
-    }
-
-    return host + req.app.config.basePath;
+    return host;
 };
 
 router.get('/loginbyplugin', function (req, res) {
