@@ -1,0 +1,9 @@
+.container-fluid.top20
+    .row
+        h1 Dashboard Template
+    .row
+        p Once the first dashboard is created, it can be personalyzed in kibana, downloaded and set up here for it to be applied
+          | in the new dashboards created. It is mainly used for visualization structuration purposed.
+    .row
+        textarea#exampleDashboardTemplate(rows='6' ng-model='exampleDashboardTemplate' style='width: 100%; height: 350px;')
+        button.btn.btn-primary.top15(ng-click='saveDashboardTemplate()') Save Dashboard Template

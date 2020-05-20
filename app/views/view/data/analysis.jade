@@ -25,10 +25,12 @@ div
             a(href="#kibanaIndex" role="tab" data-toggle="tab") 2.- Select Index
         li(ng-class = 'getActiveClass("kibanaVisualization")' )
             a(href="#kibanaVisualization" role="tab" data-toggle="tab") 3.- Select Visualizations
+        li(ng-class = 'getActiveClass("dashboardTemplate")' )
+            a(href="#dashboardTemplate" role="tab" data-toggle="tab") 4.- Dashboard Template
         li(ng-class = 'getActiveClass("configureFields")' )
-            a(href="#configureFields" role="tab" data-toggle="tab") 4.- Map Fields
+            a(href="#configureFields" role="tab" data-toggle="tab") 5.- Map Fields
         li(ng-class = 'getActiveClass("traces")' )
-            a(href="#traces" role="tab" data-toggle="tab") 5.- Test Everything
+            a(href="#traces" role="tab" data-toggle="tab") 6.- Test Everything
 
     .col-xs-12.col-md-12.tab-content(ng-if='game&&version' ng-controller='KibanaCtrl' ng-init='init(game, version)')
         #stormAnalysis.tab-pane.active
@@ -37,6 +39,8 @@ div
             include configuration/kibanaIndex
         #kibanaVisualization.tab-pane
             include configuration/kibanaVisualization
+        #dashboardTemplate.tab-pane
+            include configuration/dashboardTemplate
         #configureFields.tab-pane
             include configuration/configureFields
         #traces.tab-pane

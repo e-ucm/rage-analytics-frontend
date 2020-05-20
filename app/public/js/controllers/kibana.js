@@ -367,6 +367,11 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
             $scope.exampleObject = JSON.stringify(data, null, 2);
         });
 
+        $scope.exampleDashboardTemplate = '';
+        $http.get(CONSTANTS.PROXY + '/kibana/dashboardtemplates/' + $scope.version._id).success(function (data) {
+            $scope.exampleDashboardTemplate = JSON.stringify(data, null, 2);
+        });
+
         $scope.exampleVisualization = JSON.stringify({
             title: 'UsersScore',
             visState: '{\"title\":\"Users score\",\"type\":\"histogram\",\"params\":{' +
@@ -420,6 +425,24 @@ angular.module('kibanaApp', ['ngStorage', 'services', 'ngFileUpload'])
                         type: 'danger'
                     });
                     console.error('Error on post /kibana/object/' + $scope.version._id + ' ' +
+                        JSON.stringify(data) + ', status: ' + status);
+                });
+            }
+        };
+
+        $scope.saveDashboardTemplate = function () {
+            var object = JSON.parse(document.getElementById('exampleDashboardTemplate').value);
+            if (object) {
+                $http.post(CONSTANTS.PROXY + '/kibana/dashboardtemplates/' + $scope.version._id, object).success(function (data) {
+                    $.notify('<strong>Dashboard template saved successfully</strong>.', {
+                        offset: { x: 10, y: 65 }
+                    });
+                }).error(function (data, status) {
+                    $.notify('<strong>Error while saving dashboard template</strong>', {
+                        offset: { x: 10, y: 65 },
+                        type: 'danger'
+                    });
+                    console.error('Error on post /kibana/dashboardtemplates/' + $scope.version._id + ' ' +
                         JSON.stringify(data) + ', status: ' + status);
                 });
             }
